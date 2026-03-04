@@ -9,7 +9,12 @@ app.use(express.json());
 
 // Routes
 const eventRoutes = require("./Routes/EventRoute");
+const matchRoutes = require("./Routes/MatchRoute");
+const practiceRoutes = require("./Routes/PracticeRoute");
+
 app.use("/api/events", eventRoutes);
+app.use("/api/matches", matchRoutes);
+app.use("/api/practices", practiceRoutes);
 
 // Health check route
 app.get("/", (req, res) => {
