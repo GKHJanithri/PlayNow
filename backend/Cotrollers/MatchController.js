@@ -43,13 +43,19 @@ exports.updateMatch = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: "Invalid id" });
     const updates = req.body;
-    // If score update and winner can be derived, optionally compute winner
-    if (typeof updates.scoreA === 'number' && typeof updates.scoreB === 'number') {
-      if (updates.scoreA > updates.scoreB) updates.winner = updates.teamA || undefined;
-      else if (updates.scoreB > updates.scoreA) updates.winner = updates.teamB || undefined;
+    const existingMatch = await Match.findById(id);
+    if (!existingMatch) return res.status(404).json({ message: "Match not found" });
+
+    const nextScoreA = typeof updates.scoreA === 'number' ? updates.scoreA : existingMatch.scoreA;
+    const nextScoreB = typeof updates.scoreB === 'number' ? updates.scoreB : existingMatch.scoreB;
+
+    if (typeof nextScoreA === 'number' && typeof nextScoreB === 'number') {
+      if (nextScoreA > nextScoreB) updates.winner = existingMatch.teamA;
+      else if (nextScoreB > nextScoreA) updates.winner = existingMatch.teamB;
+      else updates.winner = undefined;
     }
+
     const match = await Match.findByIdAndUpdate(id, updates, { new: true });
-    if (!match) return res.status(404).json({ message: "Match not found" });
     res.json(match);
   } catch (error) {
     res.status(500).json({ message: error.message || "Failed to update match" });
