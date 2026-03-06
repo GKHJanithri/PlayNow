@@ -12,5 +12,70 @@ const getAllItemReturns = async (req, res,next) => {
     }
 };
 
+//Data insert
+const createItemReturn = async (req, res,next) => {
+    const { item_return_id, item_reservation_id, item_return_date } = req.body;
+    let itemReturns;
+    try {
+        itemReturns = new ItemReturn({
+            item_return_id, 
+            item_reservation_id   ,
+            item_return_date
+        });
+        await itemReturns.save();
+    } catch (error) {
+        console.log(error);
+    }
 
+    //not inserted  
+    if (!itemReturns) {
+        return res.status(404).send({ message: "Unable to create item return" });
+    }   
+    return res.status(200).json({itemReturns});
+};
+
+//Data Update
+
+const updateItemReturn = async (req, res,next) => { 
+    const id = req.params.id;
+    const { item_return_id, item_reservation_id, item_return_date } = req.body;
+    let itemReturns;
+    try {
+        itemReturns = await ItemReturn.findByIdAndUpdate(id, {
+            item_return_id, 
+            item_reservation_id   ,
+            item_return_date
+        });
+        itemReturns = await itemReturns.save();
+    } catch (error) {
+        console.log(error);
+    }
+    //not updated
+    if (!itemReturns) {
+        return res.status(404).send({ message: "Unable to update item return" });
+    }   
+    return res.status(200).json({itemReturns});
+};
+
+//Data Delete
+
+const deleteItemReturn = async (req, res,next) => { 
+    const id = req.params.id;
+    let itemReturns;
+    try {
+        itemReturns = await ItemReturn.findByIdAndRemove(id);
+    } catch (error) {
+        console.log(error);
+    }
+    //not deleted
+    if (!itemReturns) {
+        return res.status(404).send({ message: "Unable to delete item return" });
+    }
+    return res.status(200).json({ message: "Item return deleted successfully" });
+};
+
+
+exports.deleteItemReturn = deleteItemReturn;
+exports.updateItemReturn = updateItemReturn;
 exports.getAllItemReturns = getAllItemReturns;
+exports.createItemReturn = createItemReturn;

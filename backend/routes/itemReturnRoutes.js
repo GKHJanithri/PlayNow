@@ -12,6 +12,9 @@ const returnControllers = require("../controllers/itemReturnControllers");
 
 
 router.get("/", returnControllers.getAllItemReturns);
+router.post("/", returnControllers.createItemReturn);
+router.put("/:id", returnControllers.updateItemReturn);
+router.delete("/:id", returnControllers.deleteItemReturn);
 
  
 

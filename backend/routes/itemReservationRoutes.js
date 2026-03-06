@@ -9,12 +9,11 @@ const ItemReservation = require("../models/itemReservationModel");
 const reservationControllers = require("../controllers/itemReservationControllers");
 
 
-
-
 router.get("/", reservationControllers.getAllItemReservations);
+router.post("/", reservationControllers.createItemReservation);
+router.put("/:id", reservationControllers.updateItemReservation);
+router.delete("/:id", reservationControllers.deleteItemReservation);
 
-
- 
 
 
 //export the router
