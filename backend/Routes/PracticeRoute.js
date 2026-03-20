@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("../Cotrollers/PracticeController");
+const ctrl = require("../Controllers/PracticeController");
 
 router.post("/", ctrl.createPractice);
 router.get("/", ctrl.getPractices);

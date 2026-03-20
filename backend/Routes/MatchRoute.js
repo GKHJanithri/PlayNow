@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("../Cotrollers/MatchController");
+const ctrl = require("../Controllers/MatchController");
 
 router.post("/", ctrl.createMatch);
 router.get("/", ctrl.getMatches);
