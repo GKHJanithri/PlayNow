@@ -12,8 +12,15 @@ const EventsListPage = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const { data } = await apiClient.get('/events');
-        setEvents(data?.events || data || []);
+        const { data } = await apiClient.get('/events?upcoming=true');
+        const payload = data?.events || data || [];
+
+        // Hide incomplete legacy rows so cards only show real created events.
+        const normalizedEvents = (Array.isArray(payload) ? payload : []).filter(
+          (event) => event?.title && event?.sportType && event?.venue && event?.startDate,
+        );
+
+        setEvents(normalizedEvents);
       } catch (err) {
         setError(err.response?.data?.message || 'Unable to load events right now.');
       } finally {
@@ -53,7 +60,7 @@ const EventsListPage = () => {
       {error && !loading && <div className="error-state">{error}</div>}
 
       {!loading && !error && filteredEvents.length === 0 && (
-        <div className="empty-state">No events match your search.</div>
+        <div className="empty-state">No upcoming events yet. Admin-created events will appear here.</div>
       )}
 
       {!loading && !error && filteredEvents.length > 0 && (

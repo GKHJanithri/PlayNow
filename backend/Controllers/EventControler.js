@@ -4,13 +4,37 @@ const mongoose = require("mongoose");
 // Create a new event
 exports.createEvent = async (req, res) => {
   try {
-    const { title, description, venue, startDate, endDate, capacity, createdBy } = req.body;
+    const {
+      title,
+      sportType,
+      tournamentType,
+      description,
+      venue,
+      startDate,
+      endDate,
+      teams,
+      status,
+      createdBy,
+    } = req.body;
 
-    if (!title || !startDate) {
-      return res.status(400).json({ message: "`title` and `startDate` are required" });
+    if (!title || !startDate || !venue || !sportType) {
+      return res
+        .status(400)
+        .json({ message: "`title`, `sportType`, `venue`, and `startDate` are required" });
     }
 
-    const event = new Event({ title, description, venue, startDate, endDate, capacity, createdBy });
+    const event = new Event({
+      title,
+      sportType,
+      tournamentType,
+      description,
+      venue,
+      startDate,
+      endDate,
+      teams,
+      status,
+      createdBy,
+    });
     const saved = await event.save();
     res.status(201).json(saved);
   } catch (error) {
