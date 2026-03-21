@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './styles.css';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -12,13 +12,16 @@ import AdminUpdateResultsPage from './pages/AdminUpdateResultsPage';
 import AdminMatchScoringPage from './pages/AdminMatchScoringPage';
 import CoachPracticePage from './pages/CoachPracticePage';
 import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
+import SignupPage from './pages/signup/SignupPage';
 
-const App = () => (
-  <BrowserRouter>
-    <div className="app-shell">
-      <Navbar />
-      <main>
+const AppLayout = () => {
+  const location = useLocation();
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
+
+  return (
+    <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
+      {!isAuthRoute && <Navbar />}
+      <main className={isAuthRoute ? 'main-auth' : ''}>
         <Routes>
           <Route path="/" element={<Navigate to="/events" replace />} />
           <Route path="/login" element={<LoginPage />} />
@@ -77,6 +80,12 @@ const App = () => (
         </Routes>
       </main>
     </div>
+  );
+};
+
+const App = () => (
+  <BrowserRouter>
+    <AppLayout />
   </BrowserRouter>
 );
 

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
 
-const sportOptions = ['Football', 'Basketball', 'Volleyball', 'Tennis', 'Cricket'];
+const sportOptions = ['Football', 'Basketball', 'Volleyball', 'Tennis', 'Cricket', 'Badminton', 'Netball','Swimming'];
 const tournamentOptions = ['Knockout', 'RoundRobin'];
 
 const AdminCreateEventPage = () => {

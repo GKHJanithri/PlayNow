@@ -3,6 +3,13 @@ const USERS_KEY = 'playnow_users';
 export const ADMIN_EMAIL = 'admin@playnow.com';
 export const ADMIN_PASSWORD = 'Admin@12345';
 
+const normalizeRole = (role) => {
+  if (role === 'Coach') {
+    return 'Coach';
+  }
+  return 'User';
+};
+
 const getStoredUsers = () => {
   try {
     const raw = localStorage.getItem(USERS_KEY);
@@ -17,7 +24,7 @@ const saveUsers = (users) => {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
 };
 
-export const signupUser = ({ fullName, email, password }) => {
+export const signupUser = ({ fullName, studentId, role, email, password }) => {
   const normalizedEmail = email.trim().toLowerCase();
 
   if (normalizedEmail === ADMIN_EMAIL) {
@@ -33,9 +40,10 @@ export const signupUser = ({ fullName, email, password }) => {
   const newUser = {
     id: Date.now().toString(),
     fullName: fullName.trim(),
+    studentId: studentId ? studentId.trim() : '',
     email: normalizedEmail,
     password,
-    role: 'User',
+    role: normalizeRole(role),
   };
 
   saveUsers([newUser, ...users]);

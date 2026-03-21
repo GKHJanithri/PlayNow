@@ -45,9 +45,17 @@ textarea {
   flex-direction: column;
 }
 
+.app-shell.auth-shell {
+  background: #d1d5db;
+}
+
 main {
   flex: 1;
   padding: 2rem clamp(1rem, 3vw, 4rem);
+}
+
+main.main-auth {
+  padding: 0;
 }
 
 .page {
