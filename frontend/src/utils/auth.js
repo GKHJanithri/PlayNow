@@ -1,93 +1,58 @@
-const USERS_KEY = 'playnow_users';
+import apiClient from '../api/client';
 
-export const ADMIN_EMAIL = 'admin@playnow.com';
-export const ADMIN_PASSWORD = 'Admin@12345';
-
-const normalizeRole = (role) => {
-  if (role === 'Coach') {
-    return 'Coach';
-  }
-  return 'User';
+const readErrorMessage = (error, fallback) => {
+  return error?.response?.data?.message || error?.message || fallback;
 };
 
-const getStoredUsers = () => {
+const persistSession = (session) => {
+  localStorage.setItem('role', session.role);
+  localStorage.setItem('token', session.token);
+  localStorage.setItem('currentUser', JSON.stringify(session));
+};
+
+export const signupUser = async ({ fullName, studentId, role, email, password }) => {
   try {
-    const raw = localStorage.getItem(USERS_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    return [];
-  }
-};
+    const response = await apiClient.post('/auth/signup', {
+      fullName,
+      studentId,
+      role,
+      email,
+      password,
+    });
 
-const saveUsers = (users) => {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-};
-
-export const signupUser = ({ fullName, studentId, role, email, password }) => {
-  const normalizedEmail = email.trim().toLowerCase();
-
-  if (normalizedEmail === ADMIN_EMAIL) {
-    throw new Error('This email is reserved for system admin.');
-  }
-
-  const users = getStoredUsers();
-  const exists = users.some((user) => user.email === normalizedEmail);
-  if (exists) {
-    throw new Error('An account with this email already exists.');
-  }
-
-  const newUser = {
-    id: Date.now().toString(),
-    fullName: fullName.trim(),
-    studentId: studentId ? studentId.trim() : '',
-    email: normalizedEmail,
-    password,
-    role: normalizeRole(role),
-  };
-
-  saveUsers([newUser, ...users]);
-  return newUser;
-};
-
-export const loginUser = ({ email, password }) => {
-  const normalizedEmail = email.trim().toLowerCase();
-
-  if (normalizedEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    const adminSession = {
-      role: 'Admin',
-      token: 'admin-demo-token',
-      fullName: 'System Admin',
-      email: ADMIN_EMAIL,
+    const session = {
+      role: response.data.role,
+      token: response.data.token,
+      fullName: response.data.fullName,
+      email: response.data.email,
     };
 
-    localStorage.setItem('role', adminSession.role);
-    localStorage.setItem('token', adminSession.token);
-    localStorage.setItem('currentUser', JSON.stringify(adminSession));
-    return adminSession;
+    persistSession(session);
+    return session;
+  } catch (error) {
+    throw new Error(readErrorMessage(error, 'Signup failed.'));
   }
+};
 
-  const users = getStoredUsers();
-  const matchedUser = users.find(
-    (user) => user.email === normalizedEmail && user.password === password,
-  );
+export const loginUser = async ({ email, password }) => {
+  try {
+    const response = await apiClient.post('/auth/login', {
+      email,
+      password,
+    });
 
-  if (!matchedUser) {
-    throw new Error('Invalid email or password.');
+    const session = {
+      role: response.data.role,
+      token: response.data.token,
+      fullName: response.data.fullName,
+      email: response.data.email,
+    };
+
+    persistSession(session);
+    return session;
+  } catch (error) {
+    throw new Error(readErrorMessage(error, 'Login failed.'));
   }
-
-  const userSession = {
-    role: matchedUser.role,
-    token: `user-token-${matchedUser.id}`,
-    fullName: matchedUser.fullName,
-    email: matchedUser.email,
-  };
-
-  localStorage.setItem('role', userSession.role);
-  localStorage.setItem('token', userSession.token);
-  localStorage.setItem('currentUser', JSON.stringify(userSession));
-
-  return userSession;
 };
 
 export const logoutUser = () => {

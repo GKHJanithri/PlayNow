@@ -11,7 +11,7 @@ import AdminManageFixturesPage from './pages/AdminManageFixturesPage';
 import AdminUpdateResultsPage from './pages/AdminUpdateResultsPage';
 import AdminMatchScoringPage from './pages/AdminMatchScoringPage';
 import CoachPracticePage from './pages/CoachPracticePage';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 
 const AppLayout = () => {

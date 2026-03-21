@@ -21,7 +21,7 @@ const SignupPage = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setStatus('');
@@ -42,9 +42,9 @@ const SignupPage = () => {
     }
 
     try {
-      signupUser(form);
-      setStatus('Account created successfully. Please login.');
-      setTimeout(() => navigate('/login'), 900);
+      await signupUser(form);
+      setStatus('Account created successfully. Redirecting...');
+      setTimeout(() => navigate('/events'), 700);
     } catch (signupError) {
       setError(signupError.message || 'Signup failed.');
     }
