@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const facilityRoutes = require("./routes/facilityRoutes");
 
 const app = express();
 
@@ -11,5 +12,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("PlayNow API is running...");
 });
+
+// Mount facility routes
+app.use("/api", facilityRoutes);
 
 module.exports = app;
