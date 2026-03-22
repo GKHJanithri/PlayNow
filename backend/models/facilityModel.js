@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const facilitySchema = new mongoose.Schema({
   facilityName: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
   sportType: {
     type: String,
