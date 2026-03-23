@@ -3,16 +3,12 @@ const cors = require("cors");
 const facilityRoutes = require("./routes/facilityRoutes");
 const mongoose = require("mongoose");
 const itemRoutes = require("./routes/itemRoutes");
-const reservationRoutes = require("./routes/itemReservationRoutes");
-const returnRoutes = require("./routes/itemReturnRoutes");
 const app = express();
 
 // Middleware
-app.use("/items", itemRoutes);
-app.use("/reservations", reservationRoutes);
-app.use("/returns", returnRoutes);
 app.use(express.json());
-app.use(cors());  
+app.use(cors());
+app.use("/items", itemRoutes);
 
 
 // Routes
