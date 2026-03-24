@@ -7,10 +7,13 @@ import ProtectedRoute from './components/ProtectedRoute';
 import EventsListPage from './pages/EventsListPage';
 import EventDetailsPage from './pages/EventDetailsPage';
 import AdminCreateEventPage from './pages/AdminCreateEventPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminDashboardPage from './pages/AdminDashboard/AdminDashboardPage';
 import AdminManageFixturesPage from './pages/AdminManageFixturesPage';
 import AdminUpdateResultsPage from './pages/AdminUpdateResultsPage';
 import AdminMatchScoringPage from './pages/AdminMatchScoringPage';
+import AdminFacilityPage from './pages/AdminFacilityPage';
+import AdminItemsPage from './pages/AdminItemsPage';
+import AdminTeamsPage from './pages/AdminTeamsPage';
 import CoachPracticePage from './pages/CoachPracticePage';
 import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
@@ -88,6 +91,30 @@ const AppLayout = () => {
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminCreateEventPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/facilities"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <AdminFacilityPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/items"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <AdminItemsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/teams"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <AdminTeamsPage />
               </ProtectedRoute>
             }
           />
