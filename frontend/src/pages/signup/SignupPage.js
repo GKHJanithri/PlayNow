@@ -44,7 +44,7 @@ const SignupPage = () => {
     try {
       await signupUser(form);
       setStatus('Account created successfully. Redirecting...');
-      setTimeout(() => navigate('/events'), 700);
+      setTimeout(() => navigate('/login'), 700);
     } catch (signupError) {
       setError(signupError.message || 'Signup failed.');
     }
