@@ -79,7 +79,7 @@
   line-height: 1.05;
   letter-spacing: -0.02em;
   font-weight: 700;
-  color: #1d2b73;
+  color: #d1d5db;
   max-width: 480px;
 }
 
@@ -129,40 +129,42 @@
 
 .signup-form-panel {
   background: #f4f5f7;
-  padding: 38px 42px;
+  padding: 28px 32px;
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .signup-form-wrap {
   width: 100%;
-  max-width: 610px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
 .signup-form-wrap h1 {
   margin: 0;
   color: #12204f;
-  font-size: clamp(2rem, 2.5vw, 3.35rem);
+  font-size: clamp(1.6rem, 2vw, 2.4rem);
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 
 .signup-form-wrap .subtitle {
   margin-top: 8px;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
   color: #a8b2bf;
-  font-size: clamp(1rem, 1.3vw, 2.1rem);
+  font-size: clamp(0.92rem, 1vw, 1.1rem);
 }
 
 .signup-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 11px;
 }
 
 .signup-form label {
   color: #1e2c59;
-  font-size: clamp(0.95rem, 1.1vw, 1.9rem);
+  font-size: clamp(0.9rem, 1vw, 1rem);
   font-weight: 600;
 }
 
@@ -182,12 +184,12 @@
 .signup-form .signup-input,
 .signup-form .signup-select {
   width: 100%;
-  height: 52px;
+  height: 46px;
   border: 1px solid #d8dde3;
   border-radius: 12px;
   background: #ffffff;
   color: #8fa0b0;
-  font-size: clamp(1rem, 1.1vw, 1.8rem);
+  font-size: 0.95rem;
   padding: 0 14px;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -210,12 +212,12 @@
 .signup-submit {
   margin-top: 8px;
   width: 100%;
-  height: 54px;
+  height: 48px;
   border: none;
   border-radius: 12px;
   background: #2d3c96;
   color: #ffffff;
-  font-size: clamp(1.05rem, 1.2vw, 2rem);
+  font-size: clamp(0.95rem, 1vw, 1.05rem);
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s ease;

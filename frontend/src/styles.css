@@ -58,6 +58,10 @@ main.main-auth {
   padding: 0;
 }
 
+main.main-home {
+  padding: 0;
+}
+
 .page {
   max-width: 1200px;
   margin: 0 auto;

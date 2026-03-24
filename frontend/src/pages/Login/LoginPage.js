@@ -81,11 +81,6 @@ const LoginPage = () => {
 
         <div className="login-form-panel">
           <div className="login-form-wrap">
-            <div className="login-switch" role="tablist" aria-label="Authentication switch">
-              <span className="active" role="tab" aria-selected="true">Log In</span>
-              <Link to="/signup" role="tab" aria-selected="false">Sign Up</Link>
-            </div>
-
             <h1>Welcome back</h1>
             <p className="subtitle">Enter your SLIIT credentials to access your dashboard.</p>
 
@@ -145,6 +140,10 @@ const LoginPage = () => {
 
               <button type="submit" className="login-submit">Sign In</button>
             </form>
+
+            <p className="login-signup-link">
+              Don&apos;t have an account? <Link to="/signup">Sign Up</Link>
+            </p>
 
             <p className="login-terms">By continuing, you agree to SLIIT&apos;s Terms of Service and Privacy Policy.</p>
           </div>
