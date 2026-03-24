@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const navLinks = [
     { path: '/events', label: 'Events', roles: ['Guest', 'Admin', 'Coach', 'Athlete'] },
+    { path: '/about', label: 'About Us', roles: ['Guest', 'Admin', 'Coach', 'Athlete'] },
     { path: '/admin/dashboard', label: 'Dashboard', roles: ['Admin'] },
     { path: '/admin/events/create', label: 'Create Event', roles: ['Admin'] },
     { path: '/login', label: 'Login', roles: ['Guest'] },
@@ -17,7 +18,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logoutUser();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   return (
