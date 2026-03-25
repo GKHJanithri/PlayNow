@@ -8,6 +8,7 @@ function ItemList({ items, onReserveItem }) {
         const availabilityRatio = item.total === 0 ? 0 : (item.available / item.total) * 100;
 
         return (
+<<<<<<< Updated upstream
           <article key={item.id || item.name} className="equipment-card">
              <img
               src={item.image}
@@ -16,6 +17,15 @@ function ItemList({ items, onReserveItem }) {
               
             <h3>{item.name}</h3>
             <span className="sport-tag">{item.sport}</span>
+=======
+          <article key={item.name} className="equipment-card">
+            <div className="equipment-image-placeholder"></div>
+
+            <div className="equipment-header">
+              <h3>{item.name}</h3>
+              <span className="sport-tag">{item.sport}</span>
+            </div>
+>>>>>>> Stashed changes
 
             <div className="availability-row">
               <span>Availability</span>

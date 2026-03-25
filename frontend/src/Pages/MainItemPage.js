@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useMemo, useState } from "react";
 import ItemList from "../Components/ItemList";
 import "../Utils/Style.css";
@@ -6,12 +7,67 @@ function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+=======
+import React, { useMemo, useState } from "react";
+import ItemList from "../Components/ItemList";
+import "../Utils/Style.css";
+
+function MainItemPage({ onReserveItem, onOpenHistory }) {
+  const items = useMemo(
+    () => [
+      {
+        name: "Netball",
+        sport: "Netball",
+        available: 8,
+        total: 12,
+        condition: "Good"
+      },
+      {
+        name: "Volleyball",
+        sport: "Volleyball",
+        available: 5,
+        total: 10,
+        condition: "Good"
+      },
+      {
+        name: "Cricket Bat",
+        sport: "Cricket",
+        available: 12,
+        total: 15,
+        condition: "Good"
+      },
+      {
+        name: "Badminton",
+        sport: "Badminton",
+        available: 9,
+        total: 14,
+        condition: "Fair"
+      },
+      {
+        name: "Basketball",
+        sport: "Basketball",
+        available: 0,
+        total: 10,
+        condition: "Needs Repair"
+      },
+      {
+        name: "Tennis Bat",
+        sport: "Tennis",
+        available: 4,
+        total: 9,
+        condition: "Good"
+      }
+    ],
+    []
+  );
+>>>>>>> Stashed changes
 
   const [searchText, setSearchText] = useState("");
   const [sportFilter, setSportFilter] = useState("All Sports");
   const [availabilityFilter, setAvailabilityFilter] = useState("All Availability");
   const [conditionFilter, setConditionFilter] = useState("All Conditions");
 
+<<<<<<< Updated upstream
   useEffect(() => {
     const fetchItems = async () => {
       setIsLoading(true);
@@ -51,6 +107,8 @@ function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
     fetchItems();
   }, []);
 
+=======
+>>>>>>> Stashed changes
   const sportOptions = useMemo(
     () => ["All Sports", ...new Set(items.map((item) => item.sport))],
     [items]
@@ -89,11 +147,14 @@ function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
           <button className="history-btn" onClick={onOpenHistory}>
             My Equipment Reservations
           </button>
+<<<<<<< Updated upstream
           {onOpenAdmin && (
             <button className="history-btn" onClick={onOpenAdmin}>
               Admin Dashboard
             </button>
           )}
+=======
+>>>>>>> Stashed changes
         </header>
 
         <div className="filters">
@@ -139,6 +200,7 @@ function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
           </select>
         </div>
 
+<<<<<<< Updated upstream
         {isLoading && <p>Loading items...</p>}
         {!isLoading && loadError && <p>{loadError}</p>}
         {!isLoading && !loadError && (
@@ -147,6 +209,12 @@ function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
             onReserveItem={handleReserveClick}
           />
         )}
+=======
+        <ItemList
+          items={filteredItems}
+          onReserveItem={handleReserveClick}
+        />
+>>>>>>> Stashed changes
       </section>
     </main>
   );
