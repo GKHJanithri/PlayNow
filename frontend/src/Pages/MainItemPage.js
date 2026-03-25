@@ -1,60 +1,55 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ItemList from "../Components/ItemList";
 import "../Utils/Style.css";
 
-function MainItemPage({ onReserveItem, onOpenHistory }) {
-  const items = useMemo(
-    () => [
-      {
-        name: "Netball",
-        sport: "Netball",
-        available: 8,
-        total: 12,
-        condition: "Good"
-      },
-      {
-        name: "Volleyball",
-        sport: "Volleyball",
-        available: 5,
-        total: 10,
-        condition: "Good"
-      },
-      {
-        name: "Cricket Bat",
-        sport: "Cricket",
-        available: 12,
-        total: 15,
-        condition: "Good"
-      },
-      {
-        name: "Badminton",
-        sport: "Badminton",
-        available: 9,
-        total: 14,
-        condition: "Fair"
-      },
-      {
-        name: "Basketball",
-        sport: "Basketball",
-        available: 0,
-        total: 10,
-        condition: "Needs Repair"
-      },
-      {
-        name: "Tennis Bat",
-        sport: "Tennis",
-        available: 4,
-        total: 9,
-        condition: "Good"
-      }
-    ],
-    []
-  );
+function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   const [searchText, setSearchText] = useState("");
   const [sportFilter, setSportFilter] = useState("All Sports");
   const [availabilityFilter, setAvailabilityFilter] = useState("All Availability");
   const [conditionFilter, setConditionFilter] = useState("All Conditions");
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      setIsLoading(true);
+      setLoadError("");
+
+      try {
+        const response = await fetch("http://localhost:5000/items");
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            setItems([]);
+            return;
+          }
+          throw new Error("Failed to load items from database");
+        }
+
+        const data = await response.json();
+        const mappedItems = (Array.isArray(data) ? data : []).map((item) => ({
+          id: item._id || item.item_id || item.item_name,
+          name: item.item_name || "Unnamed Item",
+          sport: item.item_category || "General",
+          available: Number(item.item_quantity_available ?? 0),
+          total: Number(item.item_quantity_total ?? 0),
+          image: item.item_image || "/images/Netball.png",
+          condition: item.item_condition || "Good",
+        }));
+
+        setItems(mappedItems);
+      } catch (error) {
+        setItems([]);
+        setLoadError(error.message || "Could not fetch items.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const sportOptions = useMemo(
     () => ["All Sports", ...new Set(items.map((item) => item.sport))],
@@ -94,6 +89,11 @@ function MainItemPage({ onReserveItem, onOpenHistory }) {
           <button className="history-btn" onClick={onOpenHistory}>
             My Equipment Reservations
           </button>
+          {onOpenAdmin && (
+            <button className="history-btn" onClick={onOpenAdmin}>
+              Admin Dashboard
+            </button>
+          )}
         </header>
 
         <div className="filters">
@@ -139,10 +139,14 @@ function MainItemPage({ onReserveItem, onOpenHistory }) {
           </select>
         </div>
 
-        <ItemList
-          items={filteredItems}
-          onReserveItem={handleReserveClick}
-        />
+        {isLoading && <p>Loading items...</p>}
+        {!isLoading && loadError && <p>{loadError}</p>}
+        {!isLoading && !loadError && (
+          <ItemList
+            items={filteredItems}
+            onReserveItem={handleReserveClick}
+          />
+        )}
       </section>
     </main>
   );

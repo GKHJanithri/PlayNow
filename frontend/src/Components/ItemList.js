@@ -8,13 +8,14 @@ function ItemList({ items, onReserveItem }) {
         const availabilityRatio = item.total === 0 ? 0 : (item.available / item.total) * 100;
 
         return (
-          <article key={item.name} className="equipment-card">
-            <div className="equipment-image-placeholder"></div>
-
-            <div className="equipment-header">
-              <h3>{item.name}</h3>
-              <span className="sport-tag">{item.sport}</span>
-            </div>
+          <article key={item.id || item.name} className="equipment-card">
+             <img
+              src={item.image}
+              alt={item.name}
+              className="equipment-image" />
+              
+            <h3>{item.name}</h3>
+            <span className="sport-tag">{item.sport}</span>
 
             <div className="availability-row">
               <span>Availability</span>

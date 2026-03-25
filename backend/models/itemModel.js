@@ -8,6 +8,9 @@ const  ItemSchema = new Schema({
    item_name : {
        type : String,//datatype
        required : true},//validation
+    item_image : {
+        type : String,
+        required : true},   
     item_description : {
         type : String,
         required : true},
@@ -20,5 +23,6 @@ const  ItemSchema = new Schema({
     item_created_at : {
         type : Date,
         default : Date.now}
+    
 });
 module.exports = mongoose.model("itemModel", ItemSchema);

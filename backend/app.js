@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const itemRoutes = require("./routes/itemRoutes");
 const reservationRoutes = require("./routes/itemReservationRoutes");
-const returnRoutes = require("./routes/itemReturnRoutes");
-const authRoutes = require("./routes/authRoutes");
+
+const authRoutes = require("./routes/AuthRoute");
 const app = express();
 
 // Middleware
@@ -13,13 +13,11 @@ app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/items", itemRoutes);
 app.use("/reservations", reservationRoutes);
-app.use("/returns", returnRoutes);
 
 // Routes
-const eventRoutes = require("./Routes/EventRoute");
-const matchRoutes = require("./Routes/MatchRoute");
-const practiceRoutes = require("./Routes/PracticeRoute");
-const authRoutes = require("./Routes/AuthRoute");
+const eventRoutes = require("./routes/EventRoute");
+const matchRoutes = require("./routes/MatchRoute");
+const practiceRoutes = require("./routes/PracticeRoute");
 
 app.use("/api/events", eventRoutes);
 app.use("/api/matches", matchRoutes);

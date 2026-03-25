@@ -16,20 +16,32 @@ const getAllItems = async (req, res,next) => {
 
 //Data insert
 const createItem = async (req, res,next) => {
-    const { item_name, item_description, item_quantity } = req.body;
+    const {
+        item_id,
+        item_name,
+        item_image,
+        item_description,
+        item_quantity_total,
+        item_quantity_available
+    } = req.body;
     let items;
     try {
-        
+        const totalQty = Number(item_quantity_total);
+        const availableQty = Number(item_quantity_available);
+
         items = new Item({
+            item_id: Number(item_id),
             item_name,
+            item_image,
             item_description,
-            item_quantity
+            item_quantity_total: totalQty,
+            item_quantity_available: availableQty
         });
         await items.save();
     } catch (error) {
-        console.log(eer);
+        return res.status(500).json({ message: error.message });
     }
-    //not inserted
+
     if (!items) {
         return res.status(404).send({ message: "Unable to create item" });
     }
@@ -40,19 +52,30 @@ const createItem = async (req, res,next) => {
 
 const updateItem = async (req, res,next) => {
     const id = req.params.id;
-    const { item_name, item_description, item_quantity } = req.body;    
+    const {
+        item_name,
+        item_image,
+        item_description,
+        item_quantity_total,
+        item_quantity_available
+    } = req.body;
     let items;
     try {
-        items = await Item  .findByIdAndUpdate(id, {
-            item_name,
-            item_description,
-            item_quantity
-        });
-        items = await items.save();
+        items = await Item.findByIdAndUpdate(
+            id,
+            {
+                item_name,
+                item_image,
+                item_description,
+                item_quantity_total: Number(item_quantity_total),
+                item_quantity_available: Number(item_quantity_available)
+            },
+            { new: true, runValidators: true }
+        );
     }   catch (error) { 
-        console.log(error);
+        return res.status(500).json({ message: error.message });
     }
-    //not updated
+
     if (!items) {
         return res.status(404).send({ message: "Unable to update item" });
     }   
@@ -67,9 +90,9 @@ const deleteItem = async (req, res,next) => {
         items = await Item.findByIdAndRemove(id);
     }
     catch (error) {
-        console.log(error);
+        return res.status(500).json({ message: error.message });
     }   
-    //not deleted
+
     if (!items) {
         return res.status(404).send({ message: "Unable to delete item" });
     }       

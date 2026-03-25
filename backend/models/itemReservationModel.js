@@ -20,7 +20,10 @@ const  ItemReservationSchema = new Schema({
     item_reservation_status: {
         type : String,
         required : true},
-    item_reservation_return_date: {
+    item_reservation_time: {
+        type : Date,
+        default : Date.now},
+    item_reservation_return_time: {
          type : Date,
          default : Date.now}
 });

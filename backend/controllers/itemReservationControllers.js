@@ -74,8 +74,29 @@ const deleteItemReservation = async (req, res,next) => {
     }   
     return res.status(200).json({ message: "Item reservation deleted successfully" });
 };
+//Update reservation status
+
+const updateItemReservationStatus = async (req, res,next) => {
+    const id = req.params.id;
+    const { item_reservation_status } = req.body;
+    let itemReservations;
+    try {
+        itemReservations = await ItemReservation.findByIdAndUpdate(id, {
+            item_reservation_status
+        });
+        itemReservations = await itemReservations.save();
+    } catch (error) {
+        console.log(error);
+    }   
+    //not updated
+    if (!itemReservations) {
+        return res.status(404).send({ message: "Unable to update item reservation status" });
+    }
+    return res.status(200).json({itemReservations});
+}   ;
 
 exports.deleteItemReservation = deleteItemReservation;  
 exports.updateItemReservation = updateItemReservation;  
 exports.getAllItemReservations = getAllItemReservations;
 exports.createItemReservation = createItemReservation;
+exports.updateItemReservationStatus = updateItemReservationStatus;  
