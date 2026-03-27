@@ -15,37 +15,29 @@ const getAllItems = async (req, res,next) => {
 
 
 //Data insert
-const createItem = async (req, res,next) => {
-    const {
-        item_id,
-        item_name,
-        item_image,
-        item_description,
-        item_quantity_total,
-        item_quantity_available
-    } = req.body;
-    let items;
-    try {
-        const totalQty = Number(item_quantity_total);
-        const availableQty = Number(item_quantity_available);
+const createItem = async (req, res) => {
+  try {
+    console.log("Incoming data:", req.body); // debug
 
-        items = new Item({
-            item_id: Number(item_id),
-            item_name,
-            item_image,
-            item_description,
-            item_quantity_total: totalQty,
-            item_quantity_available: availableQty
-        });
-        await items.save();
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+    const totalQty = Number(req.body.item_quantity_total);
+    const availableQty = Number(req.body.item_quantity_available);
 
-    if (!items) {
-        return res.status(404).send({ message: "Unable to create item" });
-    }
-    return res.status(200).json({items});
+    const newItem = new Item({
+      item_id: Number(req.body.item_id),
+      item_name: req.body.item_name,
+      item_image: req.body.item_image,
+      item_description: req.body.item_description,
+      item_quantity_total: totalQty,
+      item_quantity_available: availableQty,
+    });
+
+    const savedItem = await newItem.save();
+
+    return res.status(201).json(savedItem); 
+  } catch (error) {
+    console.error("CREATE ERROR:", error);
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 //Data Update 

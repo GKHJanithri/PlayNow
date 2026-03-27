@@ -10,7 +10,7 @@ const initialForm = {
   item_quantity_available: "",
 };
 
-function ItemAdminPage({ onBack }) {
+function AdminItemsPage({ onBack }) {
   const [items, setItems] = useState([]);
   const [formData, setFormData] = useState(initialForm);
   const [isEditing, setIsEditing] = useState(false);
@@ -187,70 +187,77 @@ function ItemAdminPage({ onBack }) {
         <article className="admin-card">
           <h2>{isEditing ? "Update Item" : "Create New Item"}</h2>
           <form className="admin-form" onSubmit={handleSubmit}>
-            <input
+           <div className="form-row">
+             <input
               className="admin-input"
-              type="number"
-              name="item_id"
-              placeholder="Item ID"
-              value={formData.item_id}
-              onChange={handleChange}
-              disabled={isEditing}
-            />
-            <input
-              className="admin-input"
-              type="text"
-              name="item_name"
-              placeholder="Item Name"
-              value={formData.item_name}
-              onChange={handleChange}
-            />
-            <input
-              className="admin-input"
-              type="text"
-              name="item_image"
-              placeholder="Image URL or upload below"
-              value={formData.item_image}
-              onChange={handleChange}
-            />
-            <input
-              className="admin-input"
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-            />
-            <textarea
-              className="admin-input admin-textarea"
-              name="item_description"
-              placeholder="Item Description"
-              value={formData.item_description}
-              onChange={handleChange}
-            />
-            <input
-              className="admin-input"
-              type="number"
-              name="item_quantity_total"
-              placeholder="Total Quantity"
-              value={formData.item_quantity_total}
-              onChange={handleChange}
-            />
-            <input
-              className="admin-input"
-              type="number"
-              name="item_quantity_available"
-              placeholder="Available Quantity"
-              value={formData.item_quantity_available}
-              onChange={handleChange}
-            />
-            <div className="admin-actions">
-              {isEditing && (
-                <button className="cancel-btn" type="button" onClick={resetForm}>
-                  Cancel
-                </button>
-              )}
-              <button className="confirm-btn" type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : isEditing ? "Update Item" : "Create Item"}
-              </button>
-            </div>
+               type="number"
+               name="item_id"
+               placeholder="Item ID"
+                value={formData.item_id}
+               onChange={handleChange}
+               disabled={isEditing}
+              />
+  <input
+    className="admin-input"
+    type="text"
+    name="item_name"
+    placeholder="Item Name"
+    value={formData.item_name}
+    onChange={handleChange}
+  />
+</div>
+
+<div className="image-upload">
+  {formData.item_image ? (
+    <img src={formData.item_image} alt="preview" className="upload-preview" />
+  ) : (
+    <span className="upload-text">Upload item image</span>
+  )}
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+  />
+</div>
+
+<textarea
+  className="admin-input admin-textarea"
+  name="item_description"
+  placeholder="Item Description"
+  value={formData.item_description}
+  onChange={handleChange}
+/>
+
+<div className="form-row">
+  <input
+    className="admin-input"
+    type="number"
+    name="item_quantity_total"
+    placeholder="Total Quantity"
+    value={formData.item_quantity_total}
+    onChange={handleChange}
+  />
+  <input
+    className="admin-input"
+    type="number"
+    name="item_quantity_available"
+    placeholder="Available Quantity"
+    value={formData.item_quantity_available}
+    onChange={handleChange}
+  />
+</div>
+
+<div className="admin-actions">
+  {isEditing && (
+    <button className="cancel-btn" type="button" onClick={resetForm}>
+      Cancel
+    </button>
+  )}
+  <button className="confirm-btn" type="submit" disabled={isLoading}>
+    {isLoading ? "Saving..." : isEditing ? "Update Item" : "Create Item"}
+  </button>
+</div>
           </form>
           {error && <p className="admin-error">{error}</p>}
         </article>
@@ -312,4 +319,4 @@ function ItemAdminPage({ onBack }) {
   );
 }
 
-export default ItemAdminPage;
+export default AdminItemsPage;

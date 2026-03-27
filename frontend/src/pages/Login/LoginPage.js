@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { loginUser } from '../../utils/auth';
+import { loginUser } from '../../Utils/auth';
 import './Login.css';
 
-const LoginPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const LoginPage = ({ onLogin }) => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
-
-  const from = location.state?.from || '/events';
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -28,11 +23,9 @@ const LoginPage = () => {
 
     try {
       const session = await loginUser(form);
-      if (session.role === 'Admin') {
-        navigate('/admin/dashboard', { replace: true });
-        return;
+      if (onLogin) {
+        onLogin(session.role);
       }
-      navigate(from, { replace: true });
     } catch (authError) {
       setError(authError.message || 'Login failed.');
     }
@@ -83,7 +76,7 @@ const LoginPage = () => {
           <div className="login-form-wrap">
             <div className="login-switch" role="tablist" aria-label="Authentication switch">
               <span className="active" role="tab" aria-selected="true">Log In</span>
-              <Link to="/signup" role="tab" aria-selected="false">Sign Up</Link>
+              <span role="tab" aria-selected="false" style={{ cursor: 'pointer' }}>Sign Up</span>
             </div>
 
             <h1>Welcome back</h1>

@@ -567,3 +567,56 @@ body {
     grid-column: span 1;
   }
 }
+/* Improve layout */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Image upload box */
+.image-upload {
+  position: relative;
+  height: 160px;
+  border: 2px dashed #d0d7ee;
+  border-radius: 12px;
+  background: #f9fbff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.image-upload:hover {
+  border-color: #223f95;
+  background: #f1f4ff;
+}
+
+/* Hide default file input */
+.image-upload input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Placeholder text */
+.upload-text {
+  color: #7b86a4;
+  font-size: 14px;
+}
+
+/* Preview image */
+.upload-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Slightly better textarea */
+.admin-textarea {
+  padding: 10px;
+  border-radius: 10px;
+}

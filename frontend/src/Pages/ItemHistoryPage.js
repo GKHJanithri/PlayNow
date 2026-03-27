@@ -1,18 +1,112 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../Utils/Style.css";
 
-function ItemHistoryPage({ reservations, onBack, onReturn }) {
+function ItemHistoryPage({ onBack }) {
   const [activeTab, setActiveTab] = useState("Active");
+  const [reservations, setReservations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const apiBaseUrl = useMemo(
+    () =>
+      process.env.REACT_APP_API_URL
+        ? process.env.REACT_APP_API_URL.replace(/\/$/, "")
+        : "http://localhost:5000",
+    []
+  );
+
+  const toDisplayDate = (value) => {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric"
+    });
+  };
+
+  const getUiStatus = (reservation) => {
+    const backendStatus = reservation.item_reservation_status;
+    if (backendStatus === "Returned") return "Returned";
+
+    const returnDate = new Date(
+      reservation.item_reservation_return_date || reservation.item_reservation_return_time
+    );
+    if (!Number.isNaN(returnDate.getTime()) && returnDate < new Date()) return "Late";
+    return "Active";
+  };
+
+  const mappedReservations = useMemo(
+    () =>
+      reservations.map((reservation) => ({
+        id: reservation.item_reservation_id || reservation._id,
+        item: reservation.item_id ? `Item #${reservation.item_id}` : "-",
+        quantity: reservation.item_quantity_reserved ?? "-",
+        borrowDate: toDisplayDate(
+          reservation.item_reservation_date || reservation.item_reservation_time
+        ),
+        returnDate: toDisplayDate(
+          reservation.item_reservation_return_date || reservation.item_reservation_return_time
+        ),
+        status: getUiStatus(reservation)
+      })),
+    [reservations]
+  );
+
+  const fetchReservations = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+      const response = await fetch(`${apiBaseUrl}/reservations`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          setReservations([]);
+          return;
+        }
+        throw new Error("Failed to load reservations.");
+      }
+      const data = await response.json();
+      setReservations(Array.isArray(data) ? data : []);
+    } catch (fetchError) {
+      setError(fetchError?.message || "Could not load reservations.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReservations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredReservations = useMemo(() => {
     if (activeTab === "Active") {
-      return reservations.filter((item) => item.status === "Active");
+      return mappedReservations.filter((item) => item.status === "Active");
     }
     if (activeTab === "Returned") {
-      return reservations.filter((item) => item.status === "Returned");
+      return mappedReservations.filter((item) => item.status === "Returned");
     }
-    return reservations.filter((item) => item.status !== "Active");
-  }, [activeTab, reservations]);
+    return mappedReservations.filter((item) => item.status === "Late");
+  }, [activeTab, mappedReservations]);
+
+  const handleReturn = async (reservationId) => {
+    try {
+      setError("");
+      const response = await fetch(`${apiBaseUrl}/items/${reservationId}/returnItem`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item_reservation_id: reservationId })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to return item.");
+      }
+      await fetchReservations();
+    } catch (returnError) {
+      setError(returnError?.message || "Could not return item.");
+    }
+  };
 
   return (
     <main className="main-item-page">
@@ -49,6 +143,7 @@ function ItemHistoryPage({ reservations, onBack, onReturn }) {
               Back to Equipment
             </button>
           </div>
+          {error && <p className="admin-error">{error}</p>}
 
           <div className="history-table-wrap">
             <table className="history-table">
@@ -64,7 +159,13 @@ function ItemHistoryPage({ reservations, onBack, onReturn }) {
                 </tr>
               </thead>
               <tbody>
-                {filteredReservations.length === 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan="7" className="no-data">
+                      Loading reservations...
+                    </td>
+                  </tr>
+                ) : filteredReservations.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="no-data">
                       No reservations found.
@@ -91,7 +192,7 @@ function ItemHistoryPage({ reservations, onBack, onReturn }) {
                         {reservation.status === "Active" ? (
                           <button
                             className="return-btn"
-                            onClick={() => onReturn(reservation.id)}
+                            onClick={() => handleReturn(reservation.id)}
                           >
                             Return
                           </button>
