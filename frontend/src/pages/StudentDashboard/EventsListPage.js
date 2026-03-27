@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import EventCard from '../components/EventCard';
-import apiClient from '../api/client';
+import EventCard from '../../components/EventCard';
+import apiClient from '../../api/client';
 
 const EventsListPage = () => {
   const [events, setEvents] = useState([]);

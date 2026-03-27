@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../api/client';
+import apiClient from '../../api/client';
+import { addNotification } from '../../utils/notifications';
+import './AdminCreateEventPage.css';
 
 const sportOptions = ['Football', 'Basketball', 'Volleyball', 'Tennis', 'Cricket', 'Badminton', 'Netball','Swimming'];
 const tournamentOptions = ['Knockout', 'RoundRobin'];
@@ -73,6 +75,12 @@ const AdminCreateEventPage = () => {
         ...form,
         teams: selectedTeams,
       });
+      addNotification({
+        title: 'New Event Created',
+        message: `${form.title} (${form.sportType}) was created for ${form.startDate || 'a scheduled date'}.`,
+        icon: 'fa-calendar-check',
+        role: 'Admin',
+      });
       setStatus('Event created successfully. Redirecting...');
       setTimeout(() => navigate('/events'), 800);
     } catch (err) {
@@ -83,19 +91,19 @@ const AdminCreateEventPage = () => {
   };
 
   return (
-    <section className="page">
-      <div className="page-header">
-        <h1 className="page-title">Create Event</h1>
+    <section className="ace-page">
+      <div className="ace-header">
+        <h1 className="ace-title">Create Event</h1>
       </div>
-      <form className="form-panel" onSubmit={handleSubmit}>
-        <div className="form-grid">
-          <div className="form-field">
+      <form className="ace-panel" onSubmit={handleSubmit}>
+        <div className="ace-grid">
+          <div className="ace-field">
             <label htmlFor="title">Title</label>
             <input id="title" name="title" value={form.title} onChange={handleChange} />
-            {errors.title && <span className="field-error">{errors.title}</span>}
+            {errors.title && <span className="ace-error">{errors.title}</span>}
           </div>
 
-          <div className="form-field">
+          <div className="ace-field">
             <label htmlFor="sportType">Sport Type</label>
             <select
               id="sportType"
@@ -111,7 +119,7 @@ const AdminCreateEventPage = () => {
             </select>
           </div>
 
-          <div className="form-field">
+          <div className="ace-field">
             <label htmlFor="tournamentType">Tournament Type</label>
             <select
               id="tournamentType"
@@ -127,13 +135,13 @@ const AdminCreateEventPage = () => {
             </select>
           </div>
 
-          <div className="form-field">
+          <div className="ace-field">
             <label htmlFor="venue">Venue</label>
             <input id="venue" name="venue" value={form.venue} onChange={handleChange} />
-            {errors.venue && <span className="field-error">{errors.venue}</span>}
+            {errors.venue && <span className="ace-error">{errors.venue}</span>}
           </div>
 
-          <div className="form-field">
+          <div className="ace-field">
             <label htmlFor="startDate">Start Date</label>
             <input
               id="startDate"
@@ -142,28 +150,28 @@ const AdminCreateEventPage = () => {
               value={form.startDate}
               onChange={handleChange}
             />
-            {errors.startDate && <span className="field-error">{errors.startDate}</span>}
+            {errors.startDate && <span className="ace-error">{errors.startDate}</span>}
           </div>
         </div>
 
-        <div className="form-field teams-wrapper">
+        <div className="ace-field ace-teams-wrap">
           <label>Registered Teams</label>
-          <small className="session-meta">
+          <small className="ace-meta">
             Teams are managed in the Team Registration module.
           </small>
 
-          {teamsLoading && <div className="loading-state">Loading registered teams...</div>}
-          {!teamsLoading && teamsError && <div className="error-state">{teamsError}</div>}
+          {teamsLoading && <div className="ace-state">Loading registered teams...</div>}
+          {!teamsLoading && teamsError && <div className="ace-state ace-state-error">{teamsError}</div>}
 
           {!teamsLoading && !teamsError && registeredTeams.length > 0 && (
-            <div className="team-list">
+            <div className="ace-team-list">
               {registeredTeams.map((team) => {
                 const teamId = team._id || team.id;
                 const teamName = team.name || team.teamName || 'Unnamed Team';
                 const isChecked = selectedTeams.includes(teamId);
 
                 return (
-                  <label key={teamId} className="team-option">
+                  <label key={teamId} className="ace-team-option">
                     <input
                       type="checkbox"
                       checked={isChecked}
@@ -177,18 +185,18 @@ const AdminCreateEventPage = () => {
           )}
 
           {!teamsLoading && !teamsError && registeredTeams.length === 0 && (
-            <div className="empty-state">No teams available in the system yet.</div>
+            <div className="ace-state">No teams available in the system yet.</div>
           )}
 
-          {errors.teams && <span className="field-error">{errors.teams}</span>}
+          {errors.teams && <span className="ace-error">{errors.teams}</span>}
         </div>
 
-        <div className="form-actions">
-          <button type="submit" className="btn btn-primary" disabled={submitting}>
+        <div className="ace-actions">
+          <button type="submit" className="ace-submit" disabled={submitting}>
             {submitting ? 'Saving...' : 'Create Event'}
           </button>
         </div>
-        {status && <div className="status-text">{status}</div>}
+        {status && <div className="ace-status">{status}</div>}
       </form>
     </section>
   );
