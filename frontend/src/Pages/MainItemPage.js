@@ -127,16 +127,7 @@ function MainItemPage({ onReserveItem, onOpenHistory, onOpenAdmin }) {
             <option>Out of Stock</option>
           </select>
 
-          <select
-            className="filter-select"
-            value={conditionFilter}
-            onChange={(event) => setConditionFilter(event.target.value)}
-          >
-            <option>All Conditions</option>
-            <option>Good</option>
-            <option>Fair</option>
-            <option>Needs Repair</option>
-          </select>
+         
         </div>
 
         {isLoading && <p>Loading items...</p>}

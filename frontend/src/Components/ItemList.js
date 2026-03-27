@@ -15,25 +15,20 @@ function ItemList({ items, onReserveItem }) {
               className="equipment-image" />
               
             <h3>{item.name}</h3>
-            <span className="sport-tag">{item.sport}</span>
+           <span className="equipment-sport">{item.sport}</span>
 
-            <div className="availability-row">
+            <div className="availability-row" style={{ color: isAvailable ? "#2807ba" : "#d41326" }}>
               <span>Availability</span>
               <strong>
                 {item.available} / {item.total}
               </strong>
             </div>
 
-            <div className="availability-track">
-              <span className="availability-fill" style={{ width: `${availabilityRatio}%` }}></span>
+            <div className="availability-track" style={{ backgroundColor: isAvailable ? "#76797b" : "#ed3141" }}>
+              <span className="availability-fill" style={{ width: `${availabilityRatio}%`, backgroundColor: isAvailable ? "#f1a008" : "#d41326"    }} ></span>
             </div>
 
-            <div className="condition-row">
-              <span>Condition:</span>
-              <span className={`condition-badge ${item.condition.toLowerCase().replace(" ", "-")}`}>
-                {item.condition}
-              </span>
-            </div>
+            
 
             <button
               className={`reserve-btn ${!isAvailable ? "disabled-btn" : ""}`}

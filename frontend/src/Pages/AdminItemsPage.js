@@ -77,6 +77,17 @@ function AdminItemsPage({ onBack }) {
       return false;
     }
 
+    // Check if Item ID already exists (only when creating new item, not when editing)
+    if (!isEditing) {
+      const itemIdExists = items.some(
+        (item) => Number(item.item_id) === Number(formData.item_id)
+      );
+      if (itemIdExists) {
+        setError("Item ID already exists. Please use a unique ID.");
+        return false;
+      }
+    }
+
     const total = Number(formData.item_quantity_total);
     const available = Number(formData.item_quantity_available);
 

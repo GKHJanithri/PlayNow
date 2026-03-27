@@ -6,6 +6,8 @@ function ItemBookingPage({ selectedItem, onCancel, onConfirm }) {
   const [purpose, setPurpose] = useState("");
   const [borrowDate, setBorrowDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   if (!selectedItem) {
     return (
@@ -22,7 +24,7 @@ function ItemBookingPage({ selectedItem, onCancel, onConfirm }) {
     );
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!purpose || !borrowDate || !returnDate) {
       alert("Please fill all required fields.");
       return;
@@ -33,24 +35,54 @@ function ItemBookingPage({ selectedItem, onCancel, onConfirm }) {
       return;
     }
 
-    const newReservation = {
-      id: `RES-${String(Date.now()).slice(-3)}`,
-      item: selectedItem.name,
-      quantity: Number(quantity),
-      borrowDate: new Date(borrowDate).toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric"
-      }),
-      returnDate: new Date(returnDate).toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric"
-      }),
-      status: "Active"
-    };
+    try {
+      setIsLoading(true);
+      setError("");
 
-    onConfirm(newReservation);
+      // Get student ID from localStorage (assuming it's stored during login)
+      const studentId = localStorage.getItem("userId") || "student-" + Date.now();
+
+      const reservationData = {
+        item_id: selectedItem.id,
+        student_id: studentId,
+        item_reservation_date: new Date(borrowDate).toISOString(),
+        item_reservation_return_date: new Date(returnDate).toISOString(),
+        item_quantity_reserved: Number(quantity),
+        item_reservation_purpose: purpose,
+      };
+
+      const response = await fetch("http://localhost:5000/itemReservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reservationData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create reservation.");
+      }
+
+      const newReservation = {
+        id: `RES-${String(Date.now()).slice(-3)}`,
+        item: selectedItem.name,
+        quantity: Number(quantity),
+        borrowDate: new Date(borrowDate).toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric"
+        }),
+        returnDate: new Date(returnDate).toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric"
+        }),
+        status: "Active"
+      };
+
+      onConfirm(newReservation);
+    } catch (submitError) {
+      setError(submitError.message || "Could not create reservation.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -118,10 +150,11 @@ function ItemBookingPage({ selectedItem, onCancel, onConfirm }) {
             <button className="cancel-btn" onClick={onCancel}>
               Cancel
             </button>
-            <button className="confirm-btn" onClick={handleSubmit}>
-              Confirm Reservation
+            <button className="confirm-btn" onClick={handleSubmit} disabled={isLoading}>
+              {isLoading ? "Creating Reservation..." : "Confirm Reservation"}
             </button>
           </div>
+          {error && <p className="admin-error">{error}</p>}
         </article>
       </section>
     </main>
