@@ -23,11 +23,15 @@ import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
+import FacilitiesPage from './pages/Facility/FacilitiesPage';
+import FacilityDateTimePage from './pages/Facility/FacilityDateTimePage';
+import FacilityConfirmBookingPage from './pages/Facility/FacilityConfirmBookingPage';
 
 const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
+  const isFacilityRoute = location.pathname.startsWith('/facilities');
   const isStudentDashboardRoute = location.pathname.startsWith('/student/dashboard');
 
   useEffect(() => {
@@ -74,6 +78,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
+      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && <Navbar />}
       {!isAuthRoute && !isHomeRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
@@ -156,6 +161,14 @@ const AppLayout = () => {
             }
           />
           <Route
+            path="/facilities"
+            element={
+              <ProtectedRoute>
+                <FacilitiesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/dashboard"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
@@ -164,10 +177,26 @@ const AppLayout = () => {
             }
           />
           <Route
+            path="/facilities/:facilityId/book"
+            element={
+              <ProtectedRoute>
+                <FacilityDateTimePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/items"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
                 <StudentItemsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facilities/:facilityId/confirm"
+            element={
+              <ProtectedRoute>
+                <FacilityConfirmBookingPage />
               </ProtectedRoute>
             }
           />
