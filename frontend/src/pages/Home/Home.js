@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 import teamImage from '../../assets/Team.jpg';
@@ -7,7 +7,6 @@ import equipmentImage from '../../assets/equipment.jpg';
 import eventImage from '../../assets/Event.jpg';
 import brandLogo from '../../assets/Logo.jpeg';
 import homeBackgroundVideo from '../../assets/Home background.mp4';
-import { getNotifications } from '../../utils/notifications';
 
 const quickActions = [
 	{
@@ -58,13 +57,25 @@ const roles = [
 	},
 ];
 
+const notifications = [
+	{
+		icon: 'fa-triangle-exclamation',
+		type: 'Low Stock Alert',
+		message: 'Basketball inventory is low. Only 4 units remaining.',
+	},
+	{
+		icon: 'fa-bell',
+		type: 'Upcoming Match',
+		message: 'Interfaculty Football semifinal starts tomorrow at 3:00 PM.',
+	},
+	{
+		icon: 'fa-circle-check',
+		type: 'Approval Update',
+		message: 'Your court reservation request for Court B has been approved.',
+	},
+];
+
 const Home = () => {
-	const [notifications, setNotifications] = useState([]);
-
-	useEffect(() => {
-		setNotifications(getNotifications());
-	}, []);
-
 	return (
 		<div className="home-page" id="top">
 			<header className="home-header">
@@ -167,24 +178,13 @@ const Home = () => {
 					<p>Stay informed with actionable alerts and timely updates.</p>
 				</div>
 				<div className="notification-list" role="list">
-					{notifications.length === 0 && (
-						<article className="notification-item" role="listitem">
-							<div className="card-icon" aria-hidden="true">
-								<i className="fa-solid fa-bell" />
-							</div>
-							<div>
-								<h3>No notifications yet</h3>
-								<p>New updates from Admin and Coach actions will appear here.</p>
-							</div>
-						</article>
-					)}
 					{notifications.map((notification) => (
-						<article key={notification.id} className="notification-item" role="listitem">
+						<article key={notification.type} className="notification-item" role="listitem">
 							<div className="card-icon" aria-hidden="true">
 								<i className={`fa-solid ${notification.icon}`} />
 							</div>
 							<div>
-								<h3>{notification.title}</h3>
+								<h3>{notification.type}</h3>
 								<p>{notification.message}</p>
 							</div>
 						</article>

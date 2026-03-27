@@ -10,9 +10,7 @@ const ProtectedRoute = ({ allowedRoles = [], children }) => {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
-  const normalizedRole = role.toLowerCase();
-  const normalizedAllowedRoles = allowedRoles.map((item) => item.toLowerCase());
-  const isAllowed = normalizedAllowedRoles.length === 0 || normalizedAllowedRoles.includes(normalizedRole);
+  const isAllowed = allowedRoles.length === 0 || allowedRoles.includes(role);
 
   if (!isAllowed) {
     return <Navigate to="/events" replace />;
