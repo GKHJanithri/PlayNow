@@ -19,11 +19,15 @@ import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
+import FacilitiesPage from './pages/Facility/FacilitiesPage';
+import FacilityDateTimePage from './pages/Facility/FacilityDateTimePage';
+import FacilityConfirmBookingPage from './pages/Facility/FacilityConfirmBookingPage';
 
 const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
+  const isFacilityRoute = location.pathname.startsWith('/facilities');
 
   useEffect(() => {
     const faviconLink = document.querySelector("link[rel='icon']");
@@ -69,7 +73,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -147,6 +151,30 @@ const AppLayout = () => {
             element={
               <ProtectedRoute allowedRoles={['Coach']}>
                 <CoachPracticePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facilities"
+            element={
+              <ProtectedRoute>
+                <FacilitiesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facilities/:facilityId/book"
+            element={
+              <ProtectedRoute>
+                <FacilityDateTimePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facilities/:facilityId/confirm"
+            element={
+              <ProtectedRoute>
+                <FacilityConfirmBookingPage />
               </ProtectedRoute>
             }
           />
