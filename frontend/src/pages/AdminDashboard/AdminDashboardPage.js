@@ -4,6 +4,7 @@ import eventImage from '../../assets/Event.jpg';
 import facilityImage from '../../assets/facility.jpg';
 import itemsImage from '../../assets/equipment.jpg';
 import teamsImage from '../../assets/Team.jpg';
+import './AdminDashboardPage.css';
 
 const adminModules = [
   {
