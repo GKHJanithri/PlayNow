@@ -165,6 +165,10 @@ const AppLayout = () => {
             element={
               <ProtectedRoute>
                 <FacilitiesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/dashboard"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
@@ -177,6 +181,10 @@ const AppLayout = () => {
             element={
               <ProtectedRoute>
                 <FacilityDateTimePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/items"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
@@ -189,6 +197,10 @@ const AppLayout = () => {
             element={
               <ProtectedRoute>
                 <FacilityConfirmBookingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/facilities"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
