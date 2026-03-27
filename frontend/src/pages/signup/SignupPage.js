@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signupUser } from '../../utils/auth';
+import brandLogo from '../../assets/Logo.jpeg';
 import './Signup.css';
 
 const SignupPage = () => {
@@ -8,7 +9,7 @@ const SignupPage = () => {
   const [form, setForm] = useState({
     fullName: '',
     studentId: '',
-    role: 'Student / Player',
+    role: 'Student',
     email: '',
     password: '',
     confirmPassword: '',
@@ -42,9 +43,16 @@ const SignupPage = () => {
     }
 
     try {
-      await signupUser(form);
+      const session = await signupUser(form);
       setStatus('Account created successfully. Redirecting...');
-      setTimeout(() => navigate('/login'), 700);
+      const normalizedRole = (session?.role || form.role || '').toLowerCase();
+
+      if (normalizedRole === 'student') {
+        setTimeout(() => navigate('/student/dashboard', { replace: true }), 700);
+        return;
+      }
+
+      setTimeout(() => navigate('/login', { replace: true }), 700);
     } catch (signupError) {
       setError(signupError.message || 'Signup failed.');
     }
@@ -60,13 +68,7 @@ const SignupPage = () => {
 
           <div className="signup-hero-content">
             <div className="signup-trophy" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.8" color="#f4b529">
-                <path d="M8 21h8" />
-                <path d="M12 17v4" />
-                <path d="M7 5H4v2a4 4 0 004 4" />
-                <path d="M17 5h3v2a4 4 0 01-4 4" />
-                <path d="M8 3h8v4a4 4 0 01-8 0V3z" />
-              </svg>
+              <img src={brandLogo} alt="PlayNow logo" className="signup-hero-logo" />
             </div>
 
             <h2 className="signup-title">
@@ -143,7 +145,7 @@ const SignupPage = () => {
                 value={form.role}
                 onChange={handleChange}
               >
-                <option>Student / Player</option>
+                <option>Student</option>
                 <option>Coach</option>
               </select>
 

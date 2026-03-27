@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../utils/auth';
+import brandLogo from '../../assets/Logo.jpeg';
 import './Login.css';
 
 const LoginPage = () => {
@@ -28,8 +29,18 @@ const LoginPage = () => {
 
     try {
       const session = await loginUser(form);
-      if (session.role === 'Admin') {
+      const normalizedRole = (session.role || '').toLowerCase();
+
+      if (normalizedRole === 'admin') {
         navigate('/admin/dashboard', { replace: true });
+        return;
+      }
+      if (normalizedRole === 'student') {
+        navigate('/student/dashboard', { replace: true });
+        return;
+      }
+      if (normalizedRole === 'coach') {
+        navigate('/events', { replace: true });
         return;
       }
       navigate(from, { replace: true });
@@ -48,13 +59,7 @@ const LoginPage = () => {
 
           <div className="login-hero-content">
             <div className="login-trophy" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.8" color="#f4b529">
-                <path d="M8 21h8" />
-                <path d="M12 17v4" />
-                <path d="M7 5H4v2a4 4 0 004 4" />
-                <path d="M17 5h3v2a4 4 0 01-4 4" />
-                <path d="M8 3h8v4a4 4 0 01-8 0V3z" />
-              </svg>
+              <img src={brandLogo} alt="PlayNow logo" className="login-hero-logo" />
             </div>
 
             <h2 className="login-title">
