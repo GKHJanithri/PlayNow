@@ -4,9 +4,9 @@ import './styles.css';
 import brandLogo from './assets/Logo.jpeg';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
-import EventsListPage from './pages/EventsListPage';
+import EventsListPage from './pages/StudentDashboard/EventsListPage';
 import EventDetailsPage from './pages/EventDetailsPage';
-import AdminCreateEventPage from './pages/AdminCreateEventPage';
+import AdminCreateEventPage from './pages/AdminCreateEventPage/AdminCreateEventPage';
 import AdminDashboardPage from './pages/AdminDashboard/AdminDashboardPage';
 import AdminManageFixturesPage from './pages/AdminManageFixturesPage';
 import AdminUpdateResultsPage from './pages/AdminUpdateResultsPage';
@@ -15,6 +15,10 @@ import AdminFacilityPage from './pages/AdminFacilityPage';
 import AdminItemsPage from './pages/AdminItemsPage';
 import AdminTeamsPage from './pages/AdminTeamsPage';
 import CoachPracticePage from './pages/CoachPracticePage';
+import StudentDashboardPage from './pages/StudentDashboard/StudentDashboardPage';
+import StudentItemsPage from './pages/StudentDashboard/StudentItemsPage';
+import StudentFacilitiesPage from './pages/StudentDashboard/StudentFacilitiesPage';
+import StudentTeamsPage from './pages/StudentDashboard/StudentTeamsPage';
 import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 import Home from './pages/Home/Home';
@@ -24,6 +28,7 @@ const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
+  const isStudentDashboardRoute = location.pathname.startsWith('/student/dashboard');
 
   useEffect(() => {
     const faviconLink = document.querySelector("link[rel='icon']");
@@ -69,7 +74,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -147,6 +152,38 @@ const AppLayout = () => {
             element={
               <ProtectedRoute allowedRoles={['Coach']}>
                 <CoachPracticePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['Student']}>
+                <StudentDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/items"
+            element={
+              <ProtectedRoute allowedRoles={['Student']}>
+                <StudentItemsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/facilities"
+            element={
+              <ProtectedRoute allowedRoles={['Student']}>
+                <StudentFacilitiesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/teams"
+            element={
+              <ProtectedRoute allowedRoles={['Student']}>
+                <StudentTeamsPage />
               </ProtectedRoute>
             }
           />

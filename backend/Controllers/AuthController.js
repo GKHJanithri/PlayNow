@@ -9,19 +9,23 @@ const ADMIN_PASSWORD = "Admin@12345";
 const ADMIN_FULL_NAME = "System Admin";
 
 const mapRole = (role) => {
-  if (role === "Coach") {
+  const normalizedRole = String(role || "").trim().toLowerCase();
+
+  if (normalizedRole === "coach") {
     return "Coach";
   }
-  return "User";
+
+  return "Student";
 };
 
 const buildAuthResponse = (user) => {
   const userId = user._id ? user._id.toString() : "admin-fixed";
+  const normalizedRole = user.role === "User" ? "Student" : user.role;
 
   const token = jwt.sign(
     {
       sub: userId,
-      role: user.role,
+      role: normalizedRole,
       email: user.email,
     },
     JWT_SECRET,
@@ -30,7 +34,7 @@ const buildAuthResponse = (user) => {
 
   return {
     token,
-    role: user.role,
+    role: normalizedRole,
     fullName: user.fullName,
     email: user.email,
   };
