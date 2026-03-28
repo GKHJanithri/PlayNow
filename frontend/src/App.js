@@ -8,6 +8,7 @@ import EventsListPage from "./pages/EventsListPage";
 import EventDetailsPage from "./pages/EventDetailsPage";
 import StudentDashboardPage from "./pages/StudentDashboard/StudentDashboardPage";
 import StudentItemsPage from "./pages/StudentDashboard/StudentItemsPage";
+import StudentItemReservationPage from "./pages/StudentDashboard/StudentItemReservationPage";
 import StudentFacilitiesPage from "./pages/StudentDashboard/StudentFacilitiesPage";
 import StudentTeamsPage from "./pages/StudentDashboard/StudentTeamsPage";
 import AdminDashboardPage from "./pages/AdminDashboard/AdminDashboardPage";
@@ -26,6 +27,7 @@ import FacilityConfirmBookingPage from "./pages/Facility/FacilityConfirmBookingP
 function App() {
   return (
     <BrowserRouter>
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
@@ -37,6 +39,7 @@ function App() {
 
         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
         <Route path="/student/items" element={<StudentItemsPage />} />
+        <Route path="/student/items/reserve" element={<StudentItemReservationPage />} />
         <Route path="/student/facilities" element={<StudentFacilitiesPage />} />
         <Route path="/student/teams" element={<StudentTeamsPage />} />
 

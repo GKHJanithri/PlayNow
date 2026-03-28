@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
 
-  const from = location.state?.from || '/events';
+  const from = location.state?.from || '/student/dashboard';
 
   const handleChange = (event) => {
     const { name, value } = event.target;

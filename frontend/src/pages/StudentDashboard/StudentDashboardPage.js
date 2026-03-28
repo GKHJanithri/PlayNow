@@ -11,7 +11,7 @@ const quickActions = [
     key: 'book-court',
     title: 'Book a Court',
     icon: 'fa-building',
-    route: '/student/facilities',
+    route: '/facilities',
     color: 'mint',
   },
   {
@@ -34,7 +34,7 @@ const sidebarLinks = [
   { label: 'Dashboard', icon: 'fa-table-cells-large', route: '/student/dashboard', active: true },
   { label: 'Events', icon: 'fa-calendar-days', route: '/events' },
   { label: 'Items', icon: 'fa-cube', route: '/student/items' },
-  { label: 'Facilities', icon: 'fa-building', route: '/student/facilities' },
+  { label: 'Facilities', icon: 'fa-building', route: '/facilities' },
   { label: 'Teams', icon: 'fa-users', route: '/student/teams' },
 ];
 

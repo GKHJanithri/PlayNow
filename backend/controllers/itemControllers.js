@@ -18,6 +18,7 @@ const createItem = async (req, res) => {
         const {
             item_id,
             item_name,
+            item_image,
             item_description,
             item_quantity_total,
             item_quantity_available
@@ -26,6 +27,7 @@ const createItem = async (req, res) => {
         const newItem = new Item({
             item_id,
             item_name,
+            item_image,
             item_description,
             item_quantity_total,
             item_quantity_available

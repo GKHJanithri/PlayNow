@@ -8,6 +8,10 @@ const  ItemSchema = new Schema({
    item_name : {
        type : String,//datatype
        required : true},//validation
+    item_image : {
+        type : String,
+        default : ""
+    },
     item_description : {
         type : String,
         required : true},
