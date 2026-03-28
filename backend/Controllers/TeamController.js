@@ -28,11 +28,8 @@ exports.createTeam = async (req, res) => {
 // @route   GET /api/teams
 exports.getAllTeams = async (req, res) => {
     try {
-        // .populate() pulls in the actual Event and User details instead of just showing random ID numbers
-        const teams = await Team.find()
-            .populate('eventId', 'eventName') // Assuming Chamindu's event model has an 'eventName' field
-            .populate('captainId', 'email');  // Assuming the User model has an 'email' field
-            
+        // REMOVED .populate() because eventId and captainId are now Strings
+        const teams = await Team.find();
         res.status(200).json(teams);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching teams', error: error.message });

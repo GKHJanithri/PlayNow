@@ -1,5 +1,9 @@
+import TeamCreatePage from './pages/teams/TeamCreatePage';
+import FreeAgentPage from './pages/teams/FreeAgentPage';
+import CoachDashboardPage from './pages/teams/CoachDashboardPage';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import './styles.css';
 import brandLogo from './assets/Logo.jpeg';
 import Navbar from './components/Navbar';
@@ -24,6 +28,9 @@ const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
+  // Re-added these so the Navbar logic below doesn't crash React!
+  const isFacilityRoute = location.pathname.startsWith('/facilities');
+  const isStudentDashboardRoute = location.pathname.startsWith('/student/dashboard');
 
   useEffect(() => {
     const faviconLink = document.querySelector("link[rel='icon']");
@@ -69,9 +76,15 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && <Navbar />}
+      {/* Toaster successfully merged here */}
+      <Toaster position="top-center" richColors />
+      
+      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
+          <Route path="/teams/create" element={<TeamCreatePage />} />
+          <Route path="/teams/free-agent" element={<FreeAgentPage />} />
+          <Route path="/coach/dashboard" element={<CoachDashboardPage />} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />

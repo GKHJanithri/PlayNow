@@ -7,14 +7,14 @@ const teamSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    // CHANGED TO STRING: Matches the "deadbeef" ID you're sending from Frontend
     eventId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Event', // Connects to Chamindu's EventModel
+        type: String, 
         required: [true, 'An event must be selected'] 
     },
+    // CHANGED TO STRING: Matches "IT21..." Student IDs
     captainId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', // Connects to the existing UserModel
+        type: String, 
         required: true 
     },
     status: { 
