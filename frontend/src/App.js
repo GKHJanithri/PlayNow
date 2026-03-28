@@ -8,9 +8,11 @@ import './styles.css';
 import brandLogo from './assets/Logo.jpeg';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
-import EventsListPage from './pages/EventsListPage';
+
+// Teammates' updated imports
+import EventsListPage from './pages/StudentDashboard/EventsListPage';
 import EventDetailsPage from './pages/EventDetailsPage';
-import AdminCreateEventPage from './pages/AdminCreateEventPage';
+import AdminCreateEventPage from './pages/AdminCreateEventPage/AdminCreateEventPage';
 import AdminDashboardPage from './pages/AdminDashboard/AdminDashboardPage';
 import AdminManageFixturesPage from './pages/AdminManageFixturesPage';
 import AdminUpdateResultsPage from './pages/AdminUpdateResultsPage';
@@ -19,18 +21,26 @@ import AdminFacilityPage from './pages/AdminFacilityPage';
 import AdminItemsPage from './pages/AdminItemsPage';
 import AdminTeamsPage from './pages/AdminTeamsPage';
 import CoachPracticePage from './pages/CoachPracticePage';
+import StudentDashboardPage from './pages/StudentDashboard/StudentDashboardPage';
+import StudentItemsPage from './pages/StudentDashboard/StudentItemsPage';
+import StudentFacilitiesPage from './pages/StudentDashboard/StudentFacilitiesPage';
+import StudentTeamsPage from './pages/StudentDashboard/StudentTeamsPage';
 import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
+import FacilitiesPage from './pages/Facility/FacilitiesPage';
+import FacilityDateTimePage from './pages/Facility/FacilityDateTimePage';
+import FacilityConfirmBookingPage from './pages/Facility/FacilityConfirmBookingPage';
 
 const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
-  // Re-added these so the Navbar logic below doesn't crash React!
+  
+  // Repaired Navbar logic so it doesn't break the new pages
   const isFacilityRoute = location.pathname.startsWith('/facilities');
-  const isStudentDashboardRoute = location.pathname.startsWith('/student/dashboard');
+  const isStudentDashboardRoute = location.pathname.startsWith('/student');
 
   useEffect(() => {
     const faviconLink = document.querySelector("link[rel='icon']");
@@ -76,93 +86,51 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {/* Toaster successfully merged here */}
+      {/* Re-added your Toaster for success popups! */}
       <Toaster position="top-center" richColors />
       
       {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
+      
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
+          {/* Your Team Management Routes */}
           <Route path="/teams/create" element={<TeamCreatePage />} />
           <Route path="/teams/free-agent" element={<FreeAgentPage />} />
           <Route path="/coach/dashboard" element={<CoachDashboardPage />} />
+          
+          {/* General Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/events" element={<EventsListPage />} />
           <Route path="/events/:id" element={<EventDetailsPage />} />
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/events/create"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminCreateEventPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/facilities"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminFacilityPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/items"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminItemsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/teams"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminTeamsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/events/:id/manage"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminManageFixturesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/events/:id/results"
-            element={
-              <ProtectedRoute allowedRoles={['Admin', 'Coach']}>
-                <AdminUpdateResultsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/matches/:matchId/score"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminMatchScoringPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/events/:id/practice"
-            element={
-              <ProtectedRoute allowedRoles={['Coach']}>
-                <CoachPracticePage />
-              </ProtectedRoute>
-            }
-          />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['Admin']}><AdminDashboardPage /></ProtectedRoute>} />
+          <Route path="/admin/events/create" element={<ProtectedRoute allowedRoles={['Admin']}><AdminCreateEventPage /></ProtectedRoute>} />
+          <Route path="/admin/facilities" element={<ProtectedRoute allowedRoles={['Admin']}><AdminFacilityPage /></ProtectedRoute>} />
+          <Route path="/admin/items" element={<ProtectedRoute allowedRoles={['Admin']}><AdminItemsPage /></ProtectedRoute>} />
+          <Route path="/admin/teams" element={<ProtectedRoute allowedRoles={['Admin']}><AdminTeamsPage /></ProtectedRoute>} />
+          <Route path="/admin/events/:id/manage" element={<ProtectedRoute allowedRoles={['Admin']}><AdminManageFixturesPage /></ProtectedRoute>} />
+          <Route path="/events/:id/results" element={<ProtectedRoute allowedRoles={['Admin', 'Coach']}><AdminUpdateResultsPage /></ProtectedRoute>} />
+          <Route path="/admin/matches/:matchId/score" element={<ProtectedRoute allowedRoles={['Admin']}><AdminMatchScoringPage /></ProtectedRoute>} />
+          
+          {/* Coach Routes */}
+          <Route path="/events/:id/practice" element={<ProtectedRoute allowedRoles={['Coach']}><CoachPracticePage /></ProtectedRoute>} />
+          
+          {/* Teammates' New Facility Routes */}
+          <Route path="/facilities" element={<ProtectedRoute><FacilitiesPage /></ProtectedRoute>} />
+          <Route path="/facilities/:facilityId/book" element={<ProtectedRoute><FacilityDateTimePage /></ProtectedRoute>} />
+          <Route path="/facilities/:facilityId/confirm" element={<ProtectedRoute><FacilityConfirmBookingPage /></ProtectedRoute>} />
+          
+          {/* Teammates' New Student Dashboard Routes */}
+          <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['Student']}><StudentDashboardPage /></ProtectedRoute>} />
+          <Route path="/student/items" element={<ProtectedRoute allowedRoles={['Student']}><StudentItemsPage /></ProtectedRoute>} />
+          <Route path="/student/facilities" element={<ProtectedRoute allowedRoles={['Student']}><StudentFacilitiesPage /></ProtectedRoute>} />
+          <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Student']}><StudentTeamsPage /></ProtectedRoute>} />
+          
+          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/events" replace />} />
         </Routes>
       </main>
