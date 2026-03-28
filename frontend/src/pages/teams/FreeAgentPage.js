@@ -44,7 +44,8 @@ export default function FreeAgentPage() {
       toast.success("Registered as free agent! You'll be notified when matched.");
       
       setTimeout(() => {
-        navigate("/student/teams"); 
+        // 👇 CHANGED THIS LINE: Change "/events" to any valid route in your App.js!
+        navigate("/events"); 
       }, 2000); 
 
     } catch (error) {
