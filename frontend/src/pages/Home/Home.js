@@ -58,11 +58,85 @@ const roles = [
 	},
 ];
 
+const getWeatherCondition = (code) => {
+	const weatherCodes = {
+		0: 'Clear sky',
+		1: 'Mainly clear',
+		2: 'Partly cloudy',
+		3: 'Overcast',
+		45: 'Fog',
+		48: 'Depositing rime fog',
+		51: 'Light drizzle',
+		53: 'Moderate drizzle',
+		55: 'Heavy drizzle',
+		56: 'Freezing drizzle',
+		57: 'Dense freezing drizzle',
+		61: 'Slight rain',
+		63: 'Moderate rain',
+		65: 'Heavy rain',
+		66: 'Freezing rain',
+		67: 'Heavy freezing rain',
+		71: 'Slight snow',
+		73: 'Moderate snow',
+		75: 'Heavy snow',
+		77: 'Snow grains',
+		80: 'Rain showers',
+		81: 'Moderate rain showers',
+		82: 'Violent rain showers',
+		85: 'Snow showers',
+		86: 'Heavy snow showers',
+		95: 'Thunderstorm',
+		96: 'Thunderstorm with hail',
+		99: 'Severe thunderstorm with hail',
+	};
+
+	return weatherCodes[code] || 'Unknown';
+};
+
+const getWeatherIcon = (code) => {
+	if (code === 0 || code === 1) return 'fa-sun';
+	if (code === 2) return 'fa-cloud-sun';
+	if (code === 3) return 'fa-cloud';
+	if (code === 45 || code === 48) return 'fa-smog';
+	if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'fa-cloud-rain';
+	if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'fa-snowflake';
+	if (code >= 95 && code <= 99) return 'fa-bolt';
+	return 'fa-cloud';
+};
+
 const Home = () => {
 	const [notifications, setNotifications] = useState([]);
+	const [weatherData, setWeatherData] = useState(null);
+	const [weatherLoading, setWeatherLoading] = useState(true);
+	const [weatherError, setWeatherError] = useState('');
 
 	useEffect(() => {
 		setNotifications(getNotifications());
+	}, []);
+
+	useEffect(() => {
+		const fetchWeather = async () => {
+			try {
+				setWeatherLoading(true);
+				setWeatherError('');
+				const response = await fetch(
+					'https://api.open-meteo.com/v1/forecast?latitude=6.9068&longitude=79.9729&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&timezone=auto',
+				);
+
+				if (!response.ok) {
+					throw new Error('Unable to fetch weather details.');
+				}
+
+				const data = await response.json();
+				setWeatherData(data?.current || null);
+			} catch (_error) {
+				setWeatherError('Weather report is currently unavailable.');
+			} finally {
+				setWeatherLoading(false);
+			}
+		};
+
+		fetchWeather();
 	}, []);
 
 	return (
@@ -118,6 +192,56 @@ const Home = () => {
 						</a>
 					</div>
 				</div>
+			</section>
+
+			<section className="home-section weather-section" aria-labelledby="weather-title">
+				<div className="section-heading">
+					<h2 id="weather-title">Live Weather</h2>
+					<p>Current outdoor conditions around Malabe, Sri Lanka.</p>
+				</div>
+
+				{weatherLoading && (
+					<div className="weather-state" role="status">
+						<i className="fa-solid fa-spinner fa-spin" aria-hidden="true" />
+						<span>Loading weather report...</span>
+					</div>
+				)}
+
+				{!weatherLoading && weatherError && (
+					<div className="weather-state weather-state-error" role="status">
+						<i className="fa-solid fa-cloud-slash" aria-hidden="true" />
+						<span>{weatherError}</span>
+					</div>
+				)}
+
+				{!weatherLoading && !weatherError && weatherData && (
+					<div className="weather-card">
+						<div className="weather-main">
+							<div className="weather-icon" aria-hidden="true">
+								<i className={`fa-solid ${getWeatherIcon(weatherData.weather_code)}`} />
+							</div>
+							<div className="weather-summary">
+								<h3>{Math.round(weatherData.temperature_2m)}&deg;C</h3>
+								<p>{getWeatherCondition(weatherData.weather_code)}</p>
+							</div>
+						</div>
+
+						<div className="weather-meta">
+							<div className="weather-meta-item">
+								<span className="weather-meta-label">Humidity</span>
+								<strong>{weatherData.relative_humidity_2m}%</strong>
+							</div>
+							<div className="weather-meta-item">
+								<span className="weather-meta-label">Wind</span>
+								<strong>{Math.round(weatherData.wind_speed_10m)} km/h</strong>
+							</div>
+							<div className="weather-meta-item">
+								<span className="weather-meta-label">Location</span>
+								<strong>Malabe</strong>
+							</div>
+						</div>
+					</div>
+				)}
 			</section>
 
 			<section id="features" className="home-section" aria-labelledby="features-title">
@@ -277,3 +401,4 @@ const Home = () => {
 };
 
 export default Home;
+
