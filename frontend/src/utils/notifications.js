@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'playnow.notifications';
 const MAX_NOTIFICATIONS = 50;
+const NOTIFICATION_TTL_MS = 3 * 24 * 60 * 60 * 1000;
 
 const safeParse = (raw) => {
   try {
@@ -12,7 +13,19 @@ const safeParse = (raw) => {
 
 export const getNotifications = () => {
   const items = safeParse(localStorage.getItem(STORAGE_KEY));
-  return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const now = Date.now();
+  const activeItems = items.filter((item) => {
+    const createdAtMs = new Date(item?.createdAt).getTime();
+    if (!Number.isFinite(createdAtMs)) return false;
+    return now - createdAtMs < NOTIFICATION_TTL_MS;
+  });
+
+  // Keep storage clean by removing expired or malformed notifications as soon as we read.
+  if (activeItems.length !== items.length) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(activeItems));
+  }
+
+  return activeItems.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
 export const addNotification = ({ title, message, icon = 'fa-bell', role = 'System' }) => {

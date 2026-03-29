@@ -78,8 +78,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && <Navbar />}
-      {!isAuthRoute && !isHomeRoute && !isStudentDashboardRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />

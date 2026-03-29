@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import apiClient from '../api/client';
 import PracticeList from '../components/PracticeList';
@@ -77,41 +78,47 @@ const CoachPracticePage = () => {
   }
 
   return (
-    <section className="page">
-      <div className="page-header">
-        <h1 className="page-title">Coach Practice Planner</h1>
-      </div>
-
-      <form className="form-panel" onSubmit={handleSubmit}>
-        <div className="form-grid">
-          <div className="form-field">
-            <label htmlFor="dateTime">Practice Date & Time</label>
-            <input
-              id="dateTime"
-              name="dateTime"
-              type="datetime-local"
-              value={form.dateTime}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-field">
-            <label htmlFor="location">Location</label>
-            <input id="location" name="location" value={form.location} onChange={handleChange} />
-          </div>
-          <div className="form-field" style={{ gridColumn: '1 / -1' }}>
-            <label htmlFor="notes">Notes</label>
-            <textarea id="notes" name="notes" value={form.notes} onChange={handleChange} />
-          </div>
+    <section className="page event-module-page">
+        <div className="event-top-nav">
+          <Link to="/events" className="btn btn-secondary">
+            Back to Upcoming Events
+          </Link>
         </div>
-        <div className="form-actions">
-          <button type="submit" className="btn btn-primary" disabled={submitting}>
-            {submitting ? 'Saving...' : 'Add Session'}
-          </button>
-        </div>
-        {status && <div className="status-text">{status}</div>}
-      </form>
 
-      <PracticeList sessions={sessions} emptyLabel="No practice sessions logged yet." />
+        <div className="page-header">
+          <h1 className="page-title">Coach Practice Planner</h1>
+        </div>
+
+        <form className="form-panel" onSubmit={handleSubmit}>
+          <div className="form-grid">
+            <div className="form-field">
+              <label htmlFor="dateTime">Practice Date & Time</label>
+              <input
+                id="dateTime"
+                name="dateTime"
+                type="datetime-local"
+                value={form.dateTime}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="location">Location</label>
+              <input id="location" name="location" value={form.location} onChange={handleChange} />
+            </div>
+            <div className="form-field" style={{ gridColumn: '1 / -1' }}>
+              <label htmlFor="notes">Notes</label>
+              <textarea id="notes" name="notes" value={form.notes} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="form-actions">
+            <button type="submit" className="btn btn-primary" disabled={submitting}>
+              {submitting ? 'Saving...' : 'Add Session'}
+            </button>
+          </div>
+          {status && <div className="status-text">{status}</div>}
+        </form>
+
+        <PracticeList sessions={sessions} emptyLabel="No practice sessions logged yet." />
     </section>
   );
 };

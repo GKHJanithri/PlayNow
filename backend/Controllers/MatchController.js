@@ -19,7 +19,11 @@ exports.getMatches = async (req, res) => {
     const { eventId } = req.query;
     const filter = {};
     if (eventId && mongoose.isValidObjectId(eventId)) filter.eventId = eventId;
-    const matches = await Match.find(filter).sort({ matchDateTime: 1 });
+    const matches = await Match.find(filter)
+      .populate('teamA', 'teamName name')
+      .populate('teamB', 'teamName name')
+      .populate('winner', 'teamName name')
+      .sort({ matchDateTime: 1 });
     res.json(matches);
   } catch (error) {
     res.status(500).json({ message: error.message || "Failed to fetch matches" });
@@ -30,7 +34,10 @@ exports.getMatchById = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: "Invalid id" });
-    const match = await Match.findById(id);
+    const match = await Match.findById(id)
+      .populate('teamA', 'teamName name')
+      .populate('teamB', 'teamName name')
+      .populate('winner', 'teamName name');
     if (!match) return res.status(404).json({ message: "Match not found" });
     res.json(match);
   } catch (error) {

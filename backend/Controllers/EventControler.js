@@ -1,5 +1,35 @@
 const Event = require("../Model/EventModel");
+const Match = require("../Model/MatchModel");
+const Team = require("../Model/TeamModel");
 const mongoose = require("mongoose");
+
+const toObjectId = (value) => {
+  if (value && mongoose.isValidObjectId(value)) return new mongoose.Types.ObjectId(value);
+  return null;
+};
+
+const normalizeFixtureDate = (value, fallbackDate) => {
+  const parsed = value ? new Date(value) : new Date(fallbackDate);
+  if (Number.isNaN(parsed.getTime())) return new Date(fallbackDate);
+  return parsed;
+};
+
+const toFixtureDto = (match) => {
+  const teamA = match.teamA;
+  const teamB = match.teamB;
+  return {
+    _id: match._id,
+    eventId: match.eventId,
+    round: match.round,
+    teamA: teamA?.teamName || teamA?.name || teamA?._id || match.teamA,
+    teamB: teamB?.teamName || teamB?.name || teamB?._id || match.teamB,
+    teamAId: teamA?._id || match.teamA,
+    teamBId: teamB?._id || match.teamB,
+    matchDateTime: match.matchDateTime,
+    venue: match.venue,
+    status: match.status,
+  };
+};
 
 // Create a new event
 exports.createEvent = async (req, res) => {
@@ -145,5 +175,124 @@ exports.leaveEvent = async (req, res) => {
     res.json(event);
   } catch (error) {
     res.status(500).json({ message: error.message || "Failed to leave event" });
+  }
+};
+
+// Get fixtures for a specific event
+exports.getEventFixtures = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: "Invalid event id" });
+
+    const fixtures = await Match.find({ eventId: id })
+      .populate("teamA", "teamName name")
+      .populate("teamB", "teamName name")
+      .sort({ matchDateTime: 1 });
+
+    res.json({ fixtures: fixtures.map(toFixtureDto) });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Failed to fetch fixtures" });
+  }
+};
+
+// Generate round-robin fixtures for an event
+exports.generateEventFixtures = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: "Invalid event id" });
+
+    const event = await Event.findById(id);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    const existing = await Match.countDocuments({ eventId: id });
+    if (existing > 0) {
+      return res.status(400).json({ message: "Fixtures already exist for this event." });
+    }
+
+    const rawTeamIds = Array.isArray(event.teams) ? event.teams : [];
+    const teamIds = rawTeamIds
+      .map((teamId) => toObjectId(teamId))
+      .filter(Boolean);
+
+    if (teamIds.length < 2) {
+      return res.status(400).json({ message: "At least two teams are required to generate fixtures." });
+    }
+
+    const teams = await Team.find({ _id: { $in: teamIds } }).select("_id");
+    if (teams.length < 2) {
+      return res.status(400).json({ message: "Could not resolve enough valid teams for fixture generation." });
+    }
+
+    const start = new Date(event.startDate || Date.now());
+    const generated = [];
+
+    for (let i = 0; i < teams.length; i += 1) {
+      for (let j = i + 1; j < teams.length; j += 1) {
+        const offsetHours = generated.length * 2;
+        const matchDateTime = new Date(start.getTime() + offsetHours * 60 * 60 * 1000);
+        generated.push({
+          eventId: event._id,
+          round: `Round ${generated.length + 1}`,
+          teamA: teams[i]._id,
+          teamB: teams[j]._id,
+          matchDateTime,
+          venue: event.venue || "TBD",
+          status: "scheduled",
+        });
+      }
+    }
+
+    const created = await Match.insertMany(generated);
+    const fixtures = await Match.find({ _id: { $in: created.map((match) => match._id) } })
+      .populate("teamA", "teamName name")
+      .populate("teamB", "teamName name")
+      .sort({ matchDateTime: 1 });
+
+    res.status(201).json({ fixtures: fixtures.map(toFixtureDto) });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Failed to generate fixtures" });
+  }
+};
+
+// Save edited fixtures for an event
+exports.saveEventFixtures = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fixtures } = req.body;
+
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: "Invalid event id" });
+    if (!Array.isArray(fixtures)) return res.status(400).json({ message: "Fixtures payload must be an array." });
+
+    const event = await Event.findById(id);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    const updates = fixtures
+      .filter((fixture) => fixture && (fixture._id || fixture.id))
+      .map((fixture) => {
+        const fixtureId = fixture._id || fixture.id;
+        const nextDate = fixture.matchDateTime || fixture.schedule;
+        return Match.findOneAndUpdate(
+          { _id: fixtureId, eventId: id },
+          {
+            matchDateTime: normalizeFixtureDate(nextDate, event.startDate || Date.now()),
+            venue: fixture.venue || event.venue || "TBD",
+            round: fixture.round,
+          },
+          { new: true }
+        );
+      });
+
+    const saved = (await Promise.all(updates)).filter(Boolean);
+    const savedIds = saved.map((fixture) => fixture._id);
+    const refreshed = savedIds.length
+      ? await Match.find({ _id: { $in: savedIds } })
+        .populate("teamA", "teamName name")
+        .populate("teamB", "teamName name")
+        .sort({ matchDateTime: 1 })
+      : [];
+
+    res.json({ fixtures: refreshed.map(toFixtureDto) });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Failed to save fixtures" });
   }
 };
