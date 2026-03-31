@@ -1,0 +1,133 @@
+.admin-add-facility-page {
+  padding: 1.4rem;
+}
+
+.admin-add-facility-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-add-facility-header p {
+  margin: 0.35rem 0 0;
+  color: #6f8090;
+}
+
+.admin-add-facility-back-btn {
+  border: 1px solid #9eb2c1;
+  background: #ecf0f4;
+  color: #23323d;
+  border-radius: 12px;
+  padding: 0.55rem 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-add-facility-form {
+  max-width: 720px;
+  border: 1px solid #a4b5c3;
+  border-radius: 18px;
+  background: #edf1f4;
+  padding: 1.1rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-add-facility-form label {
+  color: #263642;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+
+.admin-add-facility-form input {
+  border: 1px solid #9db1bf;
+  border-radius: 12px;
+  background: #f5f7f9;
+  padding: 0.72rem 0.9rem;
+  font-size: 1rem;
+  color: #21313d;
+}
+
+.admin-add-facility-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.admin-add-facility-availability input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.admin-add-facility-error,
+.admin-add-facility-success {
+  margin-top: 0.35rem;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+}
+
+.admin-add-facility-error {
+  color: #9e2530;
+  border: 1px solid #efbcc4;
+  background: #fdecee;
+}
+
+.admin-add-facility-success {
+  color: #1e7544;
+  border: 1px solid #b9e3cb;
+  background: #eaf8ef;
+}
+
+.admin-add-facility-actions {
+  margin-top: 0.4rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.admin-add-facility-actions button {
+  border-radius: 12px;
+  border: 0;
+  padding: 0.72rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-add-facility-actions .secondary {
+  background: #e7edf2;
+  border: 1px solid #9eb2c1;
+  color: #25343f;
+}
+
+.admin-add-facility-actions .primary {
+  background: #303f9b;
+  color: #f5f7ff;
+}
+
+.admin-add-facility-actions .primary:disabled {
+  background: #7d88c6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  .admin-add-facility-page {
+    padding: 1rem;
+  }
+
+  .admin-add-facility-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-add-facility-form {
+    padding: 0.9rem;
+  }
+
+  .admin-add-facility-actions {
+    grid-template-columns: 1fr;
+  }
+}
