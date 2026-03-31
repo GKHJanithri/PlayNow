@@ -1,0 +1,166 @@
+.admin-facility-page {
+  padding: 1.4rem;
+}
+
+.admin-facility-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-facility-subtitle {
+  margin: 0.35rem 0 0;
+  color: #6e7f91;
+  font-size: 1.02rem;
+}
+
+.admin-facility-add-btn {
+  border: 0;
+  border-radius: 12px;
+  background: #303f9b;
+  color: #f4f7ff;
+  font-weight: 600;
+  font-size: 1.04rem;
+  padding: 0.72rem 1.25rem;
+  cursor: pointer;
+}
+
+.admin-facility-table-wrap {
+  border: 1px solid #9dafbc;
+  border-radius: 18px;
+  background: #edf1f4;
+  overflow: hidden;
+}
+
+.admin-facility-info {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #9dafbc;
+  color: #445665;
+  background: #f3f6f8;
+}
+
+.admin-facility-info.error {
+  color: #9d2f3a;
+  background: #fdeef0;
+  border-bottom-color: #e4bcc2;
+}
+
+.admin-facility-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-facility-table thead th {
+  text-align: left;
+  padding: 1rem 1.1rem;
+  font-size: 1.02rem;
+  color: #263642;
+  border-bottom: 1px solid #9dafbc;
+}
+
+.admin-facility-table tbody td {
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid #b4c0ca;
+  color: #2f3f49;
+  font-size: 1.02rem;
+}
+
+.admin-facility-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-facility-sport-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.admin-facility-switch {
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  border: 0;
+  background: #a9bac5;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-facility-switch.is-on {
+  background: #303f9b;
+}
+
+.admin-facility-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f4f7fb;
+  transition: transform 0.2s ease;
+}
+
+.admin-facility-switch.is-on .admin-facility-switch-thumb {
+  transform: translateX(20px);
+}
+
+.admin-facility-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.admin-facility-icon-btn {
+  border: 0;
+  background: transparent;
+  color: #1f2c36;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.admin-facility-icon-btn.danger {
+  color: #cb3030;
+}
+
+.admin-facility-footer {
+  border-top: 1px solid #9dafbc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  color: #5e7080;
+}
+
+.admin-facility-back-link {
+  color: #273894;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.admin-facility-back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .admin-facility-table-wrap {
+    overflow-x: auto;
+  }
+
+  .admin-facility-table {
+    min-width: 820px;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-facility-page {
+    padding: 1rem;
+  }
+
+  .admin-facility-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

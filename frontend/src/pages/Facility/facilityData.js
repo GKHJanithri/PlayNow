@@ -1,8 +1,12 @@
 import facilityImage from '../../assets/facility.jpg';
 import stadiumImage from '../../assets/Stadium.jpg';
-import teamImage from '../../assets/Team.jpg';
 import eventImage from '../../assets/Event.jpg';
 import equipmentImage from '../../assets/equipment.jpg';
+import badmintonCourtImage from '../../assets/Badminton Court.jpg';
+import swimmingPoolImage from '../../assets/swimmingpool.jpg';
+import tennisCourtImage from '../../assets/tennisCourt.jpg';
+import footballCourtImage from '../../assets/footballCourt.jpg';
+import volleyballCourtImage from '../../assets/volleyballCourt.jpg';
 
 export const TIME_SLOTS = [
   { start: '06:00', end: '08:00' },
@@ -16,13 +20,13 @@ export const TIME_SLOTS = [
 
 const SPORT_META = {
   Cricket: { icon: '🏏', image: stadiumImage },
-  Volleyball: { icon: '🏐', image: teamImage },
+  Volleyball: { icon: '🏐', image: volleyballCourtImage },
   Netball: { icon: '🏀', image: facilityImage },
   Basketball: { icon: '🏀', image: eventImage },
-  Badminton: { icon: '🏸', image: equipmentImage },
-  Tennis: { icon: '🎾', image: facilityImage },
-  Football: { icon: '⚽', image: stadiumImage },
-  'Swimming Pool': { icon: '🏊', image: facilityImage },
+  Badminton: { icon: '🏸', image: badmintonCourtImage },
+  Tennis: { icon: '🎾', image: tennisCourtImage },
+  Football: { icon: '⚽', image: footballCourtImage },
+  'Swimming Pool': { icon: '🏊', image: swimmingPoolImage },
 };
 
 export const getSportMeta = (sportType = '') => {

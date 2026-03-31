@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import apiClient from '../../api/client';
 import { getSportMeta, rangesOverlap, TIME_SLOTS } from './facilityData';
 import './FacilityBooking.css';
@@ -20,8 +20,12 @@ const formatFullDate = (isoDate) => {
 const FacilityDateTimePage = () => {
   const { facilityId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [facility, setFacility] = useState(null);
+  const locationState = location.state || {};
+  const stateFacility = locationState.facility || null;
+
+  const [facility, setFacility] = useState(stateFacility);
   const [bookings, setBookings] = useState([]);
   const [selectedDate, setSelectedDate] = useState(toIsoDate(new Date()));
   const [selectedSlot, setSelectedSlot] = useState('');
@@ -34,18 +38,18 @@ const FacilityDateTimePage = () => {
       setError('');
 
       try {
-        const [facilityResponse, bookingResponse] = await Promise.all([
-          apiClient.get('/facilities'),
-          apiClient.get('/bookings'),
-        ]);
+        const bookingResponse = await apiClient.get('/bookings');
 
-        const allFacilities = Array.isArray(facilityResponse.data) ? facilityResponse.data : [];
-        const activeFacility = allFacilities.find((entry) => entry._id === facilityId);
+        if (!stateFacility) {
+          const facilityResponse = await apiClient.get('/facilities');
+          const allFacilities = Array.isArray(facilityResponse.data) ? facilityResponse.data : [];
+          const activeFacility = allFacilities.find((entry) => entry._id === facilityId);
 
-        if (!activeFacility) {
-          setError('Facility not found.');
-        } else {
-          setFacility(activeFacility);
+          if (!activeFacility) {
+            setError('Facility not found.');
+          } else {
+            setFacility(activeFacility);
+          }
         }
 
         setBookings(Array.isArray(bookingResponse.data) ? bookingResponse.data : []);
@@ -57,7 +61,7 @@ const FacilityDateTimePage = () => {
     };
 
     loadBookingContext();
-  }, [facilityId]);
+  }, [facilityId, stateFacility]);
 
   useEffect(() => {
     setSelectedSlot('');

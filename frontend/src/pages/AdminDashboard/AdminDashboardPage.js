@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import apiClient from '../../api/client';
 import eventImage from '../../assets/Event.jpg';
 import facilityImage from '../../assets/facility.jpg';
 import itemsImage from '../../assets/equipment.jpg';
@@ -49,6 +50,39 @@ const adminModules = [
 ];
 
 const AdminDashboardPage = () => {
+  const [facilityStats, setFacilityStats] = useState({ total: 0, available: 0 });
+
+  useEffect(() => {
+    const loadFacilityStats = async () => {
+      try {
+        const response = await apiClient.get('/facilities');
+        const list = Array.isArray(response.data) ? response.data : [];
+        const availableCount = list.filter((entry) => Boolean(entry.availability)).length;
+        setFacilityStats({
+          total: list.length,
+          available: availableCount,
+        });
+      } catch (_requestError) {
+        setFacilityStats({ total: 0, available: 0 });
+      }
+    };
+
+    loadFacilityStats();
+  }, []);
+
+  const moduleCards = useMemo(() => {
+    return adminModules.map((module) => {
+      if (module.key !== 'facility') return module;
+
+      return {
+        ...module,
+        description: facilityStats.total > 0
+          ? `${facilityStats.available} of ${facilityStats.total} facilities currently available.`
+          : module.description,
+      };
+    });
+  }, [facilityStats]);
+
   return (
     <section className="page admin-dashboard-page">
       <div className="page-header admin-dashboard-header">
@@ -62,7 +96,7 @@ const AdminDashboardPage = () => {
       </div>
 
       <div className="admin-module-grid" aria-label="Admin modules">
-        {adminModules.map((module) => (
+        {moduleCards.map((module) => (
           <article key={module.key} className={`admin-module-card module-${module.key}`}>
             <div className="admin-module-media">
               <img src={module.image} alt={module.imageAlt} className="admin-module-image" />

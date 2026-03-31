@@ -12,6 +12,21 @@ const getFacilities = async (req, res) => {
   }
 };
 
+// @desc    Get single facility by id
+// @route   GET /api/facilities/:id
+const getFacilityById = async (req, res) => {
+  try {
+    const facility = await Facility.findById(req.params.id);
+    if (!facility) {
+      return res.status(404).json({ message: "Facility not found" });
+    }
+
+    res.json(facility);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 // @desc    Add a new facility (admin only – you can add auth later)
 // @route   POST /api/facilities
 const addFacility = async (req, res) => {
@@ -35,6 +50,37 @@ const addFacility = async (req, res) => {
     res.status(201).json(savedFacility);
   } catch (error) {
     // Handle duplicate facility name (MongoDB error code 11000)
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Facility with this name already exists" });
+    }
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// @desc    Update facility by id
+// @route   PUT /api/facilities/:id
+const updateFacility = async (req, res) => {
+  try {
+    const { facilityName, sportType, maxPlayers, location, availability } = req.body;
+
+    const facility = await Facility.findById(req.params.id);
+    if (!facility) {
+      return res.status(404).json({ message: "Facility not found" });
+    }
+
+    if (facilityName !== undefined) facility.facilityName = facilityName;
+    if (sportType !== undefined) facility.sportType = sportType;
+    if (maxPlayers !== undefined) facility.maxPlayers = maxPlayers;
+    if (location !== undefined) facility.location = location;
+    if (availability !== undefined) facility.availability = availability;
+
+    if (!facility.facilityName || !facility.sportType || !facility.maxPlayers) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const updatedFacility = await facility.save();
+    res.json(updatedFacility);
+  } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ message: "Facility with this name already exists" });
     }
@@ -110,6 +156,25 @@ const getBookings = async (req, res) => {
     res.json(bookings);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete a facility
+// @route   DELETE /api/facilities/:id
+const deleteFacility = async (req, res) => {
+  try {
+    const facility = await Facility.findById(req.params.id);
+    if (!facility) {
+      return res.status(404).json({ message: "Facility not found" });
+    }
+
+    // Remove related bookings to keep data consistent after facility removal.
+    await Booking.deleteMany({ facilityId: facility._id });
+    await facility.deleteOne();
+
+    res.json({ message: "Facility deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -192,7 +257,10 @@ const updateBooking = async (req, res) => {
 
 module.exports = {
   getFacilities,
+  getFacilityById,
   addFacility,
+  updateFacility,
+  deleteFacility,
   bookFacility,
   getBookings,
   cancelBooking,
