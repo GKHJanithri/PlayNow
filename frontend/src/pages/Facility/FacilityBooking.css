@@ -104,16 +104,20 @@
 .facility-ui-filters {
   margin-top: 1.45rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 0.9rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .facility-ui-sport-tabs {
   display: flex;
-  gap: 0.65rem;
-  flex-wrap: wrap;
+  gap: 0.45rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 0.1rem;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .facility-ui-chip {
@@ -121,12 +125,14 @@
   background: #d0d4d8;
   color: #6f7a8d;
   border-radius: 999px;
-  padding: 0.55rem 1.05rem;
+  padding: 0.42rem 0.82rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.3rem;
   font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .facility-ui-chip.is-active {
@@ -140,6 +146,9 @@
   gap: 0.6rem;
   color: #23313d;
   font-weight: 500;
+  margin-left: auto;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .facility-ui-switch-row input {
@@ -216,6 +225,30 @@
   filter: saturate(1.05) contrast(1.03);
 }
 
+.facility-ui-status-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 999px;
+  padding: 0.32rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  z-index: 2;
+}
+
+.facility-ui-status-badge.is-available {
+  background: rgba(222, 246, 232, 0.95);
+  color: #1e6f45;
+  border: 1px solid rgba(104, 184, 138, 0.8);
+}
+
+.facility-ui-status-badge.is-unavailable {
+  background: rgba(252, 226, 229, 0.95);
+  color: #a03341;
+  border: 1px solid rgba(228, 137, 149, 0.85);
+}
+
 .facility-ui-chip-floating {
   position: absolute;
   top: 10px;
@@ -247,6 +280,9 @@
 
 .facility-ui-card-body {
   padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
 }
 
 .facility-ui-card-body h3 {
@@ -273,6 +309,10 @@
   padding: 0.65rem 1rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.facility-ui-book-btn {
+  margin-top: auto;
 }
 
 .facility-ui-book-btn,
@@ -597,6 +637,15 @@
   .facility-ui-content,
   .facility-ui-detail-wrap {
     padding: 1rem;
+  }
+
+  .facility-ui-filters {
+    gap: 0.6rem;
+  }
+
+  .facility-ui-chip {
+    padding: 0.36rem 0.7rem;
+    font-size: 0.84rem;
   }
 
   .facility-ui-time-grid,
