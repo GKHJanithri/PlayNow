@@ -4,14 +4,26 @@ import apiClient from '../../api/client';
 import { getSportMeta } from './facilityData';
 import './FacilityBooking.css';
 
-const normalizeFacility = (facility) => ({
-  id: facility._id,
-  facilityName: facility.facilityName,
-  sportType: facility.sportType,
-  location: facility.location || 'University Sports Complex',
-  maxPlayers: Number(facility.maxPlayers) || 0,
-  availability: Boolean(facility.availability),
-});
+const toAvailability = (value) => {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value === 1;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    return normalized === 'true' || normalized === '1' || normalized === 'available' || normalized === 'yes';
+  }
+  return false;
+};
+
+const normalizeFacility = (facility) => {
+  return {
+    id: facility._id,
+    facilityName: facility.facilityName,
+    sportType: facility.sportType,
+    location: facility.location || 'University Sports Complex',
+    maxPlayers: Number(facility.maxPlayers) || 0,
+    availability: toAvailability(facility.availability),
+  };
+};
 
 const preferredSportsOrder = [
   'Cricket',
@@ -44,6 +56,7 @@ const FacilitiesPage = () => {
         setFacilities(data);
       } catch (requestError) {
         setError(requestError?.response?.data?.message || 'Could not load facilities.');
+        setFacilities([]);
       } finally {
         setIsLoading(false);
       }
@@ -158,6 +171,11 @@ const FacilitiesPage = () => {
                 <article key={facility.id} className={`facility-ui-card${unavailableClass}`}>
                   <div className="facility-ui-image-wrap">
                     <img src={meta.image} alt={facility.facilityName} loading="lazy" />
+                    <div
+                      className={`facility-ui-status-badge${facility.availability ? ' is-available' : ' is-unavailable'}`}
+                    >
+                      {facility.availability ? 'Available' : 'Unavailable'}
+                    </div>
                     <div className="facility-ui-chip-floating">
                       <span aria-hidden="true">{meta.icon}</span>
                       {facility.sportType}
@@ -175,7 +193,11 @@ const FacilitiesPage = () => {
                     <button
                       type="button"
                       className="facility-ui-book-btn"
-                      onClick={() => navigate(`/facilities/${facility.id}/book`)}
+                      onClick={() =>
+                        navigate(`/facilities/${facility.id}/book`, {
+                          state: { facility },
+                        })
+                      }
                       disabled={!facility.availability}
                     >
                       {facility.availability ? 'Book Now' : 'Unavailable'}
