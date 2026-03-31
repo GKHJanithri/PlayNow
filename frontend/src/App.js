@@ -12,12 +12,13 @@ import AdminManageFixturesPage from './pages/AdminManageFixturesPage';
 import AdminUpdateResultsPage from './pages/AdminUpdateResultsPage';
 import AdminMatchScoringPage from './pages/AdminMatchScoringPage';
 import AdminFacilityPage from './pages/AdminFacilityPage';
+import AdminAddFacilityPage from './pages/AdminAddFacilityPage';
+import AdminEditFacilityPage from './pages/AdminEditFacilityPage';
 import AdminItemsPage from './pages/AdminItemsPage';
 import AdminTeamsPage from './pages/AdminTeamsPage';
 import CoachPracticePage from './pages/CoachPracticePage';
 import StudentDashboardPage from './pages/StudentDashboard/StudentDashboardPage';
 import StudentItemsPage from './pages/StudentDashboard/StudentItemsPage';
-import StudentFacilitiesPage from './pages/StudentDashboard/StudentFacilitiesPage';
 import StudentTeamsPage from './pages/StudentDashboard/StudentTeamsPage';
 import LoginPage from './pages/Login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
@@ -78,8 +79,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && <Navbar />}
-      {!isAuthRoute && !isHomeRoute && !isStudentDashboardRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -109,6 +109,22 @@ const AppLayout = () => {
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminFacilityPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/facilities/new"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <AdminAddFacilityPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/facilities/:facilityId/edit"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <AdminEditFacilityPage />
               </ProtectedRoute>
             }
           />
@@ -165,6 +181,10 @@ const AppLayout = () => {
             element={
               <ProtectedRoute>
                 <FacilitiesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/dashboard"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
@@ -177,6 +197,10 @@ const AppLayout = () => {
             element={
               <ProtectedRoute>
                 <FacilityDateTimePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/items"
             element={
               <ProtectedRoute allowedRoles={['Student']}>
@@ -189,12 +213,12 @@ const AppLayout = () => {
             element={
               <ProtectedRoute>
                 <FacilityConfirmBookingPage />
-            path="/student/facilities"
-            element={
-              <ProtectedRoute allowedRoles={['Student']}>
-                <StudentFacilitiesPage />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/student/facilities"
+            element={<Navigate to="/facilities" replace />}
           />
           <Route
             path="/student/teams"
