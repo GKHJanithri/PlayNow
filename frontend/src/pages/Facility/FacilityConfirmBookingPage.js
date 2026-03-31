@@ -20,8 +20,8 @@ const FacilityConfirmBookingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
-    studentName: '',
-    studentId: '',
+    studentName: 'Himaya Janithri',
+    studentId: 'IT23578746',
     players: 1,
     agreeToTerms: false,
   });
