@@ -5,35 +5,24 @@
   color: #2f3c44;
 }
 
-.facility-ui-topbar {
-  background: #1f2858;
-  color: #f6f8ff;
+.facility-ui-search-icon {
+  color: #7a8798;
+}
+
+.facility-ui-content {
+  padding: 1.65rem;
+}
+
+.facility-ui-headline-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  padding: 0.9rem 1.6rem;
 }
 
-.facility-ui-menu {
-  width: 28px;
-  height: 28px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  display: grid;
-  gap: 4px;
-  place-items: center;
-  cursor: pointer;
-}
-
-.facility-ui-menu span {
-  width: 14px;
-  height: 2px;
-  background: #d8e0ff;
-}
-
-.facility-ui-search-wrap {
-  background: #2f3b74;
+.facility-ui-headline-search-wrap {
+  background: #f4f6f8;
+  border: 1px solid #b8c4cf;
   border-radius: 12px;
   width: min(440px, 100%);
   display: flex;
@@ -42,51 +31,16 @@
   padding: 0.55rem 0.9rem;
 }
 
-.facility-ui-search-wrap input {
+.facility-ui-headline-search-wrap input {
   border: 0;
   background: transparent;
-  color: #e8ecff;
+  color: #2f3c44;
   width: 100%;
   outline: none;
 }
 
-.facility-ui-search-wrap input::placeholder {
-  color: #a4afd6;
-}
-
-.facility-ui-search-icon {
-  color: #9fa9cf;
-}
-
-.facility-ui-actions {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.facility-ui-icon-btn {
-  border: 0;
-  background: transparent;
-  color: #f2f4fd;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.facility-ui-notice-count {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  display: inline-grid;
-  place-items: center;
-  background: #f6a915;
-  color: #fff;
-  font-size: 0.7rem;
-  margin-left: -0.2rem;
-}
-
-.facility-ui-content {
-  padding: 1.65rem;
+.facility-ui-headline-search-wrap input::placeholder {
+  color: #7b8799;
 }
 
 .facility-ui-headline h1 {
@@ -637,6 +591,15 @@
   .facility-ui-content,
   .facility-ui-detail-wrap {
     padding: 1rem;
+  }
+
+  .facility-ui-headline-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .facility-ui-headline-search-wrap {
+    width: 100%;
   }
 
   .facility-ui-filters {
