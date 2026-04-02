@@ -14,6 +14,7 @@ import AdminMatchScoringPage from './pages/AdminMatchScoringPage';
 import AdminFacilityPage from './pages/AdminFacilityPage';
 import AdminAddFacilityPage from './pages/AdminAddFacilityPage';
 import AdminEditFacilityPage from './pages/AdminEditFacilityPage';
+import AdminFacilityBookingsPage from './pages/AdminFacilityBookingsPage';
 import AdminItemsPage from './pages/AdminItemsPage';
 import AdminTeamsPage from './pages/AdminTeamsPage';
 import CoachPracticePage from './pages/CoachPracticePage';
@@ -32,7 +33,6 @@ const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
-  const isFacilityRoute = location.pathname.startsWith('/facilities');
   const isStudentDashboardRoute = location.pathname.startsWith('/student/dashboard');
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -125,6 +125,14 @@ const AppLayout = () => {
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminEditFacilityPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/facilities/bookings"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <AdminFacilityBookingsPage />
               </ProtectedRoute>
             }
           />
