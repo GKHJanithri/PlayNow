@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const  ItemReservationSchema = new Schema({
-   item_reservation_id : {
-       type : String,//datatype
-       required : true},//validation
+   // item_reservation_id removed, use _id
     student_id : {
         type : String,
         required : true},
@@ -20,8 +18,13 @@ const  ItemReservationSchema = new Schema({
     item_reservation_status: {
         type : String,
         required : true},
-    item_reservation_return_date: {
-         type : Date,
-         default : Date.now}
+        item_reservation_return_date: {
+            type : Date,
+            default : Date.now
+        },
+        item_reservation_purpose: {
+            type: String,
+            required: false
+        },
 });
 module.exports = mongoose.model("itemReservationModel", ItemReservationSchema);

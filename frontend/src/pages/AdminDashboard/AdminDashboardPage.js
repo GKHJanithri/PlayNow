@@ -32,7 +32,7 @@ const adminModules = [
     key: 'items',
     title: 'Items',
     description: 'Track equipment inventory, issue items, and monitor stock levels.',
-    route: '/admin/items',
+    route: '/admin/item-management', // updated route
     cta: 'Open Items',
     image: itemsImage,
     imageAlt: 'Sports equipment inventory',

@@ -23,6 +23,8 @@ import CoachPracticePage from "./pages/CoachPracticePage";
 import FacilitiesPage from "./pages/Facility/FacilitiesPage";
 import FacilityDateTimePage from "./pages/Facility/FacilityDateTimePage";
 import FacilityConfirmBookingPage from "./pages/Facility/FacilityConfirmBookingPage";
+import AdminItemManagementPage from "./pages/AdminItemManagement";
+import AdminItemsReservationsPage from "./pages/AdminItemsReservationsPage";
 
 function App() {
   return (
@@ -50,6 +52,8 @@ function App() {
         <Route path="/admin/teams" element={<AdminTeamsPage />} />
         <Route path="/admin/fixtures" element={<AdminManageFixturesPage />} />
         <Route path="/admin/match-scoring" element={<AdminMatchScoringPage />} />
+        <Route path="/admin/item-management" element={<AdminItemManagementPage />} />
+        <Route path="/admin/item-reservations" element={<AdminItemsReservationsPage />} />
 
         <Route path="/coach/practice" element={<CoachPracticePage />} />
 

@@ -33,6 +33,7 @@ const buildAuthResponse = (user) => {
     role: user.role,
     fullName: user.fullName,
     email: user.email,
+    userId: userId,
   };
 };
 

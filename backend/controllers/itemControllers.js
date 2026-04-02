@@ -1,3 +1,69 @@
+// Get all item reservations for a student
+const getStudentReservations = async (req, res) => {
+    const { student_id } = req.query;
+    if (!student_id) {
+        return res.status(400).json({ message: 'student_id is required' });
+    }
+    try {
+        // Find reservations for the student
+        const reservations = await ItemReservation.find({ student_id });
+        // Get all item_ids from reservations
+        const itemIds = reservations.map(r => r.item_id);
+        // Find all items for those ids
+        const items = await require("../models/itemModel").find({ item_id: { $in: itemIds } });
+        // Map item_id to item_name
+        const itemIdToName = {};
+        items.forEach(item => { itemIdToName[item.item_id] = item.item_name; });
+        // Attach item_name to each reservation
+        const reservationsWithName = reservations.map(r => ({
+            ...r.toObject(),
+            item_name: itemIdToName[r.item_id] || r.item_id
+        }));
+        return res.status(200).json(reservationsWithName);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+// Get all item reservations for admin
+const getAllReservations = async (req, res) => {
+    try {
+        const reservations = await ItemReservation.find();
+        // Optionally join with item names
+        const itemIds = reservations.map(r => r.item_id);
+        const items = await Item.find({ item_id: { $in: itemIds } });
+        const itemIdToName = {};
+        items.forEach(item => { itemIdToName[item.item_id] = item.item_name; });
+        const reservationsWithName = reservations.map(r => ({
+            ...r.toObject(),
+            item_name: itemIdToName[r.item_id] || r.item_id
+        }));
+        return res.status(200).json(reservationsWithName);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+// Update reservation status by admin
+const updateReservationStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const reservation = await ItemReservation.findById(id);
+        if (!reservation) {
+            return res.status(404).json({ message: "Reservation not found" });
+        }
+        reservation.item_reservation_status = status;
+        if (status === 'Collected') {
+            reservation.collected_at = new Date();
+        }
+        await reservation.save();
+        return res.status(200).json(reservation);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 const Item = require("../models/itemModel");
 const ItemReservation = require("../models/itemReservationModel");
 const ItemReturn = require("../models/itemReturnModel");
@@ -73,38 +139,43 @@ const deleteItem = async (req, res) => {
 
 const reserveItem = async (req, res) => {
     const id = req.params.id;
+
     const {
         student_id,
+        item_id,
         item_quantity_reserved = 1,
-        item_reservation_return_date
+        item_reservation_return_date,
+        item_reservation_purpose
     } = req.body;
 
     try {
         const item = await Item.findOne(buildItemQuery(id));
+
         if (!item) {
             return res.status(404).json({ message: "Item not found" });
         }
 
-        if (item.item_quantity_available < Number(item_quantity_reserved)) {
-            return res.status(400).json({ message: "Not enough available quantity" });
+        if (item.item_quantity_available < item_quantity_reserved) {
+            return res.status(400).json({ message: "Not enough quantity" });
         }
 
-        item.item_quantity_available -= Number(item_quantity_reserved);
+        item.item_quantity_available -= item_quantity_reserved;
         await item.save();
 
         const reservation = new ItemReservation({
-            item_reservation_id: `RES-${Date.now()}`,
             student_id,
             item_id: item.item_id,
-            item_quantity_reserved: Number(item_quantity_reserved),
+            item_quantity_reserved,
             item_reservation_status: "Reserved",
-            item_reservation_return_date: item_reservation_return_date || new Date()
+            item_reservation_return_date,
+            item_reservation_purpose
         });
+
         await reservation.save();
 
-        return res.status(201).json({ reservation, item });
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
+        res.status(201).json(reservation);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -147,26 +218,27 @@ const returnItem = async (req, res) => {
 };
 
 const cancelreservedItem = async (req, res) => {
-    const id = req.params.id;
-
     try {
-        const reservation = await ItemReservation.findOne({ item_reservation_id: id });
+        const reservation = await ItemReservation.findById(req.params.id);
+
         if (!reservation) {
             return res.status(404).json({ message: "Reservation not found" });
         }
 
         if (reservation.item_reservation_status === "Reserved") {
             const item = await Item.findOne({ item_id: reservation.item_id });
+
             if (item) {
                 item.item_quantity_available += reservation.item_quantity_reserved;
                 await item.save();
             }
         }
 
-        await ItemReservation.deleteOne({ _id: reservation._id });
-        return res.status(200).json({ message: "Item reservation cancelled successfully" });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+        await reservation.deleteOne();
+
+        res.status(200).json({ message: "Cancelled successfully" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -205,3 +277,6 @@ exports.returnItem = returnItem;
 exports.cancelreservedItem = cancelreservedItem;
 exports.getBookedItem = getBookedItem;
 exports.returnBookedItem = returnBookedItem;
+exports.getStudentReservations = getStudentReservations;
+exports.getAllReservations = getAllReservations;
+exports.updateReservationStatus = updateReservationStatus;

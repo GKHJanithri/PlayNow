@@ -196,8 +196,8 @@ function AdminItemsPage({ onBack }) {
               Back to Items
             </button>
           ) : (
-            <Link to="/admin/dashboard" className="history-btn">
-              Back to Dashboard
+            <Link to="/admin/item-management" className="history-btn">
+              Back 
             </Link>
           )}
         </header>

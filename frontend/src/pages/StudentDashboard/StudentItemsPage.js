@@ -29,6 +29,7 @@ const StudentItemsPage = () => {
 
         const data = await response.json();
         const mappedItems = (Array.isArray(data) ? data : []).map((item) => ({
+          ...item, // include all original properties, especially _id
           id: item._id || item.item_id || item.item_name,
           name: item.item_name || 'Unnamed Item',
           sport: item.item_category || 'General',
@@ -78,9 +79,12 @@ const StudentItemsPage = () => {
     return 'needs-repair';
   };
 
+  // Find the original item object by id to ensure _id is included
   const handleReserveClick = (item) => {
     if (item.available > 0) {
-      navigate('/student/items/reserve', { state: { item } });
+      const original = items.find(i => i.id === item.id) || item;
+      // If you have the original data array from the backend, use that instead of mapped items
+      navigate('/student/items/reserve', { state: { item: original } });
     }
   };
 

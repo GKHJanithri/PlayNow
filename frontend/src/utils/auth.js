@@ -7,6 +7,10 @@ const readErrorMessage = (error, fallback) => {
 const persistSession = (session) => {
   localStorage.setItem('role', session.role);
   localStorage.setItem('token', session.token);
+  // Ensure _id is present for compatibility with reservation logic
+  if (session.userId && !session._id) {
+    session._id = session.userId;
+  }
   localStorage.setItem('currentUser', JSON.stringify(session));
 };
 
@@ -25,6 +29,7 @@ export const signupUser = async ({ fullName, studentId, role, email, password })
       token: response.data.token,
       fullName: response.data.fullName,
       email: response.data.email,
+      userId: response.data.userId,
     };
 
     persistSession(session);
@@ -46,6 +51,7 @@ export const loginUser = async ({ email, password }) => {
       token: response.data.token,
       fullName: response.data.fullName,
       email: response.data.email,
+      userId: response.data.userId,
     };
 
     persistSession(session);
