@@ -117,6 +117,7 @@ const bookFacility = async (req, res) => {
     const existingBooking = await Booking.findOne({
       facilityId,
       date,
+      status: { $ne: "Cancelled" },
       $or: [
         { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
       ]
@@ -186,7 +187,15 @@ const cancelBooking = async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
-    await booking.deleteOne();
+
+    if (booking.status === "Cancelled") {
+      return res.status(400).json({ message: "Booking is already cancelled" });
+    }
+
+    booking.status = "Cancelled";
+    booking.cancelledAt = new Date();
+    await booking.save();
+
     res.json({ message: "Booking cancelled successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -222,6 +231,7 @@ const updateBooking = async (req, res) => {
         facilityId: booking.facilityId,
         date,
         _id: { $ne: booking._id }, // exclude current booking
+        status: { $ne: "Cancelled" },
         $or: [
           { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
         ]
