@@ -27,6 +27,7 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import FacilitiesPage from './pages/Facility/FacilitiesPage';
 import FacilityDateTimePage from './pages/Facility/FacilityDateTimePage';
 import FacilityConfirmBookingPage from './pages/Facility/FacilityConfirmBookingPage';
+import CoachDashboardPage from './pages/teams/CoachDashboardPage';
 
 const AppLayout = () => {
   const location = useLocation();
@@ -88,6 +89,8 @@ const AppLayout = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/events" element={<EventsListPage />} />
           <Route path="/events/:id" element={<EventDetailsPage />} />
+          
+          {/* Admin Routes */}
           <Route
             path="/admin/dashboard"
             element={
@@ -168,6 +171,16 @@ const AppLayout = () => {
               </ProtectedRoute>
             }
           />
+
+          {/* Coach Routes */}
+          <Route
+            path="/coach/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['Coach', 'Admin']}>
+                <CoachDashboardPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/events/:id/practice"
             element={
@@ -176,19 +189,13 @@ const AppLayout = () => {
               </ProtectedRoute>
             }
           />
+
+          {/* Facility & Shared Routes */}
           <Route
             path="/facilities"
             element={
               <ProtectedRoute>
                 <FacilitiesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/student/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['Student']}>
-                <StudentDashboardPage />
               </ProtectedRoute>
             }
           />
@@ -201,18 +208,28 @@ const AppLayout = () => {
             }
           />
           <Route
-            path="/student/items"
-            element={
-              <ProtectedRoute allowedRoles={['Student']}>
-                <StudentItemsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/facilities/:facilityId/confirm"
             element={
               <ProtectedRoute>
                 <FacilityConfirmBookingPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Student Routes */}
+          <Route
+            path="/student/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['Student']}>
+                <StudentDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/items"
+            element={
+              <ProtectedRoute allowedRoles={['Student']}>
+                <StudentItemsPage />
               </ProtectedRoute>
             }
           />
