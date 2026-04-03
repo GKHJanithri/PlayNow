@@ -15,6 +15,7 @@
   overflow: hidden;
   display: grid;
   grid-template-columns: 280px 1fr;
+  font-size: 0.92rem;
   width: min(1400px, 100%);
   margin: 0 auto;
 }
@@ -56,7 +57,7 @@
 
 .student-sidebar-brand h2 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.55rem;
 }
 
 .student-sidebar-nav {
@@ -73,6 +74,7 @@
   border-radius: 14px;
   padding: 0.86rem 0.95rem;
   font-weight: 600;
+  font-size: 0.9rem;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -100,7 +102,7 @@
 
 .student-sidebar-footer h3 {
   color: #b9c7df;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .student-sidebar-footer p {
@@ -133,12 +135,12 @@
 
 .student-user-card h4 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .student-user-card span {
   color: #cfd9ed;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .student-logout-btn {
@@ -208,10 +210,12 @@
 
 .student-topbar-user h3 {
   color: var(--student-text);
+  font-size: 1rem;
 }
 
 .student-topbar-user span {
   color: var(--student-muted);
+  font-size: 0.82rem;
 }
 
 .student-stats-grid {
@@ -257,7 +261,7 @@
 }
 
 .student-stat-card strong {
-  font-size: 2rem;
+  font-size: 1.45rem;
   color: var(--student-text);
 }
 
@@ -265,6 +269,7 @@
   margin: 0;
   color: var(--student-muted);
   font-weight: 600;
+  font-size: 0.86rem;
 }
 
 .student-layout-grid {
@@ -293,6 +298,7 @@
 .student-updates-panel h2 {
   margin: 0;
   color: var(--student-text);
+  font-size: 1.1rem;
 }
 
 .student-quick-grid {
@@ -340,6 +346,7 @@
   margin: 0;
   color: var(--student-text);
   text-align: center;
+  font-size: 1rem;
 }
 
 .events-header {
@@ -349,6 +356,7 @@
 .student-view-all {
   font-weight: 700;
   color: var(--student-primary-2);
+  font-size: 0.86rem;
 }
 
 .student-event-list {
@@ -373,12 +381,13 @@
   color: #3348a2;
   padding: 0.25rem 0.68rem;
   font-weight: 600;
+  font-size: 0.88rem;
 }
 
 .student-event-card h3 {
   margin: 0;
   color: var(--student-text);
-  font-size: 1.85rem;
+  font-size: 1.05rem;
 }
 
 .student-event-card p {
@@ -387,6 +396,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  font-size: 0.95rem;
 }
 
 .student-update-list {
@@ -415,12 +425,13 @@
 
 .student-update-item h3 {
   color: var(--student-text);
-  font-size: 1.3rem;
+  font-size: 0.98rem;
 }
 
 .student-update-item p {
   color: var(--student-muted);
   margin-top: 0.2rem;
+  font-size: 0.86rem;
 }
 
 .student-empty-update {

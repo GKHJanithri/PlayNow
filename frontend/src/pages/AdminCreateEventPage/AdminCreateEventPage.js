@@ -209,6 +209,13 @@ const AdminCreateEventPage = () => {
         </div>
 
         <div className="ace-actions">
+          <button 
+            type="button" 
+            className="ace-secondary" 
+            onClick={() => navigate('/events')}
+          >
+            View Upcoming Events
+          </button>
           <button type="submit" className="ace-submit" disabled={submitting}>
             {submitting ? 'Saving...' : 'Create Event'}
           </button>

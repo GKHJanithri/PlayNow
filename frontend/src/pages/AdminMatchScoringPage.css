@@ -1,0 +1,464 @@
+.cricket-scorer {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.opening-players-form {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  color: #1a3a3a;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+.player-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.player-input-group label {
+  color: #2d9d5c;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-input-group input {
+  padding: 0.9rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.player-input-group input:focus {
+  outline: none;
+  border-color: #2d9d5c;
+  box-shadow: 0 0 0 3px rgba(45, 157, 92, 0.1);
+}
+
+.player-input-group input::placeholder {
+  color: #999;
+}
+
+.player-input-group select {
+  padding: 0.9rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1.2em;
+  padding-right: 2.5rem;
+}
+
+.player-input-group select:focus {
+  outline: none;
+  border-color: #2d9d5c;
+  box-shadow: 0 0 0 3px rgba(45, 157, 92, 0.1);
+}
+
+.player-input-group select option {
+  padding: 0.5rem;
+  color: #333;
+  background: white;
+}
+
+.btn-start-match {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #2d9d5c 0%, #1a7a3e 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(45, 157, 92, 0.3);
+  margin-top: 0.5rem;
+}
+
+.btn-start-match:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(45, 157, 92, 0.4);
+}
+
+.btn-start-match:active {
+  transform: translateY(0);
+}
+
+.scorer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #1a7a3e 0%, #2d9d5c 100%);
+  padding: 1rem;
+  border-radius: 8px;
+  color: white;
+}
+
+.inning-info {
+  display: flex;
+  gap: 2rem;
+}
+
+.team-badge {
+  font-weight: 600;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.current-rate {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.score-card {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.score-main {
+  margin: 0;
+}
+
+.score-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.score-meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.batter-box {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.player-section {
+  margin-bottom: 1rem;
+}
+
+.player-section:last-child {
+  margin-bottom: 0;
+}
+
+.player-label {
+  color: #2d9d5c;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.stats-table thead {
+  background: #f0f0f0;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-weight: 500;
+}
+
+.stats-table thead td {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.stats-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.player-name {
+  text-align: left;
+  color: #1a3a3a;
+  font-weight: 500;
+}
+
+.this-over-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.this-over-section h4 {
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.over-balls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.over-ball {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #e8f5e9;
+  border: 2px solid #4caf50;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #2d9d5c;
+}
+
+.over-ball.ball-W {
+  background: #ffebee;
+  border-color: #f44336;
+  color: #c62828;
+}
+
+.over-empty {
+  color: #999;
+  font-size: 1.2rem;
+}
+
+.extras-options {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.extras-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0f0f0;
+  padding: 0.5rem 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.extras-options label:hover {
+  background: #e0e0e0;
+}
+
+.extras-options input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #2d9d5c;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.btn-action {
+  background: #2d9d5c;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(45, 157, 92, 0.3);
+}
+
+.btn-action:hover {
+  background: #259947;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(45, 157, 92, 0.4);
+}
+
+.btn-action:active {
+  transform: translateY(0);
+}
+
+.undo-extras {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.btn-undo {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-undo:hover {
+  background: #f57c00;
+}
+
+.runs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.run-btn {
+  background: white;
+  border: 2.5px solid #2d9d5c;
+  color: #2d9d5c;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.run-btn:hover {
+  background: #2d9d5c;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(45, 157, 92, 0.3);
+}
+
+.run-btn:active {
+  transform: translateY(-1px);
+}
+
+.dots-btn {
+  font-size: 0.9rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.form-actions .btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-actions .btn-secondary {
+  background: #757575;
+  color: white;
+}
+
+.form-actions .btn-secondary:hover {
+  background: #616161;
+}
+
+.form-actions .btn-primary {
+  background: #2d9d5c;
+  color: white;
+}
+
+.form-actions .btn-primary:hover {
+  background: #259947;
+}
+
+.form-actions .btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .cricket-scorer {
+    padding: 0.75rem;
+  }
+
+  .opening-players-form {
+    padding: 1.5rem 1rem;
+  }
+
+  .inning-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .score-display {
+    font-size: 2rem;
+  }
+
+  .runs-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stats-table th,
+  .stats-table td {
+    padding: 0.4rem 0.2rem;
+    font-size: 0.75rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
