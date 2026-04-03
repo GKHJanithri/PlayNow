@@ -90,161 +90,29 @@ const AppLayout = () => {
           <Route path="/events" element={<EventsListPage />} />
           <Route path="/events/:id" element={<EventDetailsPage />} />
           
-          {/* Admin Routes */}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/events/create"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminCreateEventPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/facilities"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminFacilityPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/facilities/new"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminAddFacilityPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/facilities/:facilityId/edit"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminEditFacilityPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/items"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminItemsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/teams"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminTeamsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/events/:id/manage"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminManageFixturesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/events/:id/results"
-            element={
-              <ProtectedRoute allowedRoles={['Admin', 'Coach']}>
-                <AdminUpdateResultsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/matches/:matchId/score"
-            element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminMatchScoringPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['Admin']}><AdminDashboardPage /></ProtectedRoute>} />
+          <Route path="/admin/events/create" element={<ProtectedRoute allowedRoles={['Admin']}><AdminCreateEventPage /></ProtectedRoute>} />
+          <Route path="/admin/facilities" element={<ProtectedRoute allowedRoles={['Admin']}><AdminFacilityPage /></ProtectedRoute>} />
+          <Route path="/admin/facilities/new" element={<ProtectedRoute allowedRoles={['Admin']}><AdminAddFacilityPage /></ProtectedRoute>} />
+          <Route path="/admin/facilities/:facilityId/edit" element={<ProtectedRoute allowedRoles={['Admin']}><AdminEditFacilityPage /></ProtectedRoute>} />
+          <Route path="/admin/items" element={<ProtectedRoute allowedRoles={['Admin']}><AdminItemsPage /></ProtectedRoute>} />
+          <Route path="/admin/teams" element={<ProtectedRoute allowedRoles={['Admin']}><AdminTeamsPage /></ProtectedRoute>} />
+          <Route path="/admin/events/:id/manage" element={<ProtectedRoute allowedRoles={['Admin']}><AdminManageFixturesPage /></ProtectedRoute>} />
+          <Route path="/events/:id/results" element={<ProtectedRoute allowedRoles={['Admin', 'Coach']}><AdminUpdateResultsPage /></ProtectedRoute>} />
+          <Route path="/admin/matches/:matchId/score" element={<ProtectedRoute allowedRoles={['Admin']}><AdminMatchScoringPage /></ProtectedRoute>} />
 
-          {/* Coach Routes */}
-          <Route
-            path="/coach/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['Coach', 'Admin']}>
-                <CoachDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/events/:id/practice"
-            element={
-              <ProtectedRoute allowedRoles={['Coach']}>
-                <CoachPracticePage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/coach/dashboard" element={<ProtectedRoute allowedRoles={['Coach', 'Admin']}><CoachDashboardPage /></ProtectedRoute>} />
+          <Route path="/events/:id/practice" element={<ProtectedRoute allowedRoles={['Coach']}><CoachPracticePage /></ProtectedRoute>} />
 
-          {/* Facility & Shared Routes */}
-          <Route
-            path="/facilities"
-            element={
-              <ProtectedRoute>
-                <FacilitiesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/facilities/:facilityId/book"
-            element={
-              <ProtectedRoute>
-                <FacilityDateTimePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/facilities/:facilityId/confirm"
-            element={
-              <ProtectedRoute>
-                <FacilityConfirmBookingPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/facilities" element={<ProtectedRoute><FacilitiesPage /></ProtectedRoute>} />
+          <Route path="/facilities/:facilityId/book" element={<ProtectedRoute><FacilityDateTimePage /></ProtectedRoute>} />
+          <Route path="/facilities/:facilityId/confirm" element={<ProtectedRoute><FacilityConfirmBookingPage /></ProtectedRoute>} />
 
-          {/* Student Routes */}
-          <Route
-            path="/student/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['Student']}>
-                <StudentDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/student/items"
-            element={
-              <ProtectedRoute allowedRoles={['Student']}>
-                <StudentItemsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/student/facilities"
-            element={<Navigate to="/facilities" replace />}
-          />
-          <Route
-            path="/student/teams"
-            element={
-              <ProtectedRoute allowedRoles={['Student']}>
-                <StudentTeamsPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['Student']}><StudentDashboardPage /></ProtectedRoute>} />
+          <Route path="/student/items" element={<ProtectedRoute allowedRoles={['Student']}><StudentItemsPage /></ProtectedRoute>} />
+          <Route path="/student/facilities" element={<Navigate to="/facilities" replace />} />
+          <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Student']}><StudentTeamsPage /></ProtectedRoute>} />
+          
           <Route path="*" element={<Navigate to="/events" replace />} />
         </Routes>
       </main>

@@ -1,29 +1,28 @@
 const mongoose = require('mongoose');
 
 const freeAgentSchema = new mongoose.Schema({
+    // CHANGE: From ObjectId to String to support "IT21..."
     studentId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
+        type: String, 
         required: true 
     },
+    // CHANGE: From ObjectId to String to support the hardcoded ID
     eventId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Event', 
-        required: [true, 'Please select a preferred event or sport'] 
+        type: String, 
+        required: true 
     },
     skillLevel: { 
         type: String, 
-        enum: ['Beginner', 'Intermediate', 'Advanced'], 
-        required: [true, 'Skill level is required'] 
+        required: true,
+        enum: ['Beginner', 'Intermediate', 'Advanced', 'Expert']
     },
     experienceDescription: { 
-        type: String,
-        maxLength: [500, 'Description cannot exceed 500 characters']
+        type: String 
     },
     status: { 
         type: String, 
-        enum: ['Pending', 'Assigned', 'Rejected'], 
-        default: 'Pending' // Coach will change this to 'Assigned' when adding them to a team
+        enum: ['Available', 'Assigned'], 
+        default: 'Available' 
     }
 }, { 
     timestamps: true 
