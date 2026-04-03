@@ -25,6 +25,7 @@ import AdminMatchScoringPage from './pages/AdminMatchScoringPage';
 import AdminFacilityPage from './pages/AdminFacilityPage';
 import AdminAddFacilityPage from './pages/AdminAddFacilityPage';
 import AdminEditFacilityPage from './pages/AdminEditFacilityPage';
+import AdminFacilityBookingsPage from './pages/AdminFacilityBookingsPage';
 import AdminItemsPage from './pages/AdminItemsPage';
 import AdminTeamsPage from './pages/AdminTeamsPage';
 import AdminItemManagementPage from "./pages/AdminItemManagement";
@@ -44,7 +45,6 @@ const AppLayout = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
   const isHomeRoute = location.pathname === '/';
-  const isFacilityRoute = location.pathname.startsWith('/facilities');
   const isStudentDashboardRoute = location.pathname.startsWith('/student/dashboard');
 
   useEffect(() => {
@@ -91,7 +91,7 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isStudentDashboardRoute && <Navbar />}
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -107,6 +107,7 @@ const AppLayout = () => {
           <Route path="/admin/facilities" element={<ProtectedRoute allowedRoles={['Admin']}><AdminFacilityPage /></ProtectedRoute>} />
           <Route path="/admin/facilities/new" element={<ProtectedRoute allowedRoles={['Admin']}><AdminAddFacilityPage /></ProtectedRoute>} />
           <Route path="/admin/facilities/:facilityId/edit" element={<ProtectedRoute allowedRoles={['Admin']}><AdminEditFacilityPage /></ProtectedRoute>} />
+          <Route path="/admin/facilities/bookings" element={<ProtectedRoute allowedRoles={['Admin']}><AdminFacilityBookingsPage /></ProtectedRoute>} />
           <Route path="/admin/items" element={<ProtectedRoute allowedRoles={['Admin']}><AdminItemsPage /></ProtectedRoute>} />
           <Route path="/admin/teams" element={<ProtectedRoute allowedRoles={['Admin']}><AdminTeamsPage /></ProtectedRoute>} />
           <Route path="/admin/events/:id/manage" element={<ProtectedRoute allowedRoles={['Admin']}><AdminManageFixturesPage /></ProtectedRoute>} />
@@ -122,12 +123,14 @@ const AppLayout = () => {
           <Route path="/facilities" element={<ProtectedRoute allowedRoles={['Student', 'User']}><FacilitiesPage /></ProtectedRoute>} />
           <Route path="/facilities/:facilityId/book" element={<ProtectedRoute allowedRoles={['Student', 'User']}><FacilityDateTimePage /></ProtectedRoute>} />
           <Route path="/facilities/:facilityId/confirm" element={<ProtectedRoute allowedRoles={['Student', 'User']}><FacilityConfirmBookingPage /></ProtectedRoute>} />
+          
           {/* Student Routes */}
           <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['Student', 'User']}><StudentDashboardPage /></ProtectedRoute>} />
           <Route path="/student/items" element={<ProtectedRoute allowedRoles={['Student', 'User']}><StudentItemsPage /></ProtectedRoute>} />
           <Route path="/student/items/reserve" element={<ProtectedRoute allowedRoles={['Student', 'User']}><StudentItemReservationPage /></ProtectedRoute>} />
           <Route path="/student/facilities" element={<ProtectedRoute allowedRoles={['Student', 'User']}><StudentFacilitiesPage /></ProtectedRoute>} />
           <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Student', 'User']}><StudentTeamsPage /></ProtectedRoute>} />
+
           <Route path="*" element={<Navigate to="/events" replace />} />
         </Routes>
       </main>

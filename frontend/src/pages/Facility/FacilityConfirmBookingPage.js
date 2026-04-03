@@ -13,6 +13,20 @@ const FacilityConfirmBookingPage = () => {
   const selectedDate = locationState.date || '';
   const selectedSlot = locationState.slot || null;
 
+  const currentUser = useMemo(() => {
+    try {
+      const raw = localStorage.getItem('currentUser');
+      return raw ? JSON.parse(raw) : {};
+    } catch (_error) {
+      return {};
+    }
+  }, []);
+
+  const sessionStudentName = String(currentUser?.fullName || localStorage.getItem('fullName') || '').trim();
+  const sessionStudentId = String(
+    currentUser?.studentId || currentUser?.studentID || localStorage.getItem('studentId') || '',
+  ).trim();
+
   const [facility, setFacility] = useState(locationState.facility || null);
   const [isLoadingFacility, setIsLoadingFacility] = useState(!locationState.facility);
   const [error, setError] = useState('');
@@ -20,8 +34,8 @@ const FacilityConfirmBookingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
-    studentName: 'Himaya Janithri',
-    studentId: 'IT23578746',
+    studentName: sessionStudentName,
+    studentId: sessionStudentId,
     players: 1,
     agreeToTerms: false,
   });
@@ -45,6 +59,14 @@ const FacilityConfirmBookingPage = () => {
 
     loadFacility();
   }, [facility, facilityId]);
+
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      studentName: sessionStudentName,
+      studentId: sessionStudentId,
+    }));
+  }, [sessionStudentName, sessionStudentId]);
 
   const maxPlayers = useMemo(() => Number(facility?.maxPlayers) || 1, [facility]);
 
@@ -73,7 +95,7 @@ const FacilityConfirmBookingPage = () => {
     }
 
     if (!form.studentName.trim() || !form.studentId.trim()) {
-      setError('Student name and ID are required.');
+      setError('Logged-in student name and ID are missing. Please log in again.');
       return;
     }
 
@@ -184,7 +206,7 @@ const FacilityConfirmBookingPage = () => {
             id="studentName"
             name="studentName"
             value={form.studentName}
-            onChange={handleInputChange}
+            readOnly
             placeholder="Enter your full name"
           />
 
@@ -193,7 +215,7 @@ const FacilityConfirmBookingPage = () => {
             id="studentId"
             name="studentId"
             value={form.studentId}
-            onChange={handleInputChange}
+            readOnly
             placeholder="e.g., STU-2024-001"
           />
 

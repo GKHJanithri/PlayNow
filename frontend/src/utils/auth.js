@@ -12,6 +12,8 @@ const persistSession = (session) => {
     session._id = session.userId;
   }
   localStorage.setItem('currentUser', JSON.stringify(session));
+  localStorage.setItem('fullName', session.fullName || '');
+  localStorage.setItem('studentId', session.studentId || '');
 };
 
 export const signupUser = async ({ fullName, studentId, role, email, password }) => {
@@ -28,6 +30,7 @@ export const signupUser = async ({ fullName, studentId, role, email, password })
       role: response.data.role,
       token: response.data.token,
       fullName: response.data.fullName,
+      studentId: response.data.studentId,
       email: response.data.email,
       userId: response.data.userId,
     };
@@ -50,6 +53,7 @@ export const loginUser = async ({ email, password }) => {
       role: response.data.role,
       token: response.data.token,
       fullName: response.data.fullName,
+      studentId: response.data.studentId,
       email: response.data.email,
       userId: response.data.userId,
     };
@@ -65,6 +69,8 @@ export const logoutUser = () => {
   localStorage.removeItem('role');
   localStorage.removeItem('token');
   localStorage.removeItem('currentUser');
+  localStorage.removeItem('fullName');
+  localStorage.removeItem('studentId');
 };
 
 export const isAuthenticated = () => {

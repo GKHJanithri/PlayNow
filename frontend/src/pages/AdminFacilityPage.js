@@ -118,13 +118,22 @@ const AdminFacilityPage = () => {
           <h1 className="page-title">Admin Dashboard</h1>
           <p className="admin-facility-subtitle">Manage university sports facilities</p>
         </div>
-        <button
-          type="button"
-          className="admin-facility-add-btn"
-          onClick={() => navigate('/admin/facilities/new')}
-        >
-          + Add Facility
-        </button>
+        <div className="admin-facility-header-actions">
+          <button
+            type="button"
+            className="admin-facility-view-bookings-btn"
+            onClick={() => navigate('/admin/facilities/bookings')}
+          >
+            View Bookings
+          </button>
+          <button
+            type="button"
+            className="admin-facility-add-btn"
+            onClick={() => navigate('/admin/facilities/new')}
+          >
+            + Add Facility
+          </button>
+        </div>
       </div>
 
       <div className="admin-facility-table-wrap">
