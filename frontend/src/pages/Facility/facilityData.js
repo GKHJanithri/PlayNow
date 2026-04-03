@@ -1,7 +1,7 @@
 import facilityImage from '../../assets/facility.jpg';
 import stadiumImage from '../../assets/Stadium.jpg';
 import eventImage from '../../assets/Event.jpg';
-import equipmentImage from '../../assets/equipment.jpg';
+
 import badmintonCourtImage from '../../assets/Badminton Court.jpg';
 import swimmingPoolImage from '../../assets/swimmingpool.jpg';
 import tennisCourtImage from '../../assets/tennisCourt.jpg';

@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../utils/auth';
 import './Login.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  
   const [form, setForm] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
 
-  const from = location.state?.from || '/student/dashboard';
 
   const handleChange = (event) => {
     const { name, value } = event.target;
