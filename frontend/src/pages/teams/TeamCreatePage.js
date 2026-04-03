@@ -51,8 +51,8 @@ export default function TeamCreatePage() {
       toast.success("Team registration submitted! Pending coach approval.");
       
       setTimeout(() => {
-        // 👇 CHANGED THIS LINE: Change "/events" to any valid route in your App.js!
-        navigate("/events"); 
+        // Now accurately routes to the new Student Teams page
+        navigate("/student/teams"); 
       }, 2000);
 
     } catch (error) {
