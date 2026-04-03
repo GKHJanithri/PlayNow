@@ -6,7 +6,6 @@ exports.createTeam = async (req, res) => {
     try {
         const { teamName, eventId, captainId } = req.body;
         
-        // Validation: Check if team name already exists to prevent duplicates
         const existingTeam = await Team.findOne({ teamName });
         if (existingTeam) {
             return res.status(400).json({ message: 'Team name already exists. Please choose another.' });
@@ -28,7 +27,6 @@ exports.createTeam = async (req, res) => {
 // @route   GET /api/teams
 exports.getAllTeams = async (req, res) => {
     try {
-        // REMOVED .populate() because eventId and captainId are now Strings
         const teams = await Team.find();
         res.status(200).json(teams);
     } catch (error) {
@@ -40,21 +38,52 @@ exports.getAllTeams = async (req, res) => {
 // @route   PUT /api/teams/:id/status
 exports.updateTeamStatus = async (req, res) => {
     try {
-        const { id } = req.params; // Gets the team ID from the URL
-        const { status } = req.body; // Gets the new status ('Approved' or 'Rejected') from the frontend
+        const { id } = req.params;
+        const { status } = req.body;
 
         const updatedTeam = await Team.findByIdAndUpdate(
             id, 
             { status }, 
-            { new: true, runValidators: true } // Returns the updated team and checks the schema rules
+            { new: true, runValidators: true }
         );
 
-        if (!updatedTeam) {
-            return res.status(404).json({ message: 'Team not found' });
-        }
-
+        if (!updatedTeam) return res.status(404).json({ message: 'Team not found' });
         res.status(200).json(updatedTeam);
     } catch (error) {
         res.status(500).json({ message: 'Error updating team status', error: error.message });
+    }
+};
+
+// @desc    Update team details (NEW: For Coaches)
+// @route   PUT /api/teams/:id
+exports.updateTeam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { teamName } = req.body;
+
+        const updatedTeam = await Team.findByIdAndUpdate(
+            id,
+            { teamName },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedTeam) return res.status(404).json({ message: 'Team not found' });
+        res.status(200).json(updatedTeam);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating team', error: error.message });
+    }
+};
+
+// @desc    Delete a team (NEW: For Coaches)
+// @route   DELETE /api/teams/:id
+exports.deleteTeam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedTeam = await Team.findByIdAndDelete(id);
+
+        if (!deletedTeam) return res.status(404).json({ message: 'Team not found' });
+        res.status(200).json({ message: 'Team deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting team', error: error.message });
     }
 };
