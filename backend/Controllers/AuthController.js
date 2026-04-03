@@ -36,6 +36,7 @@ const buildAuthResponse = (user) => {
     token,
     role: normalizedRole,
     fullName: user.fullName,
+    studentId: user.studentId || "",
     email: user.email,
   };
 };
