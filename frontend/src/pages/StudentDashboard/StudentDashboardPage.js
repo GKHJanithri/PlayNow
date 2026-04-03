@@ -272,62 +272,80 @@ const StudentDashboardPage = () => {
             </div>
           </section>
 
-         {/* Reservation Board/Card */}
-         <div className="reservation-board" style={{ marginTop: 24 }}>
-           <h2 style={{ marginBottom: 12, color: '#1a73e8' }}>My Reservations</h2>
-           {!reservationsLoading && !reservationsError && itemReservations.length === 0 && (
-             <div className="student-empty-update">No reservations yet.</div>
-           )}
-           <div className="item-grid">
-             {!reservationsLoading && !reservationsError && itemReservations.map((res) => (
-               <div key={res._id} className="equipment-card" style={{ minWidth: 280 }}>
-                 <div className="equipment-header">
-                   <h3>{res.item_name}</h3>
-                   <span className="sport-tag">{res.item_category || 'Sports'}</span>
-                 </div>
-                 <div className="availability-row">
-                   <span>Quantity:</span>
-                   <strong>{res.item_quantity_reserved}</strong>
-                 </div>
-                 <div className="condition-row">
-                   <span>Purpose:</span>
-                   <span>{res.item_reservation_purpose}</span>
-                 </div>
-                 <div className="availability-row">
-                   <span>Borrow:</span>
-                   <strong>{res.item_reservation_date ? new Date(res.item_reservation_date).toLocaleDateString() : '-'}</strong>
-                 </div>
-                 <div className="availability-row">
-                   <span>Return:</span>
-                   <strong>{res.item_reservation_return_date ? new Date(res.item_reservation_return_date).toLocaleDateString() : '-'}</strong>
-                 </div>
-                 <div className="condition-row">
-                   <span>Status:</span>
-                   <span style={{ color: res.item_reservation_status === 'Returned' ? '#16a34a' : '#1a73e8' }}>{res.item_reservation_status || 'Active'}</span>
-                 </div>
-                 {res.item_reservation_status === 'Reserved' && (
-                   <button
-                     className="cancel-btn"
-                     style={{ marginTop: 10, width: '100%' }}
-                     onClick={async () => {
-                       try {
-                         await fetch(
-                           `http://localhost:5000/items/${res._id}/cancelreservedItem`,
-                           { method: 'DELETE' }
-                         );
-                         setItemReservations((prev) => prev.filter((r) => r._id !== res._id));
-                       } catch (err) {
-                         alert('Cancel failed');
-                       }
-                     }}
-                   >
-                     Cancel Reservation
-                   </button>
-                 )}
-               </div>
-             ))}
-           </div>
-         </div>
+          {/* Updates Panel with Reservation Board/Card */}
+          <aside className="student-updates-panel" aria-labelledby="student-updates-title">
+            <h2 id="student-updates-title">Recent Updates</h2>
+            <div className="student-update-list">
+              {notifications.length === 0 && (
+                <div className="student-empty-update">No updates yet. New notifications will appear here.</div>
+              )}
+              {notifications.slice(0, 6).map((note) => (
+                <article key={note.id} className="student-update-item">
+                  <span className="student-update-dot" aria-hidden="true" />
+                  <div>
+                    <h3>{note.title}</h3>
+                    <p>{note.message}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            {/* Reservation Board/Card inside updates panel */}
+            <div className="reservation-board" style={{ marginTop: 24 }}>
+              <h2 style={{ marginBottom: 12, color: '#1a73e8' }}>My Reservations</h2>
+              {!reservationsLoading && !reservationsError && itemReservations.length === 0 && (
+                <div className="student-empty-update">No reservations yet.</div>
+              )}
+              <div className="item-grid">
+                {!reservationsLoading && !reservationsError && itemReservations.map((res) => (
+                  <div key={res._id} className="equipment-card" style={{ minWidth: 280 }}>
+                    <div className="equipment-header">
+                      <h3>{res.item_name}</h3>
+                      <span className="sport-tag">{res.item_category || 'Sports'}</span>
+                    </div>
+                    <div className="availability-row">
+                      <span>Quantity:</span>
+                      <strong>{res.item_quantity_reserved}</strong>
+                    </div>
+                    <div className="condition-row">
+                      <span>Purpose:</span>
+                      <span>{res.item_reservation_purpose}</span>
+                    </div>
+                    <div className="availability-row">
+                      <span>Borrow:</span>
+                      <strong>{res.item_reservation_date ? new Date(res.item_reservation_date).toLocaleDateString() : '-'}</strong>
+                    </div>
+                    <div className="availability-row">
+                      <span>Return:</span>
+                      <strong>{res.item_reservation_return_date ? new Date(res.item_reservation_return_date).toLocaleDateString() : '-'}</strong>
+                    </div>
+                    <div className="condition-row">
+                      <span>Status:</span>
+                      <span style={{ color: res.item_reservation_status === 'Returned' ? '#16a34a' : '#1a73e8' }}>{res.item_reservation_status || 'Active'}</span>
+                    </div>
+                    {res.item_reservation_status === 'Reserved' && (
+                      <button
+                        className="cancel-btn"
+                        style={{ marginTop: 10, width: '100%' }}
+                        onClick={async () => {
+                          try {
+                            await fetch(
+                              `http://localhost:5000/items/${res._id}/cancelreservedItem`,
+                              { method: 'DELETE' }
+                            );
+                            setItemReservations((prev) => prev.filter((r) => r._id !== res._id));
+                          } catch (err) {
+                            alert('Cancel failed');
+                          }
+                        }}
+                      >
+                        Cancel Reservation
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
