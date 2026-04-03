@@ -1,0 +1,294 @@
+.admin-dashboard-page {
+	--dash-ink: #0f2341;
+	--dash-subtle: #49617e;
+	--dash-surface: rgba(255, 255, 255, 0.86);
+	--dash-line: rgba(160, 184, 214, 0.4);
+	--dash-shadow: 0 16px 34px rgba(12, 30, 58, 0.1);
+	--dash-chip-bg: rgba(30, 100, 196, 0.12);
+	--dash-chip-text: #1f5fb3;
+	--dash-btn: #0e63d4;
+	--dash-btn-hover: #0b4faa;
+
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	max-width: none;
+	min-height: auto;
+	gap: 1rem;
+	padding: clamp(1.1rem, 2.4vw, 1.8rem);
+	border-radius: 26px;
+	border: 1px solid #dae7f7;
+	background:
+		radial-gradient(800px 320px at -5% -4%, rgba(14, 99, 212, 0.18), transparent 60%),
+		radial-gradient(760px 300px at 105% 0%, rgba(16, 185, 129, 0.16), transparent 60%),
+		linear-gradient(160deg, #f4faff 0%, #f6fbff 42%, #f2fbf8 100%);
+	box-shadow: var(--dash-shadow);
+}
+
+.admin-dashboard-page::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: repeating-linear-gradient(
+		120deg,
+		rgba(255, 255, 255, 0.14) 0,
+		rgba(255, 255, 255, 0.14) 24px,
+		rgba(255, 255, 255, 0) 24px,
+		rgba(255, 255, 255, 0) 52px
+	);
+	opacity: 0.35;
+}
+
+.admin-dashboard-header {
+	position: relative;
+	z-index: 1;
+	margin-bottom: 0.2rem;
+}
+
+.admin-dashboard-header .page-title {
+	margin: 0;
+	font-size: clamp(2rem, 3.2vw, 3rem);
+	line-height: 1.08;
+	letter-spacing: -0.025em;
+	color: var(--dash-ink);
+}
+
+.admin-dashboard-eyebrow {
+	margin: 0 0 0.7rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.34rem 0.82rem;
+	border-radius: 999px;
+	border: 1px solid rgba(30, 100, 196, 0.2);
+	background: var(--dash-chip-bg);
+	color: var(--dash-chip-text);
+	font-size: 0.86rem;
+	font-weight: 800;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.admin-dashboard-subtitle {
+	margin: 0.65rem 0 0;
+	max-width: 62ch;
+	font-size: clamp(1rem, 1.55vw, 1.12rem);
+	line-height: 1.62;
+	color: var(--dash-subtle);
+}
+
+.admin-module-grid {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 0.95rem;
+}
+
+.admin-module-card {
+	position: relative;
+	overflow: hidden;
+	border-radius: 20px;
+	border: 1px solid var(--dash-line);
+	background: var(--dash-surface);
+	box-shadow: 0 14px 28px rgba(15, 35, 65, 0.1);
+	backdrop-filter: blur(8px);
+	transform: translateY(0);
+	transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.admin-module-card:hover {
+	transform: translateY(-6px);
+	border-color: rgba(89, 142, 213, 0.5);
+	box-shadow: 0 22px 34px rgba(15, 35, 65, 0.14);
+}
+
+.admin-module-card::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 5px;
+	border-radius: 20px 0 0 20px;
+	background: #91abd0;
+}
+
+.admin-module-media {
+	position: relative;
+	height: 185px;
+	overflow: hidden;
+}
+
+.admin-module-media::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(3, 15, 31, 0.22) 100%);
+}
+
+.admin-module-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 300ms ease;
+}
+
+.admin-module-card:hover .admin-module-image {
+	transform: scale(1.06);
+}
+
+.admin-module-badge {
+	position: absolute;
+	left: 0.92rem;
+	bottom: 0.92rem;
+	z-index: 1;
+	width: 46px;
+	height: 46px;
+	border-radius: 14px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff;
+	font-size: 1.2rem;
+	font-weight: 800;
+	box-shadow: 0 10px 20px rgba(15, 35, 65, 0.28);
+}
+
+.admin-module-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.72rem;
+	padding: 0.92rem 0.95rem 1rem;
+}
+
+.admin-module-chip {
+	align-self: flex-start;
+	padding: 0.28rem 0.74rem;
+	border-radius: 999px;
+	border: 1px solid rgba(30, 100, 196, 0.2);
+	background: #edf4ff;
+	color: #205ca9;
+	font-size: 0.79rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.admin-module-card h3 {
+	margin: 0;
+	color: var(--dash-ink);
+	font-size: 2rem;
+	letter-spacing: -0.01em;
+}
+
+.admin-module-card p {
+	margin: 0;
+	color: var(--dash-subtle);
+	line-height: 1.6;
+	min-height: 58px;
+}
+
+.admin-module-card .btn {
+	align-self: flex-start;
+	padding: 0.62rem 1.35rem;
+	border-width: 1.5px;
+	font-weight: 700;
+}
+
+.admin-module-card .btn-secondary {
+	color: var(--dash-btn);
+	border-color: var(--dash-btn);
+	background: rgba(255, 255, 255, 0.88);
+}
+
+.admin-module-card .btn-secondary:hover {
+	color: #ffffff;
+	border-color: var(--dash-btn-hover);
+	background: var(--dash-btn-hover);
+}
+
+.admin-module-card.module-event::before,
+.admin-module-card.module-event .admin-module-badge {
+	background: linear-gradient(160deg, #0d6fe3, #2463eb);
+}
+
+.admin-module-card.module-facility::before,
+.admin-module-card.module-facility .admin-module-badge {
+	background: linear-gradient(160deg, #0f8b8d, #0f766e);
+}
+
+.admin-module-card.module-items::before,
+.admin-module-card.module-items .admin-module-badge {
+	background: linear-gradient(160deg, #6d3cf0, #8b5cf6);
+}
+
+.admin-module-card.module-teams::before,
+.admin-module-card.module-teams .admin-module-badge {
+	background: linear-gradient(160deg, #ea580c, #f97316);
+}
+
+.admin-module-card {
+	animation: dashboardCardIn 520ms ease both;
+}
+
+.admin-module-card:nth-child(2) {
+	animation-delay: 80ms;
+}
+
+.admin-module-card:nth-child(3) {
+	animation-delay: 140ms;
+}
+
+.admin-module-card:nth-child(4) {
+	animation-delay: 200ms;
+}
+
+@keyframes dashboardCardIn {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (max-width: 760px) {
+	.admin-dashboard-page {
+		padding: 1rem;
+		border-radius: 18px;
+	}
+
+	.admin-dashboard-header .page-title {
+		font-size: 1.9rem;
+	}
+
+	.admin-module-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-module-media {
+		height: 168px;
+	}
+
+	.admin-module-card .btn {
+		width: 100%;
+		text-align: center;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.admin-module-card {
+		animation: none;
+	}
+
+	.admin-module-card,
+	.admin-module-image,
+	.admin-module-card .btn {
+		transition: none;
+	}
+}

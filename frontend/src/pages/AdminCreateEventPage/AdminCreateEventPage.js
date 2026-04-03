@@ -7,11 +7,16 @@ import './AdminCreateEventPage.css';
 const sportOptions = ['Football', 'Basketball', 'Volleyball', 'Tennis', 'Cricket', 'Badminton', 'Netball','Swimming'];
 const tournamentOptions = ['Knockout', 'RoundRobin'];
 
+const toLocalDateTimeInput = (date) => {
+  const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+};
+
 const AdminCreateEventPage = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: '',
-    sportType: sportOptions[0],
+    sportType: 'Cricket',
     tournamentType: tournamentOptions[0],
     venue: '',
     startDate: '',
@@ -59,6 +64,12 @@ const AdminCreateEventPage = () => {
     if (!form.title.trim()) nextErrors.title = 'Title is required.';
     if (!form.venue.trim()) nextErrors.venue = 'Venue is required.';
     if (!form.startDate) nextErrors.startDate = 'Start date is required.';
+    if (form.startDate) {
+      const selectedTime = new Date(form.startDate).getTime();
+      if (!Number.isNaN(selectedTime) && selectedTime < Date.now()) {
+        nextErrors.startDate = 'Start date cannot be in the past.';
+      }
+    }
     if (selectedTeams.length < 2) nextErrors.teams = 'Select at least two registered teams.';
     return nextErrors;
   }, [form, selectedTeams]);
@@ -71,18 +82,25 @@ const AdminCreateEventPage = () => {
     try {
       setSubmitting(true);
       setStatus('');
-      await apiClient.post('/events', {
+      const { data } = await apiClient.post('/events', {
         ...form,
         teams: selectedTeams,
       });
+      const createdEventId = data?._id || data?.id || data?.event?._id || data?.event?.id;
       addNotification({
         title: 'New Event Created',
         message: `${form.title} (${form.sportType}) was created for ${form.startDate || 'a scheduled date'}.`,
         icon: 'fa-calendar-check',
         role: 'Admin',
       });
-      setStatus('Event created successfully. Redirecting...');
-      setTimeout(() => navigate('/events'), 800);
+      setStatus('Event created successfully. Redirecting to fixtures...');
+      setTimeout(() => {
+        if (createdEventId) {
+          navigate(`/admin/events/${createdEventId}/manage`);
+          return;
+        }
+        navigate('/events');
+      }, 800);
     } catch (err) {
       setStatus(err.response?.data?.message || 'Failed to create event.');
     } finally {
@@ -147,6 +165,7 @@ const AdminCreateEventPage = () => {
               id="startDate"
               name="startDate"
               type="datetime-local"
+              min={toLocalDateTimeInput(new Date())}
               value={form.startDate}
               onChange={handleChange}
             />
@@ -156,9 +175,7 @@ const AdminCreateEventPage = () => {
 
         <div className="ace-field ace-teams-wrap">
           <label>Registered Teams</label>
-          <small className="ace-meta">
-            Teams are managed in the Team Registration module.
-          </small>
+          
 
           {teamsLoading && <div className="ace-state">Loading registered teams...</div>}
           {!teamsLoading && teamsError && <div className="ace-state ace-state-error">{teamsError}</div>}
@@ -192,6 +209,13 @@ const AdminCreateEventPage = () => {
         </div>
 
         <div className="ace-actions">
+          <button 
+            type="button" 
+            className="ace-secondary" 
+            onClick={() => navigate('/events')}
+          >
+            View Upcoming Events
+          </button>
           <button type="submit" className="ace-submit" disabled={submitting}>
             {submitting ? 'Saving...' : 'Create Event'}
           </button>

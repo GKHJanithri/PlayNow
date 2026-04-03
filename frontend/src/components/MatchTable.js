@@ -26,6 +26,12 @@ const asDateInputValue = (value) => {
   return date.toISOString().slice(0, 16);
 };
 
+const formatTeamLabel = (team) => {
+  if (!team) return 'TBD';
+  if (typeof team === 'string') return team;
+  return team.teamName || team.name || team._id || 'TBD';
+};
+
 const MatchTable = ({
   matches = [],
   editableSchedule = false,
@@ -67,20 +73,21 @@ const MatchTable = ({
           {matches.map((match, index) => {
             const matchId = match._id || match.id;
             const safeId = matchId ?? index;
+            const scheduleValue = match.matchDateTime || match.schedule;
             return (
               <tr key={matchId || `${match.teamA}-${match.teamB}-${index}`}>
-                <td>{match.teamA}</td>
-                <td>{match.teamB}</td>
+                <td>{formatTeamLabel(match.teamA)}</td>
+                <td>{formatTeamLabel(match.teamB)}</td>
                 <td>
                   {editableSchedule ? (
                     <input
                       type="datetime-local"
                       className="inline-input"
-                      value={asDateInputValue(match.schedule)}
-                      onChange={(event) => onChangeMatch(safeId, 'schedule', event.target.value)}
+                      value={asDateInputValue(scheduleValue)}
+                      onChange={(event) => onChangeMatch(safeId, 'matchDateTime', event.target.value)}
                     />
                   ) : (
-                    formatDateTime(match.schedule)
+                    formatDateTime(scheduleValue)
                   )}
                 </td>
                 <td>
@@ -128,7 +135,7 @@ const MatchTable = ({
                     </td>
                   </>
                 )}
-                {showWinner && <td>{match.winner || '-'}</td>}
+                {showWinner && <td>{formatTeamLabel(match.winner) || '-'}</td>}
               </tr>
             );
           })}

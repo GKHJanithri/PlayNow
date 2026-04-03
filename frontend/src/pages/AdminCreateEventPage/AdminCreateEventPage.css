@@ -138,6 +138,31 @@
 .ace-actions {
 	display: flex;
 	justify-content: flex-end;
+	gap: 1rem;
+}
+
+.ace-secondary {
+	border: 1.5px solid var(--ace-focus);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--ace-focus);
+	font-weight: 700;
+	font-size: 1.04rem;
+	padding: 0.82rem 1.65rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.ace-secondary:hover {
+	background: var(--ace-focus);
+	color: #ffffff;
+	transform: translateY(-1px);
+}
+
+.ace-secondary:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
+	transform: none;
 }
 
 .ace-submit {

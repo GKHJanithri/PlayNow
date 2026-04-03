@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import apiClient from '../api/client';
+import './AdminMatchScoringPage.css';
 
 const initialScoreState = {
   scoreA: 0,
@@ -51,6 +52,8 @@ const AdminMatchScoringPage = () => {
   const [error, setError] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [isCricketEvent, setIsCricketEvent] = useState(false);
+  const [battingTeamPlayers, setBattingTeamPlayers] = useState([]);
+  const [bowlingTeamPlayers, setBowlingTeamPlayers] = useState([]);
 
   useEffect(() => {
     const fetchMatch = async () => {
@@ -63,6 +66,28 @@ const AdminMatchScoringPage = () => {
           setIsCricketEvent(isCricketSport(eventData?.sportType));
         }
         setMatch(data);
+        
+        // Fetch players for both teams
+        if (data?.teamA?._id || data?.teamA?.id) {
+          try {
+            const teamAResponse = await apiClient.get(`/teams/${data.teamA._id || data.teamA.id}`);
+            const teamAPlayers = teamAResponse.data?.players || teamAResponse.data?.team?.players || [];
+            setBattingTeamPlayers(teamAPlayers);
+          } catch (e) {
+            console.log('Could not fetch Team A players');
+          }
+        }
+        
+        if (data?.teamB?._id || data?.teamB?.id) {
+          try {
+            const teamBResponse = await apiClient.get(`/teams/${data.teamB._id || data.teamB.id}`);
+            const teamBPlayers = teamBResponse.data?.players || teamBResponse.data?.team?.players || [];
+            setBowlingTeamPlayers(teamBPlayers);
+          } catch (e) {
+            console.log('Could not fetch Team B players');
+          }
+        }
+        
         setScoreState({
           scoreA: data.scoreA ?? 0,
           scoreB: data.scoreB ?? 0,
@@ -117,32 +142,6 @@ const AdminMatchScoringPage = () => {
     });
   };
 
-  const addExtra = (type) => {
-    updateForBall((next) => {
-      if (next.battingSide === 'A') {
-        next.scoreA += 1;
-        if (type === 'B' || type === 'LB') next.ballsA += 1;
-      } else {
-        next.scoreB += 1;
-        if (type === 'B' || type === 'LB') next.ballsB += 1;
-      }
-      next.thisOver.push(type);
-    });
-  };
-
-  const addWicket = () => {
-    updateForBall((next) => {
-      if (next.battingSide === 'A') {
-        next.wicketsA += 1;
-        next.ballsA += 1;
-      } else {
-        next.wicketsB += 1;
-        next.ballsB += 1;
-      }
-      next.thisOver.push('W');
-    });
-  };
-
   const handleUndo = () => {
     setSnapshotStack((prev) => {
       if (prev.length === 0) return prev;
@@ -150,6 +149,22 @@ const AdminMatchScoringPage = () => {
       setScoreState(last);
       return prev.slice(0, -1);
     });
+  };
+
+  const handleRetire = () => {
+    pushSnapshot();
+    setScoreState((prev) => ({ ...prev, striker: '' }));
+    setStatusMessage('Batsman retired. Enter new batsman name.');
+  };
+
+  const handleSwapBatsman = () => {
+    pushSnapshot();
+    setScoreState((prev) => ({
+      ...prev,
+      striker: prev.nonStriker,
+      nonStriker: prev.striker,
+    }));
+    setStatusMessage('Batsmen swapped.');
   };
 
   const handleStartMatch = () => {
@@ -230,45 +245,81 @@ const AdminMatchScoringPage = () => {
       </div>
 
       {scoreState.status === 'scheduled' && (
-        <div className="form-panel">
-          <h3 style={{ margin: 0 }}>Select Opening Players</h3>
-          <div className="form-grid">
-            <div className="form-field">
-              <label htmlFor="striker">Striker</label>
-              <input
-                id="striker"
-                type="text"
+        <div className="cricket-scorer">
+          <div className="opening-players-form">
+            <h3 className="form-title">Select Opening Players</h3>
+            
+            <div className="player-input-group">
+              <label htmlFor="striker-init">Striker ({scoreState.battingSide === 'A' ? teamAName : teamBName})</label>
+              <select
+                id="striker-init"
                 value={scoreState.striker}
                 onChange={(event) =>
                   setScoreState((prev) => ({ ...prev, striker: event.target.value }))
                 }
-              />
+              >
+                <option value="">Select Player</option>
+                {battingTeamPlayers.length > 0 ? (
+                  battingTeamPlayers.map((player) => (
+                    <option key={player._id || player.id} value={player.name || player.playerName || player._id}>
+                      {player.name || player.playerName}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No players available</option>
+                )}
+              </select>
             </div>
-            <div className="form-field">
-              <label htmlFor="nonStriker">Non-striker</label>
-              <input
-                id="nonStriker"
-                type="text"
+
+            <div className="player-input-group">
+              <label htmlFor="nonStriker-init">Non-striker ({scoreState.battingSide === 'A' ? teamAName : teamBName})</label>
+              <select
+                id="nonStriker-init"
                 value={scoreState.nonStriker}
                 onChange={(event) =>
                   setScoreState((prev) => ({ ...prev, nonStriker: event.target.value }))
                 }
-              />
+              >
+                <option value="">Select Player</option>
+                {battingTeamPlayers.length > 0 ? (
+                  battingTeamPlayers.map((player) => (
+                    <option key={player._id || player.id} value={player.name || player.playerName || player._id}>
+                      {player.name || player.playerName}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No players available</option>
+                )}
+              </select>
             </div>
-            <div className="form-field">
-              <label htmlFor="bowler">Opening Bowler</label>
-              <input
-                id="bowler"
-                type="text"
+
+            <div className="player-input-group">
+              <label htmlFor="bowler-init">Opening Bowler ({scoreState.battingSide === 'A' ? teamBName : teamAName})</label>
+              <select
+                id="bowler-init"
                 value={scoreState.bowler}
                 onChange={(event) =>
                   setScoreState((prev) => ({ ...prev, bowler: event.target.value }))
                 }
-              />
+              >
+                <option value="">Select Player</option>
+                {bowlingTeamPlayers.length > 0 ? (
+                  bowlingTeamPlayers.map((player) => (
+                    <option key={player._id || player.id} value={player.name || player.playerName || player._id}>
+                      {player.name || player.playerName}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No players available</option>
+                )}
+              </select>
             </div>
-          </div>
-          <div className="form-actions">
-            <button type="button" className="btn btn-primary" onClick={handleStartMatch}>
+
+            <button 
+              type="button" 
+              className="btn-start-match" 
+              onClick={handleStartMatch}
+            >
               Start Match
             </button>
           </div>
@@ -277,94 +328,151 @@ const AdminMatchScoringPage = () => {
 
       {scoreState.status !== 'scheduled' && (
         <>
-          <div className="form-panel">
-            <div className="form-grid">
-              <div className="form-field">
-                <label htmlFor="battingSide">Batting Team</label>
-                <select
-                  id="battingSide"
-                  value={scoreState.battingSide}
-                  onChange={(event) =>
-                    setScoreState((prev) => ({ ...prev, battingSide: event.target.value }))
-                  }
-                >
-                  <option value="A">{teamAName}</option>
-                  <option value="B">{teamBName}</option>
-                </select>
-              </div>
-              <div className="form-field">
-                <label htmlFor="strikerLive">Striker</label>
-                <input
-                  id="strikerLive"
-                  type="text"
-                  value={scoreState.striker}
-                  onChange={(event) =>
-                    setScoreState((prev) => ({ ...prev, striker: event.target.value }))
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="nonStrikerLive">Non-striker</label>
-                <input
-                  id="nonStrikerLive"
-                  type="text"
-                  value={scoreState.nonStriker}
-                  onChange={(event) =>
-                    setScoreState((prev) => ({ ...prev, nonStriker: event.target.value }))
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="bowlerLive">Bowler</label>
-                <input
-                  id="bowlerLive"
-                  type="text"
-                  value={scoreState.bowler}
-                  onChange={(event) =>
-                    setScoreState((prev) => ({ ...prev, bowler: event.target.value }))
-                  }
-                />
+          <div className="cricket-scorer">
+            <div className="scorer-header">
+              <div className="inning-info">
+                <div className="team-badge">{scoreState.battingSide}, 1st inning</div>
+                <div className="current-rate">CRR: {scoreState.ballsA > 0 ? (scoreState.scoreA / (scoreState.ballsA / 6)).toFixed(2) : '0.00'}</div>
               </div>
             </div>
 
-            <div className="over-strip">
-              <strong>This over:</strong> {scoreState.thisOver.length ? scoreState.thisOver.join(' ') : '-'}
+            <div className="score-card">
+              <div className="score-main">
+                <h2 className="score-display">{scoreState.scoreA} - {scoreState.scoreB}</h2>
+                <p className="score-meta">({scoreState.wicketsA} - {scoreState.wicketsB})</p>
+              </div>
             </div>
 
-            <div className="score-action-grid">
+            <div className="batter-box">
+              <div className="player-section">
+                <h4 className="player-label">Batsman</h4>
+                <table className="stats-table">
+                  <thead>
+                    <tr>
+                      <td>Name</td>
+                      <td>R</td>
+                      <td>B</td>
+                      <td>4s</td>
+                      <td>6s</td>
+                      <td>SR</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="player-name">{scoreState.striker || 'Not selected'}*</td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                    </tr>
+                    <tr>
+                      <td className="player-name">{scoreState.nonStriker || 'Not selected'}</td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="player-section">
+                <h4 className="player-label">Bowler</h4>
+                <table className="stats-table">
+                  <thead>
+                    <tr>
+                      <td>Name</td>
+                      <td>O</td>
+                      <td>M</td>
+                      <td>R</td>
+                      <td>W</td>
+                      <td>ER</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="player-name">{scoreState.bowler || 'Not selected'}</td>
+                      <td>0.0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="this-over-section">
+              <h4>This over:</h4>
+              <div className="over-balls">
+                {scoreState.thisOver.length > 0 ? (
+                  scoreState.thisOver.map((ball, idx) => (
+                    <span key={idx} className={`over-ball ball-${ball}`}>{ball}</span>
+                  ))
+                ) : (
+                  <span className="over-empty">—</span>
+                )}
+              </div>
+            </div>
+
+            <div className="extras-options">
+              <label>
+                <input type="checkbox" /> <span>Wide</span>
+              </label>
+              <label>
+                <input type="checkbox" /> <span>No Ball</span>
+              </label>
+              <label>
+                <input type="checkbox" /> <span>Byes</span>
+              </label>
+              <label>
+                <input type="checkbox" /> <span>Leg Byes</span>
+              </label>
+              <label>
+                <input type="checkbox" /> <span>Wicket</span>
+              </label>
+            </div>
+
+            <div className="action-buttons">
+              <button type="button" className="btn btn-action retire-btn" onClick={handleRetire}>
+                Retire
+              </button>
+              <button type="button" className="btn btn-action swap-btn" onClick={handleSwapBatsman}>
+                Swap Batsman
+              </button>
+            </div>
+
+            <div className="undo-extras">
+              <button type="button" className="btn btn-undo" onClick={handleUndo}>
+                Undo
+              </button>
+              <div></div>
+            </div>
+
+            <div className="runs-grid">
               {[0, 1, 2, 3, 4, 5, 6].map((run) => (
-                <button key={run} type="button" className="score-btn" onClick={() => addRuns(run)}>
+                <button
+                  key={run}
+                  type="button"
+                  className="run-btn"
+                  onClick={() => addRuns(run)}
+                >
                   {run}
                 </button>
               ))}
-              <button type="button" className="score-btn" onClick={addWicket}>
-                W
-              </button>
-            </div>
-
-            <div className="extras-row">
-              <button type="button" className="btn btn-secondary" onClick={() => addExtra('WD')}>
-                Wide
-              </button>
-              <button type="button" className="btn btn-secondary" onClick={() => addExtra('NB')}>
-                No Ball
-              </button>
-              <button type="button" className="btn btn-secondary" onClick={() => addExtra('B')}>
-                Byes
-              </button>
-              <button type="button" className="btn btn-secondary" onClick={() => addExtra('LB')}>
-                Leg Byes
+              <button type="button" className="run-btn dots-btn" onClick={() => {}}>
+                ...
               </button>
             </div>
 
             <div className="form-actions">
-              <button type="button" className="btn btn-secondary" onClick={handleUndo}>
-                Undo
+              <button type="button" className="btn btn-secondary" onClick={() => handleSave(false)} disabled={saving}>
+                {saving ? 'Saving...' : 'Save'}
               </button>
-              <button type="button" className="btn btn-primary" onClick={() => handleSave(false)} disabled={saving}>
-                {saving ? 'Saving...' : 'Save Score'}
-              </button>
-              <button type="button" className="btn btn-danger" onClick={() => handleSave(true)} disabled={saving}>
+              <button type="button" className="btn btn-primary" onClick={() => handleSave(true)} disabled={saving}>
                 Complete Match
               </button>
             </div>

@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '../api/client';
 import MatchTable from '../components/MatchTable';
 
+const normalizeFixtures = (payload) => {
+  const fixtures = payload?.fixtures || payload || [];
+  return Array.isArray(fixtures) ? fixtures : [];
+};
+
 const AdminManageFixturesPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -15,8 +22,9 @@ const AdminManageFixturesPage = () => {
     const fetchFixtures = async () => {
       try {
         setLoading(true);
+        setError('');
         const { data } = await apiClient.get(`/events/${id}/fixtures`);
-        setMatches(data?.fixtures || []);
+        setMatches(normalizeFixtures(data));
       } catch (err) {
         setError(err.response?.data?.message || 'Unable to load fixtures.');
       } finally {
@@ -31,7 +39,7 @@ const AdminManageFixturesPage = () => {
     try {
       setFeedback('');
       const { data } = await apiClient.post(`/events/${id}/fixtures/generate`);
-      setMatches(data?.fixtures || []);
+      setMatches(normalizeFixtures(data));
       setFeedback('Fixtures generated successfully.');
     } catch (err) {
       setFeedback(err.response?.data?.message || 'Could not generate fixtures.');
@@ -54,8 +62,16 @@ const AdminManageFixturesPage = () => {
     try {
       setSaving(true);
       setFeedback('');
-      await apiClient.put(`/events/${id}/fixtures`, { fixtures: matches });
+      const payload = matches.map((match) => ({
+        _id: match._id || match.id,
+        matchDateTime: match.matchDateTime || match.schedule,
+        venue: match.venue,
+        round: match.round,
+      }));
+      const { data } = await apiClient.put(`/events/${id}/fixtures`, { fixtures: payload });
+      setMatches(normalizeFixtures(data));
       setFeedback('Schedule saved successfully.');
+      setTimeout(() => navigate(`/events/${id}`), 600);
     } catch (err) {
       setFeedback(err.response?.data?.message || 'Failed to save schedule.');
     } finally {
@@ -72,28 +88,34 @@ const AdminManageFixturesPage = () => {
   }
 
   return (
-    <section className="page">
-      <div className="page-header">
-        <h1 className="page-title">Manage Fixtures</h1>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-secondary" onClick={handleGenerate}>
-            Generate Fixtures
-          </button>
-          <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? 'Saving...' : 'Save Schedule'}
-          </button>
+    <section className="page event-module-page">
+        <div className="event-top-nav">
+          <Link to="/events" className="btn btn-secondary">
+            Back to Upcoming Events
+          </Link>
         </div>
-      </div>
 
-      <MatchTable
-        matches={matches}
-        editableSchedule
-        editableVenue
-        onChangeMatch={handleChangeMatch}
-        emptyLabel="No fixtures yet. Generate to get started."
-      />
+        <div className="page-header">
+          <h1 className="page-title">Manage Fixtures</h1>
+          <div className="event-header-actions">
+            <button type="button" className="btn btn-secondary" onClick={handleGenerate}>
+              Generate Fixtures
+            </button>
+            <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
+              {saving ? 'Saving...' : 'Save Schedule'}
+            </button>
+          </div>
+        </div>
 
-      {feedback && <div className="status-text">{feedback}</div>}
+        <MatchTable
+          matches={matches}
+          editableSchedule
+          editableVenue
+          onChangeMatch={handleChangeMatch}
+          emptyLabel="No fixtures yet. Generate to get started."
+        />
+
+        {feedback && <div className="status-text">{feedback}</div>}
     </section>
   );
 };

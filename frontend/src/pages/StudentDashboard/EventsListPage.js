@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import EventCard from '../../components/EventCard';
 import apiClient from '../../api/client';
 
 const EventsListPage = () => {
+  const role = localStorage.getItem('role') || 'Guest';
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -43,16 +45,26 @@ const EventsListPage = () => {
   }, [events, searchTerm]);
 
   return (
-    <section className="page">
+    <section className="page events-list-page">
       <div className="page-header">
-        <h1 className="page-title">Upcoming Events</h1>
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search by title or sport"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-          />
+        <div className="events-header-copy">
+          <h1 className="page-title events-list-title">Upcoming Events</h1>
+          <p className="events-list-subtitle">Track upcoming matches, fixtures, and tournament timelines.</p>
+        </div>
+        <div className="events-header-actions">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search by title or sport"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </div>
+          {role === 'Admin' && (
+            <Link to="/admin/events/create" className="btn btn-primary">
+              Back to Create Event
+            </Link>
+          )}
         </div>
       </div>
 
