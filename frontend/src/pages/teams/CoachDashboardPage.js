@@ -16,12 +16,18 @@ export default function CoachDashboardPage() {
   const [editingTeam, setEditingTeam] = useState(null);
   const [editName, setEditName] = useState("");
 
+  // Utility to get the token for API requests
+  const getToken = () => localStorage.getItem('token');
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        const token = getToken();
+        const headers = { "Authorization": `Bearer ${token}` };
+
         const [teamsRes, agentsRes] = await Promise.all([
-          fetch("http://localhost:5000/api/teams"),
-          fetch("http://localhost:5000/api/free-agents")
+          fetch("http://localhost:5000/api/teams", { headers }),
+          fetch("http://localhost:5000/api/free-agents", { headers })
         ]);
 
         if (!teamsRes.ok || !agentsRes.ok) throw new Error("Failed to fetch data");
@@ -54,7 +60,12 @@ export default function CoachDashboardPage() {
   const updateTeamStatus = async (id, newStatus) => {
     try {
       const res = await fetch(`http://localhost:5000/api/teams/${id}/status`, {
-        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: newStatus })
+        method: "PUT", 
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getToken()}`
+        }, 
+        body: JSON.stringify({ status: newStatus })
       });
       if (!res.ok) throw new Error("Failed to update status");
       setTeams((prev) => prev.map((t) => t.id === id ? { ...t, status: newStatus } : t));
@@ -65,7 +76,12 @@ export default function CoachDashboardPage() {
   const updateAgentStatus = async (id, newStatus) => {
     try {
       const res = await fetch(`http://localhost:5000/api/free-agents/${id}/status`, {
-        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: newStatus })
+        method: "PUT", 
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getToken()}`
+        }, 
+        body: JSON.stringify({ status: newStatus })
       });
       if (!res.ok) throw new Error("Failed to update status");
       setAgents((prev) => prev.map((a) => a.id === id ? { ...a, status: newStatus } : a));
@@ -76,7 +92,10 @@ export default function CoachDashboardPage() {
   const deleteTeam = async (id) => {
     if (!window.confirm("Are you sure you want to permanently delete this team?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/teams/${id}`, { method: "DELETE" });
+      const res = await fetch(`http://localhost:5000/api/teams/${id}`, { 
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${getToken()}` }
+      });
       if (!res.ok) throw new Error("Failed to delete team");
       setTeams((prev) => prev.filter((t) => t.id !== id));
       toast.success("Team deleted successfully!");
@@ -87,7 +106,12 @@ export default function CoachDashboardPage() {
     if (!editName.trim()) return toast.error("Team name cannot be empty");
     try {
       const res = await fetch(`http://localhost:5000/api/teams/${editingTeam.id}`, {
-        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ teamName: editName })
+        method: "PUT", 
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getToken()}`
+        }, 
+        body: JSON.stringify({ teamName: editName })
       });
       if (!res.ok) throw new Error("Failed to update team");
       setTeams((prev) => prev.map((t) => t.id === editingTeam.id ? { ...t, name: editName } : t));
