@@ -1,15 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.5296076a.css",
-    "main.js": "/static/js/main.b6787844.js",
-    "static/js/453.20359781.chunk.js": "/static/js/453.20359781.chunk.js",
+    "main.css": "/static/css/main.87eff775.css",
+    "main.js": "/static/js/main.16ff31a7.js",
+    "static/js/453.825386d9.chunk.js": "/static/js/453.825386d9.chunk.js",
+    "static/media/Home background.mp4": "/static/media/Home background.b3addd3bd6400772960f.mp4",
+    "static/media/Stadium.jpg": "/static/media/Stadium.2bba858047e733acf44e.jpg",
+    "static/media/facility.jpg": "/static/media/facility.cfc9d33896baf90867a6.jpg",
+    "static/media/Event.jpg": "/static/media/Event.420206314d7c7d8ee2ba.jpg",
+    "static/media/Logo.jpeg": "/static/media/Logo.24af445249aae529df93.jpeg",
+    "static/media/Team.jpg": "/static/media/Team.12586c0386ccae4a3c32.jpg",
+    "static/media/equipment.jpg": "/static/media/equipment.a1efb122d558a17c66d1.jpg",
     "index.html": "/index.html",
-    "main.5296076a.css.map": "/static/css/main.5296076a.css.map",
-    "main.b6787844.js.map": "/static/js/main.b6787844.js.map",
-    "453.20359781.chunk.js.map": "/static/js/453.20359781.chunk.js.map"
+    "main.87eff775.css.map": "/static/css/main.87eff775.css.map",
+    "main.16ff31a7.js.map": "/static/js/main.16ff31a7.js.map",
+    "453.825386d9.chunk.js.map": "/static/js/453.825386d9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5296076a.css",
-    "static/js/main.b6787844.js"
+    "static/css/main.87eff775.css",
+    "static/js/main.16ff31a7.js"
   ]
 }

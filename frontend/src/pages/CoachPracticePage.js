@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import apiClient from '../api/client';
 import PracticeList from '../components/PracticeList';
-import { addNotification } from '../utils/notifications';
 
 const CoachPracticePage = () => {
   const { id } = useParams();
@@ -54,12 +53,6 @@ const CoachPracticePage = () => {
       const { data } = await apiClient.post(`/events/${id}/practice`, payload);
       const createdSession = data?.session || { ...payload, _id: Date.now() };
       setSessions((prev) => [createdSession, ...prev]);
-      addNotification({
-        title: 'New Practice Session',
-        message: `Coach scheduled a practice at ${payload.location} on ${new Date(payload.date).toLocaleString()}.`,
-        icon: 'fa-dumbbell',
-        role: 'Coach',
-      });
       setForm({ dateTime: '', location: '', notes: '' });
       setStatus('Practice session logged.');
     } catch (err) {

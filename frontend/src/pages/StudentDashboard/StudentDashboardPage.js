@@ -54,8 +54,11 @@ const StudentDashboardPage = () => {
   }, []);
 
   const displayName = user?.fullName || 'Student';
-  const reservationCount = Array.isArray(user?.reservations) ? user.reservations.length : 0;
+  const [itemReservations, setItemReservations] = useState([]);
+  const reservationCount = itemReservations.length;
   const myTeamsCount = Array.isArray(user?.teams) ? user.teams.length : 0;
+  const [reservationsLoading, setReservationsLoading] = useState(true);
+  const [reservationsError, setReservationsError] = useState('');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -76,6 +79,32 @@ const StudentDashboardPage = () => {
 
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      setReservationsLoading(true);
+      setReservationsError('');
+      try {
+        const studentId = user?._id || user?.id || localStorage.getItem('userId');
+        console.log('DEBUG: studentId used for reservation fetch:', studentId);
+        if (!studentId) {
+          setItemReservations([]);
+          setReservationsLoading(false);
+          return;
+        }
+        const response = await fetch(`http://localhost:5000/items/itemReservations?student_id=${studentId}`);
+        if (!response.ok) throw new Error('Failed to fetch reservations');
+        const data = await response.json();
+        setItemReservations(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setReservationsError('Could not load reservations.');
+        setItemReservations([]);
+      } finally {
+        setReservationsLoading(false);
+      }
+    };
+    fetchReservations();
+  }, [user]);
 
   const filteredEvents = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -243,6 +272,7 @@ const StudentDashboardPage = () => {
             </div>
           </section>
 
+          {/* Updates Panel with Reservation Board/Card */}
           <aside className="student-updates-panel" aria-labelledby="student-updates-title">
             <h2 id="student-updates-title">Recent Updates</h2>
             <div className="student-update-list">
@@ -258,6 +288,62 @@ const StudentDashboardPage = () => {
                   </div>
                 </article>
               ))}
+            </div>
+            {/* Reservation Board/Card inside updates panel */}
+            <div className="reservation-board" style={{ marginTop: 24 }}>
+              <h2 style={{ marginBottom: 12, color: '#1a73e8' }}>My Reservations</h2>
+              {!reservationsLoading && !reservationsError && itemReservations.length === 0 && (
+                <div className="student-empty-update">No reservations yet.</div>
+              )}
+              <div className="item-grid">
+                {!reservationsLoading && !reservationsError && itemReservations.map((res) => (
+                  <div key={res._id} className="equipment-card" style={{ minWidth: 280 }}>
+                    <div className="equipment-header">
+                      <h3>{res.item_name}</h3>
+                      <span className="sport-tag">{res.item_category || 'Sports'}</span>
+                    </div>
+                    <div className="availability-row">
+                      <span>Quantity:</span>
+                      <strong>{res.item_quantity_reserved}</strong>
+                    </div>
+                    <div className="condition-row">
+                      <span>Purpose:</span>
+                      <span>{res.item_reservation_purpose}</span>
+                    </div>
+                    <div className="availability-row">
+                      <span>Borrow:</span>
+                      <strong>{res.item_reservation_date ? new Date(res.item_reservation_date).toLocaleDateString() : '-'}</strong>
+                    </div>
+                    <div className="availability-row">
+                      <span>Return:</span>
+                      <strong>{res.item_reservation_return_date ? new Date(res.item_reservation_return_date).toLocaleDateString() : '-'}</strong>
+                    </div>
+                    <div className="condition-row">
+                      <span>Status:</span>
+                      <span style={{ color: res.item_reservation_status === 'Returned' ? '#16a34a' : '#1a73e8' }}>{res.item_reservation_status || 'Active'}</span>
+                    </div>
+                    {res.item_reservation_status === 'Reserved' && (
+                      <button
+                        className="cancel-btn"
+                        style={{ marginTop: 10, width: '100%' }}
+                        onClick={async () => {
+                          try {
+                            await fetch(
+                              `http://localhost:5000/items/${res._id}/cancelreservedItem`,
+                              { method: 'DELETE' }
+                            );
+                            setItemReservations((prev) => prev.filter((r) => r._id !== res._id));
+                          } catch (err) {
+                            alert('Cancel failed');
+                          }
+                        }}
+                      >
+                        Cancel Reservation
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </aside>
         </div>
