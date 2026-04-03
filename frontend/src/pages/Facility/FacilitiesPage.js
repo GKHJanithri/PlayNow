@@ -92,33 +92,21 @@ const FacilitiesPage = () => {
 
   return (
     <div className="facility-ui-page">
-      <header className="facility-ui-topbar">
-        <button type="button" className="facility-ui-menu" aria-label="Open menu">
-          <span />
-          <span />
-        </button>
-
-        <div className="facility-ui-search-wrap">
-          <span className="facility-ui-search-icon" aria-hidden="true">⌕</span>
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search facilities, bookings..."
-            aria-label="Search facilities"
-          />
-        </div>
-
-        <div className="facility-ui-actions" aria-hidden="true">
-          <button type="button" className="facility-ui-icon-btn">🔔</button>
-          <span className="facility-ui-notice-count">4</span>
-          <button type="button" className="facility-ui-icon-btn">◌</button>
-        </div>
-      </header>
-
       <div className="facility-ui-content">
         <section className="facility-ui-headline">
-          <h1>Facilities</h1>
+          <div className="facility-ui-headline-row">
+            <h1>Facilities</h1>
+            <div className="facility-ui-headline-search-wrap">
+              <span className="facility-ui-search-icon" aria-hidden="true">⌕</span>
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search facilities, bookings..."
+                aria-label="Search facilities"
+              />
+            </div>
+          </div>
           <p>Browse and book university sports facilities</p>
         </section>
 
