@@ -136,12 +136,11 @@ const deleteItem = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
-
+const User = require("../Model/UserModel");
 const reserveItem = async (req, res) => {
     const id = req.params.id;
-
     const {
-        student_id,
+        student_id, // This is currently receiving the MongoDB _id
         item_id,
         item_quantity_reserved = 1,
         item_reservation_return_date,
@@ -149,11 +148,18 @@ const reserveItem = async (req, res) => {
     } = req.body;
 
     try {
-        const item = await Item.findOne(buildItemQuery(id));
-
-        if (!item) {
-            return res.status(404).json({ message: "Item not found" });
+      
+        // Find the actual user document using the ID sent from frontend
+        const user = await User.findById(student_id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
+        // Use the human-readable ID from the user document instead of the MongoDB _id
+        const actualStudentId = user.studentId || user.id_number; 
+        // ------------------------
+
+        const item = await Item.findOne(buildItemQuery(id));
+        if (!item) { return res.status(404).json({ message: "Item not found" }); }
 
         if (item.item_quantity_available < item_quantity_reserved) {
             return res.status(400).json({ message: "Not enough quantity" });
@@ -163,7 +169,7 @@ const reserveItem = async (req, res) => {
         await item.save();
 
         const reservation = new ItemReservation({
-            student_id,
+            student_id: actualStudentId, // Save the 'IT23...' string here
             item_id: item.item_id,
             item_quantity_reserved,
             item_reservation_status: "Reserved",
@@ -172,7 +178,6 @@ const reserveItem = async (req, res) => {
         });
 
         await reservation.save();
-
         res.status(201).json(reservation);
     } catch (err) {
         res.status(500).json({ message: err.message });

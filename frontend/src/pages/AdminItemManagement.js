@@ -6,7 +6,7 @@ const AdminItemManagementPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="main-item-page equipment-layout" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh'}}>
+    <div className="main-item-page equipment-layout" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
       <button
         className="back-btn"
         style={{ marginBottom: 18, alignSelf: 'flex-start' }}
