@@ -59,6 +59,82 @@ const StudentDashboardPage = () => {
   const myTeamsCount = Array.isArray(user?.teams) ? user.teams.length : 0;
   const [reservationsLoading, setReservationsLoading] = useState(true);
   const [reservationsError, setReservationsError] = useState('');
+  const [facilityBookings, setFacilityBookings] = useState([]);
+  const [facilityBookingsLoading, setFacilityBookingsLoading] = useState(true);
+  const [facilityBookingsError, setFacilityBookingsError] = useState('');
+  const [cancellingBookingId, setCancellingBookingId] = useState('');
+
+  const studentId = String(user?.studentId || localStorage.getItem('studentId') || '').trim();
+
+  const formatDate = (value) => {
+    if (!value) return 'Date not available';
+
+    const parsedDate = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsedDate.getTime())) return 'Date not available';
+
+    return parsedDate.toLocaleDateString(undefined, {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    });
+  };
+
+  const formatTimeRange = (startTime, endTime) => {
+    if (!startTime || !endTime) return 'Time not available';
+
+    const formatClock = (time) => {
+      const [hours, minutes] = String(time).split(':');
+      const parsedHours = Number(hours);
+
+      if (!Number.isFinite(parsedHours)) {
+        return time;
+      }
+
+      const suffix = parsedHours >= 12 ? 'PM' : 'AM';
+      const normalizedHours = ((parsedHours + 11) % 12) + 1;
+      return `${normalizedHours}:${minutes || '00'} ${suffix}`;
+    };
+
+    return `${formatClock(startTime)} - ${formatClock(endTime)}`;
+  };
+
+  const createFacilityBookingUpdate = (booking) => {
+    const facilityName = booking?.facilityId?.facilityName || booking?.facilityName || 'Facility booking';
+    const sportType = booking?.facilityId?.sportType || booking?.sportType || 'Facility';
+    const status = booking?.status || 'Active';
+
+    return {
+      id: booking?._id || booking?.id,
+      title: `${facilityName} booked`,
+      message: `${formatDate(booking?.date)} · ${formatTimeRange(booking?.startTime, booking?.endTime)} · ${status}`,
+      detailRows: [
+        `Sport: ${sportType}`,
+        `Players: ${booking?.players ?? 1}`,
+        `Booked by: ${booking?.studentName || displayName}`,
+        `Status: ${status}`,
+      ],
+      badge: status,
+      createdAt: booking?.createdAt || booking?.updatedAt || new Date().toISOString(),
+    };
+  };
+
+  const handleCancelFacilityBooking = async (bookingId) => {
+    if (!bookingId) return;
+
+    const confirmed = window.confirm('Cancel this facility booking? This will remove it from your dashboard.');
+    if (!confirmed) return;
+
+    setCancellingBookingId(bookingId);
+
+    try {
+      await apiClient.delete(`/booking/${bookingId}`);
+      setFacilityBookings((currentBookings) => currentBookings.filter((booking) => booking._id !== bookingId));
+    } catch (_error) {
+      alert('Could not cancel booking. Please try again.');
+    } finally {
+      setCancellingBookingId('');
+    }
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -106,6 +182,38 @@ const StudentDashboardPage = () => {
     fetchReservations();
   }, [user]);
 
+  useEffect(() => {
+    const fetchFacilityBookings = async () => {
+      setFacilityBookingsLoading(true);
+      setFacilityBookingsError('');
+
+      try {
+        if (!studentId) {
+          setFacilityBookings([]);
+          return;
+        }
+
+        const response = await apiClient.get('/bookings');
+        const bookings = Array.isArray(response.data) ? response.data : [];
+        const currentStudentBookings = bookings.filter((booking) => {
+          const bookingStudentId = String(booking?.studentId || '').trim();
+          const bookingStudentName = String(booking?.studentName || '').trim().toLowerCase();
+          const displayNameMatches = bookingStudentName && bookingStudentName === displayName.toLowerCase();
+          return bookingStudentId === studentId || displayNameMatches;
+        });
+
+        setFacilityBookings(currentStudentBookings);
+      } catch (_error) {
+        setFacilityBookings([]);
+        setFacilityBookingsError('Could not load facility updates.');
+      } finally {
+        setFacilityBookingsLoading(false);
+      }
+    };
+
+    fetchFacilityBookings();
+  }, [studentId, displayName]);
+
   const filteredEvents = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
     if (!query) return events;
@@ -119,6 +227,29 @@ const StudentDashboardPage = () => {
   }, [events, searchTerm]);
 
   const topUpcomingEvents = filteredEvents.slice(0, 3);
+
+  const welcomeNotification = useMemo(() => {
+    return notifications.find((note) => note.id === 'welcome-note') || notifications[0] || null;
+  }, [notifications]);
+
+  const recentFacilityUpdates = useMemo(() => {
+    return facilityBookings
+      .map(createFacilityBookingUpdate)
+      .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime());
+  }, [facilityBookings, displayName]);
+
+  const recentNotificationUpdates = useMemo(() => {
+    return notifications
+      .filter((note) => note.id !== 'welcome-note')
+      .map((note) => ({
+      id: note.id,
+      title: note.title,
+      message: note.message,
+      detailRows: note.role ? [`Source: ${note.role}`] : [],
+      badge: note.role || 'Update',
+      createdAt: note.createdAt || new Date().toISOString(),
+    }));
+  }, [notifications]);
 
   const formatEventDate = (value) => {
     if (!value) return 'Date not available';
@@ -275,23 +406,84 @@ const StudentDashboardPage = () => {
           {/* Updates Panel with Reservation Board/Card */}
           <aside className="student-updates-panel" aria-labelledby="student-updates-title">
             <h2 id="student-updates-title">Recent Updates</h2>
-            <div className="student-update-list">
-              {notifications.length === 0 && (
-                <div className="student-empty-update">No updates yet. New notifications will appear here.</div>
+            <div className="student-updates-featured-grid">
+              <article className="student-highlight-card student-highlight-card-welcome">
+                <div className="student-highlight-card-topline">
+                  <span className="student-highlight-kicker">Welcome</span>
+                  <span className="student-highlight-badge">{displayName}</span>
+                </div>
+                <h3>{welcomeNotification?.title || 'Welcome to PlayNow'}</h3>
+                <p>{welcomeNotification?.message || 'Track your bookings, teams, and event updates from one dashboard.'}</p>
+              </article>
+            </div>
+
+            <div className="student-updates-section">
+              <div className="student-updates-section-header">
+                <h3>Facility Updates</h3>
+                <span>{facilityBookings.length} booking{facilityBookings.length === 1 ? '' : 's'}</span>
+              </div>
+
+              {facilityBookingsLoading && <div className="student-empty-update">Loading facility updates...</div>}
+
+              {!facilityBookingsLoading && facilityBookingsError && (
+                <div className="student-empty-update">{facilityBookingsError}</div>
               )}
-              {notifications.slice(0, 6).map((note) => (
-                <article key={note.id} className="student-update-item">
-                  <span className="student-update-dot" aria-hidden="true" />
-                  <div>
-                    <h3>{note.title}</h3>
-                    <p>{note.message}</p>
+
+              {!facilityBookingsLoading && !facilityBookingsError && recentFacilityUpdates.length === 0 && (
+                <div className="student-empty-update">No facility bookings yet.</div>
+              )}
+
+              {!facilityBookingsLoading && !facilityBookingsError && recentFacilityUpdates.map((update) => (
+                <article key={update.id} className="student-update-card student-facility-update-card">
+                  <div className="student-update-card-header">
+                    <span className="student-update-badge facility">{update.badge}</span>
+                    <span className="student-update-meta">Facility booking</span>
                   </div>
+                  <h3>{update.title}</h3>
+                  <p>{update.message}</p>
+                  <div className="student-update-details">
+                    {update.detailRows.map((row) => (
+                      <span key={row}>{row}</span>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="cancel-btn student-facility-cancel-btn"
+                    onClick={() => handleCancelFacilityBooking(update.id)}
+                    disabled={cancellingBookingId === update.id}
+                  >
+                    {cancellingBookingId === update.id ? 'Cancelling...' : 'Cancel Booking'}
+                  </button>
                 </article>
               ))}
             </div>
-            {/* Reservation Board/Card inside updates panel */}
-            <div className="reservation-board" style={{ marginTop: 24 }}>
-              <h2 style={{ marginBottom: 12, color: '#1a73e8' }}>My Reservations</h2>
+
+            <div className="student-updates-section student-updates-section-spaced">
+              <div className="student-updates-section-header">
+                <h3>Notifications</h3>
+                <span>{recentNotificationUpdates.length} item{recentNotificationUpdates.length === 1 ? '' : 's'}</span>
+              </div>
+
+              <div className="student-update-list">
+                {recentNotificationUpdates.length === 0 && (
+                  <div className="student-empty-update">No updates yet. New notifications will appear here.</div>
+                )}
+                {recentNotificationUpdates.slice(0, 6).map((note) => (
+                  <article key={note.id} className="student-update-item">
+                    <span className="student-update-dot" aria-hidden="true" />
+                    <div>
+                      <h3>{note.title}</h3>
+                      <p>{note.message}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <div className="reservation-board student-reservation-board" style={{ marginTop: 24 }}>
+              <div className="student-block-header student-reservations-header">
+                <h2>My Reservations</h2>
+                <span>{itemReservations.length} total</span>
+              </div>
               {!reservationsLoading && !reservationsError && itemReservations.length === 0 && (
                 <div className="student-empty-update">No reservations yet.</div>
               )}

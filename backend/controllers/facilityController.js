@@ -188,15 +188,9 @@ const cancelBooking = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    if (booking.status === "Cancelled") {
-      return res.status(400).json({ message: "Booking is already cancelled" });
-    }
+    await booking.deleteOne();
 
-    booking.status = "Cancelled";
-    booking.cancelledAt = new Date();
-    await booking.save();
-
-    res.json({ message: "Booking cancelled successfully" });
+    res.json({ message: "Booking removed successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

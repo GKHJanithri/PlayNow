@@ -404,6 +404,62 @@
   gap: 0.65rem;
 }
 
+.student-updates-featured-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.8rem;
+}
+
+.student-highlight-card {
+  border-radius: 18px;
+  padding: 1rem 1rem 0.95rem;
+  border: 1px solid rgba(37, 52, 134, 0.12);
+  background: linear-gradient(135deg, #f8fbff 0%, #eef3ff 100%);
+  box-shadow: 0 12px 28px rgba(18, 32, 79, 0.07);
+  display: grid;
+  gap: 0.55rem;
+}
+
+.student-highlight-card-welcome {
+  background: linear-gradient(135deg, #f7faff 0%, #eaf1ff 100%);
+}
+
+.student-highlight-card-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.student-highlight-kicker {
+  color: var(--student-primary-2);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-highlight-badge {
+  border-radius: 999px;
+  background: rgba(37, 52, 134, 0.1);
+  color: var(--student-text);
+  padding: 0.26rem 0.65rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.student-highlight-card h3 {
+  margin: 0;
+  color: var(--student-text);
+  font-size: 1.05rem;
+}
+
+.student-highlight-card p {
+  margin: 0;
+  color: var(--student-muted);
+  line-height: 1.55;
+}
+
 .student-update-item {
   display: grid;
   grid-template-columns: 10px 1fr;
@@ -416,6 +472,108 @@
   border-radius: 999px;
   background: var(--student-accent);
   margin-top: 0.55rem;
+}
+
+.student-updates-section {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.student-updates-section-spaced {
+  margin-top: 1.2rem;
+}
+
+.student-updates-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.student-updates-section-header h3 {
+  margin: 0;
+  color: var(--student-text);
+  font-size: 0.98rem;
+}
+
+.student-updates-section-header span {
+  color: var(--student-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.student-update-card {
+  border-radius: 16px;
+  border: 1px solid var(--student-border);
+  background: linear-gradient(180deg, #ffffff, #f7f9fc);
+  padding: 0.95rem;
+  display: grid;
+  gap: 0.45rem;
+  box-shadow: 0 10px 24px rgba(18, 32, 79, 0.05);
+}
+
+.student-update-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.student-update-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.24rem 0.68rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.student-update-badge.facility {
+  background: #e7eeff;
+  color: var(--student-primary-2);
+}
+
+.student-update-meta {
+  color: var(--student-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.student-update-card h3 {
+  margin: 0;
+  color: var(--student-text);
+  font-size: 1rem;
+}
+
+.student-update-card p {
+  margin: 0;
+  color: var(--student-muted);
+  font-size: 0.88rem;
+}
+
+.student-update-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.student-update-details span {
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #32417f;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.student-facility-update-card {
+  border-left: 4px solid var(--student-primary-2);
+}
+
+.student-facility-cancel-btn {
+  margin-top: 0.75rem;
+  width: 100%;
 }
 
 .student-update-item h3,
@@ -439,6 +597,26 @@
   border-radius: 12px;
   color: var(--student-muted);
   padding: 0.8rem;
+}
+
+.student-reservation-board {
+  border: 1px solid rgba(37, 52, 134, 0.12);
+  border-radius: 18px;
+  padding: 1rem;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+
+.student-reservations-header {
+  margin-bottom: 1rem;
+}
+
+.student-reservations-header span {
+  border-radius: 999px;
+  background: #edf2ff;
+  color: var(--student-primary-2);
+  padding: 0.26rem 0.68rem;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 @media (max-width: 1180px) {

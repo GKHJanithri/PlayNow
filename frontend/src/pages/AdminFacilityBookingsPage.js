@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
 import './AdminFacilityBookingsPage.css';
 
@@ -85,6 +85,7 @@ const getBookingStatus = (booking) => {
 
 const AdminFacilityBookingsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -94,6 +95,8 @@ const AdminFacilityBookingsPage = () => {
     sport: '',
     date: '',
   });
+
+  const returnPath = location.state?.from || '/admin/facilities';
 
   useEffect(() => {
     const loadBookings = async () => {
@@ -174,7 +177,7 @@ const AdminFacilityBookingsPage = () => {
         <button
           type="button"
           className="admin-bookings-back-btn"
-          onClick={() => navigate('/admin/facilities')}
+          onClick={() => navigate(returnPath, { replace: true })}
         >
           Back to Facilities
         </button>
