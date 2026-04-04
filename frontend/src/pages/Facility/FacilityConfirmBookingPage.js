@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import apiClient from '../../api/client';
 import { getSportMeta } from './facilityData';
+import { addNotification } from '../../utils/notifications';
 import './FacilityBooking.css';
 
 const FacilityConfirmBookingPage = () => {
@@ -126,6 +127,13 @@ const FacilityConfirmBookingPage = () => {
         startTime: selectedSlot.start,
         endTime: selectedSlot.end,
         players,
+      });
+
+      addNotification({
+        title: `${facility.facilityName} booked`,
+        message: `${selectedDate} · ${selectedSlot.start} - ${selectedSlot.end} · ${players} player${players === 1 ? '' : 's'} · Active`,
+        icon: 'fa-bell',
+        role: 'Facility',
       });
 
       setSuccess('Booking confirmed successfully. Redirecting to facilities...');

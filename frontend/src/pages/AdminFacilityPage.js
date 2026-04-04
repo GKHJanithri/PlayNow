@@ -122,7 +122,7 @@ const AdminFacilityPage = () => {
           <button
             type="button"
             className="admin-facility-view-bookings-btn"
-            onClick={() => navigate('/admin/facilities/bookings')}
+            onClick={() => navigate('/admin/facilities/bookings', { state: { from: '/admin/facilities' } })}
           >
             View Bookings
           </button>
