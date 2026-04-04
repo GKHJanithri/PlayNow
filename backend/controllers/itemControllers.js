@@ -1,12 +1,14 @@
 // Get all item reservations for a student
 const getStudentReservations = async (req, res) => {
     const { student_id } = req.query;
+    console.log('[DEBUG] getStudentReservations: student_id received:', student_id);
     if (!student_id) {
         return res.status(400).json({ message: 'student_id is required' });
     }
     try {
         // Find reservations for the student
         const reservations = await ItemReservation.find({ student_id });
+        console.log('[DEBUG] getStudentReservations: reservations found:', reservations);
         // Get all item_ids from reservations
         const itemIds = reservations.map(r => r.item_id);
         // Find all items for those ids
@@ -19,8 +21,10 @@ const getStudentReservations = async (req, res) => {
             ...r.toObject(),
             item_name: itemIdToName[r.item_id] || r.item_id
         }));
+        console.log('[DEBUG] getStudentReservations: reservationsWithName:', reservationsWithName);
         return res.status(200).json(reservationsWithName);
     } catch (error) {
+        console.error('[DEBUG] getStudentReservations: error:', error);
         return res.status(500).json({ message: error.message });
     }
 };

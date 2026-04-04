@@ -30,7 +30,7 @@ function AdminItemsPage({ onBack }) {
   const fetchItems = async () => {
     try {
       setError('');
-      const response = await fetch(`${apiBaseUrl}/items`);
+      const response = await fetch(`${apiBaseUrl}/api/items`);
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -129,7 +129,7 @@ function AdminItemsPage({ onBack }) {
         item_quantity_available: Number(formData.item_quantity_available),
       };
 
-      const url = isEditing ? `${apiBaseUrl}/items/${editingId}` : `${apiBaseUrl}/items`;
+      const url = isEditing ? `${apiBaseUrl}/api/items/${editingId}` : `${apiBaseUrl}/api/items`;
       const method = isEditing ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -171,7 +171,7 @@ function AdminItemsPage({ onBack }) {
 
     try {
       setError('');
-      const response = await fetch(`${apiBaseUrl}/items/${id}`, {
+      const response = await fetch(`${apiBaseUrl}/api/items/${id}`, {
         method: 'DELETE',
       });
 

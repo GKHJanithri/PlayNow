@@ -21,7 +21,7 @@ const AdminItemReservationsPage = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    axios.get('http://localhost:5000/items/allReservations')
+    axios.get('http://localhost:5000/api/items/allReservations')
       .then(res => {
         console.log("DATA:", res.data); // Debug log
         setReservations(res.data);
@@ -39,7 +39,7 @@ const AdminItemReservationsPage = () => {
         r._id === id ? { ...r, item_reservation_status: newStatus } : r
       )
     );
-    axios.patch(`http://localhost:5000/items/allReservations/${id}`, { status: newStatus })
+    axios.patch(`http://localhost:5000/api/items/allReservations/${id}`, { status: newStatus })
       .then(res => {
         // Optionally, show a success message or refetch data
         // setReservations((prev) => prev.map(r => r._id === id ? res.data : r));

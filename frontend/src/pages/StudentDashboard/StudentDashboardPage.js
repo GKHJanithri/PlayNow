@@ -157,30 +157,37 @@ const StudentDashboardPage = () => {
   }, []);
 
   useEffect(() => {
-    const fetchReservations = async () => {
-      setReservationsLoading(true);
-      setReservationsError('');
-      try {
-        const studentId = user?._id || user?.id || localStorage.getItem('userId');
-        console.log('DEBUG: studentId used for reservation fetch:', studentId);
-        if (!studentId) {
-          setItemReservations([]);
-          setReservationsLoading(false);
-          return;
-        }
-        const response = await fetch(`http://localhost:5000/items/itemReservations?student_id=${studentId}`);
-        if (!response.ok) throw new Error('Failed to fetch reservations');
-        const data = await response.json();
-        setItemReservations(Array.isArray(data) ? data : []);
-      } catch (err) {
-        setReservationsError('Could not load reservations.');
+  const fetchReservations = async () => {
+    setReservationsLoading(true);
+    setReservationsError('');
+    try {
+     
+      const queryId = user?.studentId || localStorage.getItem('studentId');
+      
+      console.log('DEBUG: Readable studentId used for fetch:', queryId);
+      
+      if (!queryId) {
         setItemReservations([]);
-      } finally {
         setReservationsLoading(false);
+        return;
       }
-    };
-    fetchReservations();
-  }, [user]);
+
+      const response = await apiClient.get(`/items/itemReservations?student_id=${queryId}`);
+      const data = response.data;
+      
+      setItemReservations(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      setReservationsError('Could not load reservations.');
+      setItemReservations([]);
+    } finally {
+      setReservationsLoading(false);
+    }
+  };
+  fetchReservations();
+}, [user]); // user is already a dependency, which is good
+
+
 
   useEffect(() => {
     const fetchFacilityBookings = async () => {
@@ -236,7 +243,7 @@ const StudentDashboardPage = () => {
     return facilityBookings
       .map(createFacilityBookingUpdate)
       .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime());
-  }, [facilityBookings, displayName]);
+  }, [facilityBookings, displayName, createFacilityBookingUpdate]);
 
   const recentNotificationUpdates = useMemo(() => {
     return notifications
@@ -521,7 +528,7 @@ const StudentDashboardPage = () => {
                         onClick={async () => {
                           try {
                             await fetch(
-                              `http://localhost:5000/items/${res._id}/cancelreservedItem`,
+                              `http://localhost:5000/api/items/${res._id}/cancelreservedItem`,
                               { method: 'DELETE' }
                             );
                             setItemReservations((prev) => prev.filter((r) => r._id !== res._id));

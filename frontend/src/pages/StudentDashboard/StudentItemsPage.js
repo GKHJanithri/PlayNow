@@ -17,7 +17,7 @@ const StudentItemsPage = () => {
       setLoadError('');
 
       try {
-        const response = await fetch('http://localhost:5000/items');
+        const response = await fetch('http://localhost:5000/api/items');
 
         if (!response.ok) {
           if (response.status === 404) {

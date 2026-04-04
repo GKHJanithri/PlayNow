@@ -37,7 +37,7 @@ const StudentItemReservationPage = () => {
         return;
       }
       const response = await fetch(
-        `http://localhost:5000/items/${itemId}/reserveItem`,
+        `http://localhost:5000/api/items/${itemId}/reserveItem`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -126,7 +126,7 @@ const StudentItemReservationPage = () => {
                   min="1"
                   max={selectedItem.available}
                   value={quantity}
-                  onChange={(event) => setQuantity(event.target.value)}
+                  onChange={(event) => setQuantity(Number(event.target.value))}
                 />
                 <small>Max available: {selectedItem.available}</small>
               </div>

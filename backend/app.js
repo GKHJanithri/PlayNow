@@ -27,7 +27,7 @@ app.use("/api/teams", teamRoutes);
 app.use("/api/free-agents", freeAgentRoutes); // <-- New Free Agent endpoint!
 
 // Other module routes
-app.use("/items", itemRoutes);
+app.use("/api/items", itemRoutes);
 app.use("/api", facilityRoutes); // Mount facility routes
 
 // --- Health Check Route ---
