@@ -61,9 +61,9 @@
 	width: 100%;
 }
 
-.login-trophy {
-	width: 70px;
-	height: 70px;
+.login-hero-logo {
+	width: 88px;
+	height: 88px;
 	border-radius: 16px;
 	border: 1px solid rgba(255, 255, 255, 0.15);
 	background: rgba(255, 255, 255, 0.07);
@@ -71,6 +71,13 @@
 	align-items: center;
 	justify-content: center;
 	margin-bottom: 52px;
+}
+
+.login-hero-logo-image {
+	width: 62px;
+	height: 62px;
+	border-radius: 12px;
+	object-fit: cover;
 }
 
 .login-title {
