@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../utils/auth';
+import brandLogo from '../../assets/Logo.jpeg';
 import './Login.css';
 
 const LoginPage = () => {
@@ -46,14 +47,8 @@ const LoginPage = () => {
           <div className="login-circle three" />
 
           <div className="login-hero-content">
-            <div className="login-trophy" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.8" color="#f4b529">
-                <path d="M8 21h8" />
-                <path d="M12 17v4" />
-                <path d="M7 5H4v2a4 4 0 004 4" />
-                <path d="M17 5h3v2a4 4 0 01-4 4" />
-                <path d="M8 3h8v4a4 4 0 01-8 0V3z" />
-              </svg>
+            <div className="login-hero-logo" aria-hidden="true">
+              <img src={brandLogo} alt="" className="login-hero-logo-image" />
             </div>
 
             <h2 className="login-title">
