@@ -277,6 +277,7 @@
   display: grid;
   grid-template-columns: 1.8fr 1fr;
   gap: 1rem;
+  align-items: start;
 }
 
 .student-content-block,
@@ -285,6 +286,12 @@
   border: 1px solid var(--student-border);
   background: var(--student-card-bg);
   padding: 1rem;
+}
+
+.student-updates-panel {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .student-block-header {
@@ -634,6 +641,11 @@
 
   .student-layout-grid {
     grid-template-columns: 1fr;
+  }
+
+  .student-updates-panel {
+    max-height: none;
+    overflow: visible;
   }
 }
 
