@@ -12,9 +12,11 @@ const EventSchema = new Schema(
 		startDate: { type: Date, required: true },
 		endDate: { type: Date },
 		teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+		participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
+		capacity: { type: Number, default: 0 },
 		status: {
 			type: String,
-			enum: ["scheduled", "ongoing", "completed", "cancelled"],
+			enum: ["scheduled", "ongoing", "completed", "cancelled", "upcoming"],
 			default: "scheduled"
 		},
 		createdBy: { type: Schema.Types.ObjectId, ref: "User" }
@@ -25,4 +27,3 @@ const EventSchema = new Schema(
 EventSchema.index({ startDate: 1 });
 
 module.exports = mongoose.models.Event || mongoose.model("Event", EventSchema);
-
