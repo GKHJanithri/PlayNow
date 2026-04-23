@@ -40,7 +40,6 @@ const AppLayout = () => {
   
   // Repaired Navbar logic so it doesn't break the new pages
   const isFacilityRoute = location.pathname.startsWith('/facilities');
-  const isStudentDashboardRoute = location.pathname.startsWith('/student');
 
   useEffect(() => {
     const faviconLink = document.querySelector("link[rel='icon']");
@@ -86,17 +85,16 @@ const AppLayout = () => {
 
   return (
     <div className={`app-shell${isAuthRoute ? ' auth-shell' : ''}`}>
-      {/* Re-added your Toaster for success popups! */}
       <Toaster position="top-center" richColors />
       
-      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && !isStudentDashboardRoute && <Navbar />}
+      {!isAuthRoute && !isHomeRoute && !isFacilityRoute && <Navbar />}
       
       <main className={isAuthRoute ? 'main-auth' : isHomeRoute ? 'main-home' : ''}>
         <Routes>
           {/* Your Team Management Routes */}
-          <Route path="/teams/create" element={<TeamCreatePage />} />
-          <Route path="/teams/free-agent" element={<FreeAgentPage />} />
-          <Route path="/coach/dashboard" element={<CoachDashboardPage />} />
+          <Route path="/teams/create" element={<ProtectedRoute allowedRoles={['Student']}><TeamCreatePage /></ProtectedRoute>} />
+          <Route path="/teams/free-agent" element={<ProtectedRoute allowedRoles={['Student']}><FreeAgentPage /></ProtectedRoute>} />
+          <Route path="/coach/dashboard" element={<ProtectedRoute allowedRoles={['Coach']}><CoachDashboardPage /></ProtectedRoute>} />
           
           {/* General Routes */}
           <Route path="/" element={<Home />} />
@@ -119,16 +117,16 @@ const AppLayout = () => {
           {/* Coach Routes */}
           <Route path="/events/:id/practice" element={<ProtectedRoute allowedRoles={['Coach']}><CoachPracticePage /></ProtectedRoute>} />
           
-          {/* Teammates' New Facility Routes */}
-          <Route path="/facilities" element={<ProtectedRoute><FacilitiesPage /></ProtectedRoute>} />
-          <Route path="/facilities/:facilityId/book" element={<ProtectedRoute><FacilityDateTimePage /></ProtectedRoute>} />
-          <Route path="/facilities/:facilityId/confirm" element={<ProtectedRoute><FacilityConfirmBookingPage /></ProtectedRoute>} />
+          {/* Teammates' New Facility Routes - Permissions Fixed! */}
+          <Route path="/facilities" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><FacilitiesPage /></ProtectedRoute>} />
+          <Route path="/facilities/:facilityId/book" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><FacilityDateTimePage /></ProtectedRoute>} />
+          <Route path="/facilities/:facilityId/confirm" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><FacilityConfirmBookingPage /></ProtectedRoute>} />
           
-          {/* Teammates' New Student Dashboard Routes */}
-          <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['Student']}><StudentDashboardPage /></ProtectedRoute>} />
-          <Route path="/student/items" element={<ProtectedRoute allowedRoles={['Student']}><StudentItemsPage /></ProtectedRoute>} />
-          <Route path="/student/facilities" element={<ProtectedRoute allowedRoles={['Student']}><StudentFacilitiesPage /></ProtectedRoute>} />
-          <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Student']}><StudentTeamsPage /></ProtectedRoute>} />
+          {/* Teammates' New Student Dashboard Routes - Permissions Fixed! */}
+          <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentDashboardPage /></ProtectedRoute>} />
+          <Route path="/student/items" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentItemsPage /></ProtectedRoute>} />
+          <Route path="/student/facilities" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentFacilitiesPage /></ProtectedRoute>} />
+          <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentTeamsPage /></ProtectedRoute>} />
           
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/events" replace />} />

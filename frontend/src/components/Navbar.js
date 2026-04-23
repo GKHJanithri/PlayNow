@@ -10,8 +10,11 @@ const Navbar = () => {
   const isAdmin = role === 'Admin';
 
   const navLinks = [
-    { path: '/events', label: 'Events', roles: ['Guest', 'Coach', 'Athlete'] },
-    { path: '/about', label: 'About Us', roles: ['Guest', 'Coach', 'Athlete'] },
+    { path: '/events', label: 'Events', roles: ['Guest', 'Coach', 'Student', 'Admin'] },
+    { path: '/coach/dashboard', label: 'Coach Dashboard', roles: ['Coach'] },
+    { path: '/student/dashboard', label: 'My Dashboard', roles: ['Student'] },
+    { path: '/admin/dashboard', label: 'Admin Dashboard', roles: ['Admin'] },
+    { path: '/about', label: 'About Us', roles: ['Guest', 'Coach', 'Student', 'Admin'] },
     { path: '/login', label: 'Login', roles: ['Guest'] },
     { path: '/signup', label: 'Sign Up', roles: ['Guest'] },
   ];

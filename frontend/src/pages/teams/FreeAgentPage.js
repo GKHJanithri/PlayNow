@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { SPORTS, sportIcons } from "../../data/sampleData";
@@ -8,13 +8,42 @@ export default function FreeAgentPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [studentId, setStudentId] = useState("");
+  const [eventId, setEventId] = useState("");
+  const [events, setEvents] = useState([]);
   const [sport, setSport] = useState("Cricket");
   const [skillLevel, setSkillLevel] = useState("Intermediate");
   const [position, setPosition] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const isValid = name.trim() && studentId.trim() && position.trim();
+  const isValid = name.trim() && eventId.trim() && position.trim();
+
+  const getUserIdFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return '';
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub || payload.id || payload._id || payload.userId || '';
+    } catch (error) {
+      return '';
+    }
+  };
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/events');
+        if (res.ok) {
+          const eventsData = await res.json();
+          setEvents(eventsData);
+        }
+      } catch (error) {
+        console.error('Failed to load events', error);
+      }
+    };
+
+    loadEvents();
+  }, []);
 
   const handleSubmit = async () => {
     setTouched(true);
@@ -31,8 +60,8 @@ export default function FreeAgentPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          studentId: studentId, 
-          eventId: "650c1f1deadbeef123456789", 
+          studentId: studentId.trim() || getUserIdFromToken(),
+          eventId,
           skillLevel: skillLevel,
           experienceDescription: `Sport: ${sport} | Preferred Position: ${position}`
         }),
@@ -75,6 +104,17 @@ export default function FreeAgentPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Student ID *</label>
             <input type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             {touched && !studentId.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Select Event *</label>
+            <select value={eventId} onChange={(e) => setEventId(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+              <option value="">Choose an event</option>
+              {events.map((event) => (
+                <option key={event._id} value={event._id}>{event.title} ({event.sportType || 'Sport'})</option>
+              ))}
+            </select>
+            {touched && !eventId.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
           </div>
 
           <div>

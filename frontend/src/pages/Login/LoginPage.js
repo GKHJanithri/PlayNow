@@ -40,7 +40,7 @@ const LoginPage = () => {
         return;
       }
       if (normalizedRole === 'coach') {
-        navigate('/events', { replace: true });
+        navigate('/coach/dashboard', { replace: true });
         return;
       }
       navigate(from, { replace: true });

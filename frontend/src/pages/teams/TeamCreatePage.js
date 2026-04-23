@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, Plus, X } from "lucide-react";
 import { SPORTS, sportIcons } from "../../data/sampleData";
@@ -8,12 +8,46 @@ export default function TeamCreatePage() {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [sport, setSport] = useState("Cricket");
+  const [eventId, setEventId] = useState("");
+  const [events, setEvents] = useState([]);
   const [captainId, setCaptainId] = useState("");
   const [members, setMembers] = useState([{ studentId: "", name: "" }]);
   const [submitting, setSubmitting] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const isValid = teamName.trim() && captainId.trim() && members.every((m) => m.studentId.trim() && m.name.trim());
+  const isValid = teamName.trim() && eventId.trim() && captainId.trim() && members.every((m) => m.studentId.trim() && m.name.trim());
+
+  const getUserIdFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return '';
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub || payload.id || payload._id || payload.userId || '';
+    } catch (error) {
+      return '';
+    }
+  };
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/events');
+        if (res.ok) {
+          const eventsData = await res.json();
+          setEvents(eventsData);
+        }
+      } catch (error) {
+        console.error('Failed to load events', error);
+      }
+    };
+
+    const authCaptainId = getUserIdFromToken();
+    if (authCaptainId) {
+      setCaptainId(authCaptainId);
+    }
+
+    loadEvents();
+  }, []);
 
   const addMember = () => setMembers([...members, { studentId: "", name: "" }]);
   const removeMember = (index) => setMembers(members.filter((_, i) => i !== index));
@@ -26,7 +60,8 @@ export default function TeamCreatePage() {
   const handleSubmit = async () => {
     setTouched(true);
     
-    if (!isValid) {
+    const resolvedCaptainId = captainId.trim() || getUserIdFromToken();
+    if (!isValid || !resolvedCaptainId) {
       toast.error("Please fill out all required fields, including member details.");
       return; 
     }
@@ -39,8 +74,8 @@ export default function TeamCreatePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teamName,
-          captainId,
-          eventId: "650c1f1deadbeef123456789", 
+          captainId: resolvedCaptainId,
+          eventId,
           members: members.map(m => m.studentId)
         }),
       });
@@ -79,8 +114,19 @@ export default function TeamCreatePage() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Captain Student ID *</label>
-            <input type="text" value={captainId} onChange={(e) => setCaptainId(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="e.g. IT21..." />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Select Event *</label>
+            <select value={eventId} onChange={(e) => setEventId(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+              <option value="">Choose an event</option>
+              {events.map((event) => (
+                <option key={event._id} value={event._id}>{event.title} ({event.sportType || 'Sport'})</option>
+              ))}
+            </select>
+            {touched && !eventId.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Captain *</label>
+            <input type="text" value={captainId} onChange={(e) => setCaptainId(e.target.value)} className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Auto-detected captain ID" disabled />
             {touched && !captainId.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
           </div>
 

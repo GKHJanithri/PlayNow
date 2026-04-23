@@ -7,16 +7,20 @@ const teamSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
-    // CHANGED TO STRING: Matches the "deadbeef" ID you're sending from Frontend
     eventId: { 
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Event',
         required: [true, 'An event must be selected'] 
     },
-    // CHANGED TO STRING: Matches "IT21..." Student IDs
     captainId: { 
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User',
         required: true 
     },
+    members: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User' 
+    }],
     status: { 
         type: String, 
         enum: ['Pending', 'Approved', 'Rejected'], 

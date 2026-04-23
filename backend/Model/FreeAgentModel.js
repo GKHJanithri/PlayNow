@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const freeAgentSchema = new mongoose.Schema({
-    // CHANGE: From ObjectId to String to support "IT21..."
     studentId: { 
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User',
         required: true 
     },
-    // CHANGE: From ObjectId to String to support the hardcoded ID
     eventId: { 
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Event',
         required: true 
     },
     skillLevel: { 
