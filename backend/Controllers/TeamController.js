@@ -159,7 +159,7 @@ exports.assignAgentToTeam = async (req, res) => {
             teamId,
             { $addToSet: { members: user._id } },
             { new: true }
-        );
+        ).populate('members', 'fullName email studentId');
 
         if (!updatedTeam) {
             return res.status(404).json({ message: 'Team not found' });

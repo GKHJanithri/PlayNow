@@ -214,11 +214,43 @@ export default function CoachDashboardPage() {
         throw new Error(errorData.message || "Failed to assign agent");
       }
 
+      const responseData = await res.json();
+      const updatedTeam = responseData.team;
+
       // Update UI: Remove agent from available list (or update status)
       setAgents((prev) => prev.map((a) => a.id === agent.id ? { ...a, status: "Assigned" } : a));
       
-      // Update UI: Add member count to the assigned team
-      setTeams((prev) => prev.map((t) => t.id === teamId ? { ...t, membersCount: t.membersCount + 1 } : t));
+      // Update UI: Add the new member to the team's members array with full details
+      if (updatedTeam && updatedTeam.members && updatedTeam.members.length > 0) {
+        const newMember = updatedTeam.members[updatedTeam.members.length - 1];
+        const memberData = {
+          id: String(newMember._id),
+          fullName: newMember.fullName,
+          email: newMember.email,
+          studentId: newMember.studentId || ""
+        };
+
+        // Update the team in the teams list
+        setTeams((prev) => prev.map((t) => {
+          if (t.id === teamId) {
+            return {
+              ...t,
+              members: [...t.members, memberData],
+              membersCount: t.membersCount + 1
+            };
+          }
+          return t;
+        }));
+
+        // Update the selectedTeam modal if it's open and matches the assigned team
+        if (selectedTeam && selectedTeam.id === teamId) {
+          setSelectedTeam((prev) => ({
+            ...prev,
+            members: [...prev.members, memberData],
+            membersCount: prev.membersCount + 1
+          }));
+        }
+      }
 
       toast.success(`${agent.name} assigned to team successfully!`);
       setAssignModal({ isOpen: false, agent: null });
