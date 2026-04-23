@@ -233,7 +233,7 @@ const StudentDashboardPage = () => {
     });
   }, [events, searchTerm]);
 
-  const topUpcomingEvents = filteredEvents.slice(0, 3);
+  const upcomingEvents = filteredEvents;
 
   const welcomeNotification = useMemo(() => {
     return notifications.find((note) => note.id === 'welcome-note') || notifications[0] || null;
@@ -394,11 +394,11 @@ const StudentDashboardPage = () => {
             <div className="student-event-list">
               {eventsLoading && <div className="student-empty-update">Loading events...</div>}
 
-              {!eventsLoading && topUpcomingEvents.length === 0 && (
+              {!eventsLoading && upcomingEvents.length === 0 && (
                 <div className="student-empty-update">No upcoming events available.</div>
               )}
 
-              {!eventsLoading && topUpcomingEvents.map((event) => (
+              {!eventsLoading && upcomingEvents.map((event) => (
                 <article key={event._id || event.id || event.title} className="student-event-card">
                   <span className="student-event-tag">{event.sportType}</span>
                   <h3>{event.title}</h3>
