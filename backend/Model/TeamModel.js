@@ -9,14 +9,18 @@ const teamSchema = new mongoose.Schema({
     },
     eventId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Event', // Connects to Chamindu's EventModel
+        ref: 'Event',
         required: [true, 'An event must be selected'] 
     },
     captainId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', // Connects to the existing UserModel
+        ref: 'User',
         required: true 
     },
+    members: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User' 
+    }],
     status: { 
         type: String, 
         enum: ['Pending', 'Approved', 'Rejected'], 

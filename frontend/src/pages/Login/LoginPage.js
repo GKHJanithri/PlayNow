@@ -32,7 +32,15 @@ const LoginPage = () => {
         navigate('/admin/dashboard', { replace: true });
         return;
       }
-      navigate('/student/dashboard', { replace: true });
+      if (normalizedRole === 'student') {
+        navigate('/student/dashboard', { replace: true });
+        return;
+      }
+      if (normalizedRole === 'coach') {
+        navigate('/coach/dashboard', { replace: true });
+        return;
+      }
+      navigate(from, { replace: true });
     } catch (authError) {
       setError(authError.message || 'Login failed.');
     }
