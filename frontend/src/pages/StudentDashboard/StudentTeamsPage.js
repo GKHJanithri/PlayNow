@@ -48,6 +48,7 @@ export default function StudentTeamsPage() {
   const userId = getUserIdFromToken();
 
   useEffect(() => {
+    document.body.className = 'student-pages';
     fetchEvents();
     if (userId) fetchMyDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -200,30 +201,54 @@ export default function StudentTeamsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50 py-12 px-4">
-      <div className="max-w-5xl mx-auto space-y-8">
-        
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Student Sports Hub</h1>
-          <p className="text-gray-500">Create a team, join as a free agent, and track your registrations.</p>
+    <div className="min-h-screen bg-transparent py-12 px-4 relative">
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div className="glass-card p-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-200/80">Team Management</p>
+              <h1 className="mt-3 text-3xl font-extrabold text-white">Your student team dashboard</h1>
+              <p className="mt-3 max-w-xl text-sm text-white/70">Create squads, apply as a free agent, and track approvals in a unified, calm dashboard.</p>
+            </div>
+            <div className="grid grid-cols-3 gap-3 w-full sm:w-auto">
+              <div className="glass-panel text-center">
+                <p className="text-sm text-white/70">Teams</p>
+                <p className="mt-2 text-3xl font-black text-white">{myTeams.length}</p>
+              </div>
+              <div className="glass-panel text-center">
+                <p className="text-sm text-white/70">Free agent regs</p>
+                <p className="mt-2 text-3xl font-black text-white">{myAgentStatus.length}</p>
+              </div>
+              <div className="glass-panel text-center">
+                <p className="text-sm text-white/70">Open events</p>
+                <p className="mt-2 text-3xl font-black text-white">{events.length}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <TabButton active={activeTab === "my-dashboard"} onClick={() => setActiveTab("my-dashboard")} icon={<LayoutGrid className="h-4 w-4" />} label="My Registrations" />
-          <TabButton active={activeTab === "create-team"} onClick={() => setActiveTab("create-team")} icon={<Users className="h-4 w-4" />} label="Create a Team" />
-          <TabButton active={activeTab === "free-agent"} onClick={() => setActiveTab("free-agent")} icon={<UserPlus className="h-4 w-4" />} label="Join as Free Agent" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <button onClick={() => setActiveTab("my-dashboard")} className={`pill-tab ${activeTab === "my-dashboard" ? "active" : "inactive"}`}>
+            <LayoutGrid className="h-4 w-4" /> My Registrations
+          </button>
+          <button onClick={() => setActiveTab("create-team")} className={`pill-tab ${activeTab === "create-team" ? "active" : "inactive"}`}>
+            <Users className="h-4 w-4" /> Create a Team
+          </button>
+          <button onClick={() => setActiveTab("free-agent")} className={`pill-tab ${activeTab === "free-agent" ? "active" : "inactive"}`}>
+            <UserPlus className="h-4 w-4" /> Join Free Agent
+          </button>
         </div>
 
         {activeTab === "my-dashboard" && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900">My Teams</h2>
+            <h2 className="text-xl font-bold text-white drop-shadow-lg">My Teams</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {myTeams.length === 0 ? <div className="text-gray-500 bg-white p-6 rounded-xl border border-gray-200 italic">You aren't on any teams yet.</div> : 
+              {myTeams.length === 0 ? <div className="text-white/70 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 italic drop-shadow">You aren't on any teams yet.</div> : 
                 myTeams.map(team => (
-                  <div key={team._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center">
+                  <div key={team._id} className="bg-white/10 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-white/20 flex justify-between items-center">
                     <div>
-                      <h3 className="font-bold text-lg text-gray-900">{team.teamName}</h3>
-                      <p className="text-sm text-gray-500">{team.eventId?.title || "Unknown Event"}</p>
+                      <h3 className="font-bold text-lg text-white drop-shadow">{team.teamName}</h3>
+                      <p className="text-sm text-white/70">{team.eventId?.title || "Unknown Event"}</p>
                     </div>
                     <StatusBadge status={team.status} />
                   </div>
@@ -231,16 +256,16 @@ export default function StudentTeamsPage() {
               }
             </div>
 
-            <h2 className="text-xl font-bold text-gray-900 pt-6">My Free Agent Registrations</h2>
+            <h2 className="text-xl font-bold text-white drop-shadow-lg pt-6">My Free Agent Registrations</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {myAgentStatus.length === 0 ? <div className="text-gray-500 bg-white p-6 rounded-xl border border-gray-200 italic">No active free agent registrations.</div> : 
+              {myAgentStatus.length === 0 ? <div className="text-white/70 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 italic drop-shadow">No active free agent registrations.</div> : 
                 myAgentStatus.map(agent => (
-                  <div key={agent._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center">
+                  <div key={agent._id} className="bg-white/10 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-white/20 flex justify-between items-center">
                     <div>
-                      <h3 className="font-bold text-gray-900">{agent.eventId?.title || "Unknown Event"}</h3>
-                      <p className="text-sm text-gray-500 capitalize">Skill: {agent.skillLevel}</p>
+                      <h3 className="font-bold text-white drop-shadow">{agent.eventId?.title || "Unknown Event"}</h3>
+                      <p className="text-sm text-white/70 capitalize">Skill: {agent.skillLevel}</p>
                     </div>
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${agent.status === "Assigned" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}`}>{agent.status}</span>
+                    <span className={`text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm ${agent.status === "Assigned" ? "bg-emerald-500/80 text-white" : "bg-blue-500/80 text-white"}`}>{agent.status}</span>
                   </div>
                 ))
               }
@@ -249,73 +274,82 @@ export default function StudentTeamsPage() {
         )}
 
         {activeTab === "create-team" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl mx-auto">
-            <form onSubmit={handleCreateTeam} className="space-y-5">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Team Name</label>
-                <input type="text" required className="w-full p-3 border border-gray-300 rounded-lg" value={teamForm.teamName} onChange={(e) => setTeamForm({ ...teamForm, teamName: e.target.value })} />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Select Event</label>
-                <select required className="w-full p-3 border border-gray-300 rounded-lg" value={teamForm.eventId} onChange={handleEventSelection}>
-                  <option value="">-- Choose an Event --</option>
-                  {events.map(event => <option key={event._id} value={event._id}>{event.title}</option>)}
-                </select>
+          <div className="glass-card p-8">
+            <div className="mb-6">
+              <h2 className="section-heading">Create a Team</h2>
+              <p className="text-sm text-white/70">Build your squad and submit it for coach approval.</p>
+            </div>
+            <form onSubmit={handleCreateTeam} className="space-y-6">
+              <div className="grid gap-5 md:grid-cols-2">
+                <label className="space-y-2 text-sm text-white/80">
+                  <span>Team Name</span>
+                  <input type="text" required value={teamForm.teamName} onChange={(e) => setTeamForm({ ...teamForm, teamName: e.target.value })} placeholder="SLIIT Strikers" className="input-field" />
+                </label>
+                <label className="space-y-2 text-sm text-white/80">
+                  <span>Select Event</span>
+                  <select required value={teamForm.eventId} onChange={handleEventSelection} className="input-field">
+                    <option value="">Choose an event</option>
+                    {events.map(event => <option key={event._id} value={event._id}>{event.title}</option>)}
+                  </select>
+                </label>
               </div>
 
-              {/* 🛠️ NEW: Dynamic Teammate Input Generation */}
               {teammates.length > 0 && (
-                <div className="pt-4 border-t border-gray-100">
-                    <label className="block text-sm font-bold text-indigo-700 mb-2">Add Teammates (Enter their Email Accounts)</label>
-                    <p className="text-xs text-gray-500 mb-3">Leave blank if you don't have a full roster yet.</p>
-                    <div className="space-y-3">
-                        {teammates.map((email, index) => (
-                            <div key={index} className="flex items-center gap-3">
-                                <span className="text-sm font-bold text-gray-400 w-6">{index + 1}.</span>
-                                <input 
-                                    type="email" 
-                                    placeholder="student@example.com"
-                                    className="w-full p-2 border border-gray-300 rounded-lg text-sm" 
-                                    value={email} 
-                                    onChange={(e) => handleTeammateChange(index, e.target.value)} 
-                                />
-                            </div>
-                        ))}
+                <div className="glass-panel p-5">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-semibold text-white">Add Teammates</h3>
+                      <p className="text-sm text-white/60">Enter teammate emails to create your initial roster.</p>
                     </div>
+                  </div>
+                  <div className="space-y-3">
+                    {teammates.map((email, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <span className="w-6 text-white/70">{index + 1}.</span>
+                        <input type="email" placeholder="student@example.com" value={email} onChange={(e) => handleTeammateChange(index, e.target.value)} className="input-field" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              <button type="submit" disabled={loading} className="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 mt-4">
-                  {loading ? "Submitting..." : "Create Team"}
-              </button>
+              <button type="submit" disabled={loading} className="primary-btn w-full">{loading ? "Submitting..." : "Create Team"}</button>
             </form>
           </div>
         )}
 
         {activeTab === "free-agent" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl mx-auto">
-            <form onSubmit={handleRegisterAgent} className="space-y-5">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Target Event</label>
-                <select required className="w-full p-3 border border-gray-300 rounded-lg" value={agentForm.eventId} onChange={(e) => setAgentForm({ ...agentForm, eventId: e.target.value })}>
-                  <option value="">-- Choose an Event --</option>
+          <div className="glass-card p-8">
+            <div className="mb-6">
+              <h2 className="section-heading">Join the Free Agent Pool</h2>
+              <p className="text-sm text-white/70">Register once and we'll surface your profile to teams looking for talent.</p>
+            </div>
+            <form onSubmit={handleRegisterAgent} className="space-y-6">
+              <label className="space-y-2 text-sm text-white/80">
+                <span>Target Event</span>
+                <select required className="input-field" value={agentForm.eventId} onChange={(e) => setAgentForm({ ...agentForm, eventId: e.target.value })}>
+                  <option value="">Choose an event</option>
                   {events.map(event => <option key={event._id} value={event._id}>{event.title}</option>)}
                 </select>
-              </div>
+              </label>
+
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Skill Level</label>
+                <p className="mb-3 text-sm font-semibold text-white/80">Skill Level</p>
                 <div className="grid grid-cols-3 gap-3">
                   {["Beginner", "Intermediate", "Advanced"].map(level => (
-                    <button type="button" key={level} onClick={() => setAgentForm({ ...agentForm, skillLevel: level })} className={`py-2 rounded-lg text-sm font-bold border ${agentForm.skillLevel === level ? "bg-blue-50 border-blue-600 text-blue-700" : "bg-white border-gray-200"}`}>{level}</button>
+                    <button type="button" key={level} onClick={() => setAgentForm({ ...agentForm, skillLevel: level })} className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${agentForm.skillLevel === level ? "bg-white/20 border-white/40 text-white" : "bg-white/10 border-white/20 text-white/70 hover:bg-white/15"}`}>
+                      {level}
+                    </button>
                   ))}
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Position / Experience Notes</label>
-                <textarea rows="3" className="w-full p-3 border border-gray-300 rounded-lg" value={agentForm.position} onChange={(e) => setAgentForm({ ...agentForm, position: e.target.value })}></textarea>
-              </div>
-              <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-400">{loading ? "Registering..." : "Join Free Agent Pool"}</button>
+
+              <label className="space-y-2 text-sm text-white/80">
+                <span>Position / Experience Notes</span>
+                <textarea rows="4" className="input-field" value={agentForm.position} onChange={(e) => setAgentForm({ ...agentForm, position: e.target.value })} placeholder="Preferred position, skills, or experience" />
+              </label>
+
+              <button type="submit" disabled={loading} className="primary-btn w-full">{loading ? "Registering..." : "Join Free Agent Pool"}</button>
             </form>
           </div>
         )}
@@ -324,12 +358,8 @@ export default function StudentTeamsPage() {
   );
 }
 
-function TabButton({ active, onClick, icon, label }) {
-  return <button onClick={onClick} className={`flex-1 flex items-center justify-center gap-2 py-4 text-sm font-bold border-b-2 ${active ? "border-indigo-600 text-indigo-600 bg-indigo-50/30" : "border-transparent text-gray-500 hover:bg-gray-50"}`}>{icon} {label}</button>;
-}
-
 function StatusBadge({ status }) {
-  if (status === 'Approved') return <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full"><CheckCircle2 className="h-3 w-3"/> Approved</span>;
-  if (status === 'Rejected') return <span className="flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-100 px-3 py-1 rounded-full"><ShieldAlert className="h-3 w-3"/> Rejected</span>;
-  return <span className="flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full"><Clock className="h-3 w-3"/> Pending</span>;
+  if (status === 'Approved') return <span className="flex items-center gap-1 text-xs font-bold text-white bg-emerald-500/80 px-3 py-1 rounded-full backdrop-blur-sm"><CheckCircle2 className="h-3 w-3"/> Approved</span>;
+  if (status === 'Rejected') return <span className="flex items-center gap-1 text-xs font-bold text-white bg-red-500/80 px-3 py-1 rounded-full backdrop-blur-sm"><ShieldAlert className="h-3 w-3"/> Rejected</span>;
+  return <span className="flex items-center gap-1 text-xs font-bold text-white bg-amber-500/80 px-3 py-1 rounded-full backdrop-blur-sm"><Clock className="h-3 w-3"/> Pending</span>;
 }

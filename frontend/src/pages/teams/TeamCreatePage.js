@@ -29,6 +29,7 @@ export default function TeamCreatePage() {
   };
 
   useEffect(() => {
+    document.body.className = 'student-pages';
     const loadEvents = async () => {
       try {
         const res = await fetch('http://localhost:5000/api/events');
@@ -97,80 +98,88 @@ export default function TeamCreatePage() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl p-4">
-      <button onClick={() => navigate(-1)} className="mb-4 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back
-      </button>
-      
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h1 className="text-xl font-bold text-gray-900">Register New Team</h1>
-        <p className="mt-1 text-sm text-gray-500">Create a team for an upcoming tournament</p>
-
-        <div className="mt-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team Name *</label>
-            <input type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="e.g. SLIIT Strikers" />
-            {touched && !teamName.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Select Event *</label>
-            <select value={eventId} onChange={(e) => setEventId(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
-              <option value="">Choose an event</option>
-              {events.map((event) => (
-                <option key={event._id} value={event._id}>{event.title} ({event.sportType || 'Sport'})</option>
-              ))}
-            </select>
-            {touched && !eventId.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
+    <div className="min-h-screen bg-transparent pb-12 relative">
+      <div className="mx-auto max-w-2xl p-4 pt-8">
+        <button onClick={() => navigate(-1)} className="mb-4 inline-flex items-center text-sm font-medium text-white/70 hover:text-white transition-colors drop-shadow">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </button>
+        
+        <div className="glass-card p-8 shadow-2xl">
+          <div className="mb-6">
+            <h1 className="text-3xl font-extrabold text-white">Register New Team</h1>
+            <p className="mt-2 text-white/70">Create a team for an upcoming tournament with a clean, polished form.</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Captain *</label>
-            <input type="text" value={captainId} onChange={(e) => setCaptainId(e.target.value)} className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Auto-detected captain ID" disabled />
-            {touched && !captainId.trim() && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>Required</p>}
-          </div>
+          <form className="space-y-6">
+            <div className="grid gap-5 md:grid-cols-2">
+              <label className="space-y-2 text-sm text-white/80">
+                <span>Team Name *</span>
+                <input type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} className="input-field" placeholder="SLIIT Strikers" />
+                {touched && !teamName.trim() && <span className="text-sm text-red-300">Required</span>}
+              </label>
+              <label className="space-y-2 text-sm text-white/80">
+                <span>Select Event *</span>
+                <select value={eventId} onChange={(e) => setEventId(e.target.value)} className="input-field">
+                  <option value="">Choose an event</option>
+                  {events.map((event) => (
+                    <option key={event._id} value={event._id}>{event.title} ({event.sportType || 'Sport'})</option>
+                  ))}
+                </select>
+                {touched && !eventId.trim() && <span className="text-sm text-red-300">Required</span>}
+              </label>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sport</label>
-            <select value={sport} onChange={(e) => setSport(e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
-              {SPORTS.map((s) => <option key={s} value={s}>{sportIcons[s]} {s}</option>)}
-            </select>
-          </div>
+            <div className="grid gap-5 md:grid-cols-2">
+              <label className="space-y-2 text-sm text-white/80">
+                <span>Captain *</span>
+                <input type="text" value={captainId} onChange={(e) => setCaptainId(e.target.value)} className="input-field bg-white/5" placeholder="Auto-detected captain ID" disabled />
+                {touched && !captainId.trim() && <span className="text-sm text-red-300">Required</span>}
+              </label>
+              <label className="space-y-2 text-sm text-white/80">
+                <span>Sport</span>
+                <select value={sport} onChange={(e) => setSport(e.target.value)} className="input-field">
+                  {SPORTS.map((s) => <option key={s} value={s}>{sportIcons[s]} {s}</option>)}
+                </select>
+              </label>
+            </div>
 
-          <div className="pt-4">
-            <div className="mb-3 flex items-center justify-between">
-              <label className="text-base font-medium text-gray-900">Team Members</label>
-              <button type="button" onClick={addMember} className="flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                <Plus className="h-4 w-4" /> Add Member
+            <div className="glass-panel p-5">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="font-semibold text-white">Team Members</h2>
+                  <p className="text-sm text-white/60">Add members by student ID and name.</p>
+                </div>
+                <button type="button" onClick={addMember} className="secondary-btn inline-flex items-center gap-2">
+                  <Plus className="h-4 w-4" /> Add Member
+                </button>
+              </div>
+              <div className="space-y-4">
+                {members.map((member, index) => (
+                  <div key={index} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
+                      <input type="text" placeholder="Student ID *" value={member.studentId} onChange={(e) => updateMember(index, "studentId", e.target.value)} className="input-field" />
+                      <input type="text" placeholder="Full Name *" value={member.name} onChange={(e) => updateMember(index, "name", e.target.value)} className="input-field" />
+                    </div>
+                    {members.length > 1 && (
+                      <button type="button" onClick={() => removeMember(index)} className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/15 text-red-200 hover:bg-red-500/25 transition-colors">
+                        <X className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {touched && members.some(m => !m.studentId.trim() || !m.name.trim()) && (
+                <p className="text-sm text-red-300">All member fields are required.</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button type="button" onClick={() => navigate(-1)} className="secondary-btn flex-1">Cancel</button>
+              <button type="button" onClick={handleSubmit} disabled={submitting} className="primary-btn flex-1 disabled:opacity-50">
+                {submitting ? <span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Submitting...</span> : "Submit Registration"}
               </button>
             </div>
-            
-            <div className="space-y-3">
-              {members.map((member, index) => (
-                <div key={index} className="flex items-start gap-2">
-                  <div className="grid flex-1 grid-cols-2 gap-2">
-                    <input type="text" placeholder="Student ID *" value={member.studentId} onChange={(e) => updateMember(index, "studentId", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                    <input type="text" placeholder="Full Name *" value={member.name} onChange={(e) => updateMember(index, "name", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                  </div>
-                  {members.length > 1 && (
-                    <button type="button" onClick={() => removeMember(index)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-red-500">
-                      <X className="h-5 w-5" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-            {touched && members.some(m => !m.studentId.trim() || !m.name.trim()) && (
-              <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>All member fields are required.</p>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-8 flex gap-3">
-          <button onClick={() => navigate(-1)} className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">Cancel</button>
-          <button onClick={handleSubmit} disabled={submitting} className="flex flex-1 items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors">
-            {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Submit Registration"}
-          </button>
+          </form>
         </div>
       </div>
     </div>

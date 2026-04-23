@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { 
-  CheckCircle2, User, Trash2, Edit2, X, Save,
+  CheckCircle2, User, Trash2, Edit2, X,
   Users, UserCheck, ShieldAlert, Search, LayoutGrid, Calendar 
 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ export default function CoachDashboardPage() {
   const getToken = () => localStorage.getItem('token');
 
   useEffect(() => {
+    document.body.className = 'coach-pages';
     const fetchDashboardData = async () => {
       setLoading(true);
       const token = getToken();
@@ -277,20 +278,20 @@ export default function CoachDashboardPage() {
   const filteredTeams = teams.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <div className="min-h-screen bg-gray-50/50 pb-12 relative">
+    <div className="min-h-screen bg-transparent pb-12 relative">
       <div className="max-w-7xl mx-auto px-4 pt-8">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Coach Command Center</h1>
-            <p className="text-gray-500 mt-1">Manage team registrations and free agents.</p>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight drop-shadow-lg">Coach Command Center</h1>
+            <p className="text-white/80 mt-1 drop-shadow">Manage team registrations and free agents.</p>
           </div>
-          <div className="flex items-center gap-3 bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm">
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm p-1.5 rounded-lg border border-white/20 shadow-lg">
              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                 <input 
                   type="text" 
                   placeholder="Search teams..." 
-                  className="pl-9 pr-4 py-2 text-sm border-none focus:ring-0 w-64"
+                  className="pl-9 pr-4 py-2 text-sm border-none bg-white/10 text-white placeholder-white/70 focus:ring-2 focus:ring-white/30 rounded-md backdrop-blur-sm w-64"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -299,14 +300,14 @@ export default function CoachDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-          <StatCard icon={<ShieldAlert className="text-amber-600" />} label="Pending Teams" value={pendingTeams.length} color="bg-amber-50" />
-          <StatCard icon={<UserCheck className="text-blue-600" />} label="Free Agents" value={availableAgents.length} color="bg-blue-50" />
-          <StatCard icon={<Users className="text-indigo-600" />} label="Total Teams" value={teams.length} color="bg-indigo-50" />
-          <StatCard icon={<CheckCircle2 className="text-emerald-600" />} label="Approved" value={teams.filter(t => t.status === 'Approved').length} color="bg-emerald-50" />
+          <StatCard icon={<ShieldAlert className="text-amber-300" />} label="Pending Teams" value={pendingTeams.length} color="bg-gradient-to-br from-amber-500 to-orange-600" />
+          <StatCard icon={<UserCheck className="text-blue-300" />} label="Free Agents" value={availableAgents.length} color="bg-gradient-to-br from-blue-500 to-cyan-600" />
+          <StatCard icon={<Users className="text-purple-300" />} label="Total Teams" value={teams.length} color="bg-gradient-to-br from-purple-500 to-pink-600" />
+          <StatCard icon={<CheckCircle2 className="text-emerald-300" />} label="Approved" value={teams.filter(t => t.status === 'Approved').length} color="bg-gradient-to-br from-emerald-500 to-teal-600" />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="flex px-6 border-b border-gray-200 bg-gray-50/50">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+          <div className="flex px-6 border-b border-white/20 bg-white/5 backdrop-blur-sm">
             <TabButton active={activeTab === "approvals"} onClick={() => setActiveTab("approvals")} label="Approvals" count={pendingTeams.length} />
             <TabButton active={activeTab === "agents"} onClick={() => setActiveTab("agents")} label="Free Agents" count={availableAgents.length} />
             <TabButton active={activeTab === "all-teams"} onClick={() => setActiveTab("all-teams")} label="All Teams" count={teams.length} />
@@ -314,7 +315,7 @@ export default function CoachDashboardPage() {
 
           <div className="p-6">
             {loading ? (
-              <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div></div>
+              <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div></div>
             ) : (
               <>
                 {/* APPROVALS TAB */}
@@ -322,16 +323,16 @@ export default function CoachDashboardPage() {
                   <div className="grid gap-4">
                     {pendingTeams.length === 0 ? <EmptyState message="No pending teams." /> : 
                       pendingTeams.map((team) => (
-                        <div key={team.id} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 bg-white hover:shadow-md transition-all">
+                        <div key={team.id} className="flex items-center justify-between p-5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all shadow-xl">
                           <div>
-                            <h3 className="font-bold text-gray-900">{team.name}</h3>
-                            <p className="text-xs text-gray-500">{team.sport} • Captain: {team.captain}</p>
+                            <h3 className="font-bold text-white drop-shadow">{team.name}</h3>
+                            <p className="text-xs text-white/70">{team.sport} • Captain: {team.captain}</p>
                           </div>
                           <div className="flex gap-3">
-                            <button onClick={() => updateTeamStatus(team.id, "Approved")} className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-emerald-700">
+                            <button onClick={() => updateTeamStatus(team.id, "Approved")} className="bg-emerald-500/80 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-emerald-600/80 backdrop-blur-sm">
                               <CheckCircle2 className="h-4 w-4" /> Approve
                             </button>
-                            <button onClick={() => updateTeamStatus(team.id, "Rejected")} className="bg-white border text-rose-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-rose-50">
+                            <button onClick={() => updateTeamStatus(team.id, "Rejected")} className="bg-white/10 border border-white/30 text-red-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-500/20 backdrop-blur-sm">
                               Reject
                             </button>
                           </div>
@@ -346,28 +347,28 @@ export default function CoachDashboardPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {availableAgents.length === 0 ? <EmptyState message="No available agents." /> : 
                       availableAgents.map((agent) => (
-                        <div key={agent.id} className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm flex flex-col gap-4">
+                        <div key={agent.id} className="p-5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm shadow-xl flex flex-col gap-4">
                           <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <div className="h-10 w-10 rounded-lg bg-white/20 text-white flex items-center justify-center backdrop-blur-sm">
                               <User className="h-6 w-6" />
                             </div>
                             <div>
-                              <h3 className="font-bold text-gray-900 leading-none">{agent.name}</h3>
+                              <h3 className="font-bold text-white leading-none">{agent.name}</h3>
                               <div className="flex gap-2 items-center mt-2">
-                                <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded font-bold uppercase">{agent.skillLevel}</span>
-                                <span className="text-[10px] text-gray-400 font-medium tracking-tight flex items-center gap-1"><Calendar className="h-3 w-3"/> {agent.registeredDate}</span>
+                                <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded font-bold uppercase backdrop-blur-sm">{agent.skillLevel}</span>
+                                <span className="text-[10px] text-white/70 font-medium tracking-tight flex items-center gap-1"><Calendar className="h-3 w-3"/> {agent.registeredDate}</span>
                               </div>
                             </div>
                           </div>
-                          <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600 italic border-l-2 border-blue-400">
+                          <div className="bg-white/10 rounded-lg p-3 text-sm text-white/80 italic border-l-2 border-white/30 backdrop-blur-sm">
                               "{agent.position}"
                           </div>
-                          <div className="text-[11px] text-gray-500 font-bold uppercase">
-                            Event: <span className="text-gray-900">{agent.event}</span>
+                          <div className="text-[11px] text-white/70 font-bold uppercase">
+                            Event: <span className="text-white">{agent.event}</span>
                           </div>
                           <div className="flex gap-2 mt-auto pt-2">
-                             <button onClick={() => setAssignModal({ isOpen: true, agent })} className="flex-1 bg-indigo-600 text-white py-2 text-xs font-bold rounded-lg hover:bg-indigo-700 transition-colors">Assign to Team</button>
-                             <button onClick={() => deleteAgent(agent.id)} className="border p-2 rounded-lg text-rose-500 hover:bg-rose-50"><Trash2 className="h-4 w-4" /></button>
+                             <button onClick={() => setAssignModal({ isOpen: true, agent })} className="flex-1 bg-white/20 text-white py-2 text-xs font-bold rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm">Assign to Team</button>
+                             <button onClick={() => deleteAgent(agent.id)} className="border border-white/30 p-2 rounded-lg text-red-300 hover:bg-red-500/20 backdrop-blur-sm"><Trash2 className="h-4 w-4" /></button>
                           </div>
                         </div>
                       ))
@@ -380,31 +381,31 @@ export default function CoachDashboardPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredTeams.length === 0 ? <EmptyState message="No teams found." /> : 
                       filteredTeams.map(team => (
-                        <div key={team.id} className="border border-gray-200 bg-white rounded-2xl p-6 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                        <div key={team.id} className="border border-white/20 bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl flex flex-col hover:bg-white/20 transition-all duration-300">
                           <div className="flex justify-between items-start mb-4">
-                            <h3 className="font-black text-lg text-gray-900 truncate pr-2" title={team.name}>{team.name}</h3>
-                            <span className={`text-[10px] px-2 py-1 rounded font-bold uppercase shrink-0 ${team.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : team.status === 'Rejected' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                            <h3 className="font-black text-lg text-white truncate pr-2" title={team.name}>{team.name}</h3>
+                            <span className={`text-[10px] px-2 py-1 rounded font-bold uppercase shrink-0 ${team.status === 'Approved' ? 'bg-emerald-500/80 text-white' : team.status === 'Rejected' ? 'bg-red-500/80 text-white' : 'bg-amber-500/80 text-white'}`}>
                               {team.status}
                             </span>
                           </div>
                           
-                          <div className="text-sm space-y-1 text-gray-500 mb-6 flex-1">
-                            <p>Captain: <span className="text-gray-900 font-bold">{team.captain}</span></p>
-                            <p>Event: <span className="text-gray-900 font-bold">{team.sport}</span></p>
-                            <p>Members: <span className="text-indigo-600 font-bold">{team.membersCount}</span></p>
+                          <div className="text-sm space-y-1 text-white/80 mb-6 flex-1">
+                            <p>Captain: <span className="text-white font-bold">{team.captain}</span></p>
+                            <p>Event: <span className="text-white font-bold">{team.sport}</span></p>
+                            <p>Members: <span className="text-purple-300 font-bold">{team.membersCount}</span></p>
                           </div>
 
                           {/* ACTION BUTTONS */}
-                          <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100">
+                          <div className="flex gap-2 mt-auto pt-4 border-t border-white/20">
                             <button 
                               onClick={() => openTeamDetails(team)} 
-                              className="flex-1 bg-gray-50 text-gray-700 py-2 text-xs font-bold rounded-lg hover:bg-gray-100 flex justify-center items-center gap-1 transition-colors"
+                              className="flex-1 bg-white/20 text-white py-2 text-xs font-bold rounded-lg hover:bg-white/30 flex justify-center items-center gap-1 transition-colors backdrop-blur-sm"
                             >
                               <Edit2 className="h-3 w-3"/> Edit
                             </button>
                             <button 
                               onClick={() => deleteTeam(team.id)} 
-                              className="border border-gray-200 p-2 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors"
+                              className="border border-white/30 p-2 rounded-lg text-red-300 hover:bg-red-500/20 transition-colors backdrop-blur-sm"
                               title="Delete Team"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -423,37 +424,37 @@ export default function CoachDashboardPage() {
 
       {/* ASSIGNMENT MODAL OVERLAY */}
       {assignModal.isOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 w-full max-w-md shadow-2xl border border-white/20 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="font-extrabold text-xl text-gray-900">Assign Player</h3>
-              <button onClick={() => setAssignModal({ isOpen: false, agent: null })} className="text-gray-400 hover:bg-gray-100 p-1 rounded-md transition-colors">
+              <h3 className="font-extrabold text-xl text-white drop-shadow-lg">Assign Player</h3>
+              <button onClick={() => setAssignModal({ isOpen: false, agent: null })} className="text-white/70 hover:bg-white/10 p-2 rounded-md transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
             
-            <p className="text-sm text-gray-500 mb-6">
-              Select an approved team to place <span className="font-bold text-gray-900">{assignModal.agent?.name}</span> for <span className="font-bold text-indigo-600">{assignModal.agent?.event}</span>.
+            <p className="text-sm text-white/70 mb-6 drop-shadow">
+              Select an approved team to place <span className="font-bold text-white">{assignModal.agent?.name}</span> for <span className="font-bold text-white">{assignModal.agent?.event}</span>.
             </p>
             
             <div className="space-y-3 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
               {teams.filter(t => t.status === "Approved" && t.eventId === assignModal.agent?.eventId).length === 0 ? (
-                <div className="text-center py-6 bg-gray-50 rounded-lg border border-gray-100">
-                  <p className="text-sm text-gray-500 font-medium">No approved teams available.</p>
-                  <p className="text-xs text-gray-400 mt-1">Approve a team for {assignModal.agent?.event} first.</p>
+                <div className="text-center py-6 bg-white/5 rounded-lg border border-white/20 backdrop-blur-sm">
+                  <p className="text-sm text-white/70 font-medium">No approved teams available.</p>
+                  <p className="text-xs text-white/50 mt-1">Approve a team for {assignModal.agent?.event} first.</p>
                 </div>
               ) : (
                 teams.filter(t => t.status === "Approved" && t.eventId === assignModal.agent?.eventId).map(team => (
                   <button 
                     key={team.id} 
                     onClick={() => handleAssignSubmit(team.id)} 
-                    className="w-full text-left p-4 border border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex justify-between items-center group"
+                    className="w-full text-left p-4 border border-white/30 rounded-xl hover:border-white/50 hover:bg-white/10 transition-all flex justify-between items-center group backdrop-blur-sm"
                   >
                     <div>
-                      <span className="font-bold text-gray-900 block">{team.name}</span>
-                      <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Members: {team.membersCount}</span>
+                      <span className="font-bold text-white block drop-shadow">{team.name}</span>
+                      <span className="text-[10px] text-white/70 uppercase font-bold tracking-wider">Members: {team.membersCount}</span>
                     </div>
-                    <span className="text-xs text-indigo-600 font-bold bg-white border border-indigo-100 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <span className="text-xs text-white font-bold bg-white/20 border border-white/30 px-3 py-1.5 rounded-lg group-hover:bg-white/30 transition-colors backdrop-blur-sm">
                       Select
                     </span>
                   </button>
@@ -465,65 +466,65 @@ export default function CoachDashboardPage() {
       )}
 
       {selectedTeam && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 w-full max-w-2xl shadow-2xl border border-white/20 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div>
-                <h3 className="font-extrabold text-xl text-gray-900">Team Details</h3>
-                <p className="text-sm text-gray-500">Review members and unassign mistakes.</p>
+                <h3 className="font-extrabold text-xl text-white drop-shadow-lg">Team Details</h3>
+                <p className="text-white/70 drop-shadow">Review members and unassign mistakes.</p>
               </div>
-              <button onClick={closeTeamDetails} className="text-gray-400 hover:bg-gray-100 p-2 rounded-md transition-colors">
+              <button onClick={closeTeamDetails} className="text-white/70 hover:bg-white/10 p-2 rounded-md transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 mb-6">
               <div>
-                <label className="text-xs font-bold uppercase text-gray-500">Team Name</label>
+                <label className="text-xs font-bold uppercase text-white/70">Team Name</label>
                 <input
                   type="text"
                   value={selectedTeamName}
                   onChange={(e) => setSelectedTeamName(e.target.value)}
-                  className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="mt-2 w-full border border-white/30 rounded-xl px-4 py-3 text-sm bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm"
                 />
               </div>
 
               <div className="space-y-2">
-                <div className="text-xs font-bold uppercase text-gray-500">Event</div>
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">{selectedTeam.sport}</div>
-                <div className="text-xs font-bold uppercase text-gray-500">Status</div>
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">{selectedTeam.status}</div>
+                <div className="text-xs font-bold uppercase text-white/70">Event</div>
+                <div className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur-sm">{selectedTeam.sport}</div>
+                <div className="text-xs font-bold uppercase text-white/70">Status</div>
+                <div className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur-sm">{selectedTeam.status}</div>
               </div>
             </div>
 
             <div className="mb-6">
-              <div className="text-sm font-bold text-gray-900 mb-2">Team captain</div>
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">{selectedTeam.captain}</div>
+              <div className="text-sm font-bold text-white mb-2">Team captain</div>
+              <div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm text-white backdrop-blur-sm">{selectedTeam.captain}</div>
             </div>
 
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h4 className="text-sm font-bold text-gray-900">Assigned Members</h4>
-                  <p className="text-xs text-gray-500">Remove any member assigned by mistake.</p>
+                  <h4 className="text-sm font-bold text-white">Assigned Members</h4>
+                  <p className="text-xs text-white/70">Remove any member assigned by mistake.</p>
                 </div>
-                <span className="text-xs font-semibold text-indigo-600">{selectedTeam.members.length} members</span>
+                <span className="text-xs font-semibold text-purple-300">{selectedTeam.members.length} members</span>
               </div>
               <div className="space-y-3 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
                 {selectedTeam.members.length === 0 ? (
-                  <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
+                  <div className="rounded-2xl border border-white/30 bg-white/5 p-6 text-center text-sm text-white/70 backdrop-blur-sm">
                     No members are currently assigned to this team.
                   </div>
                 ) : (
                   selectedTeam.members.map((member) => (
-                    <div key={member.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-gray-200 p-4 bg-white">
+                    <div key={member.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-white/30 p-4 bg-white/10 backdrop-blur-sm">
                       <div>
-                        <p className="font-semibold text-gray-900">{member.fullName}</p>
-                        <p className="text-xs text-gray-500">{member.email || 'No email provided'}</p>
+                        <p className="font-semibold text-white">{member.fullName}</p>
+                        <p className="text-xs text-white/70">{member.email || 'No email provided'}</p>
                       </div>
                       <button
                         onClick={() => removeTeamMember(selectedTeam.id, member.id)}
-                        className="text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl px-4 py-2 text-xs font-bold transition-colors"
+                        className="text-red-300 bg-red-500/20 hover:bg-red-500/30 rounded-xl px-4 py-2 text-xs font-bold transition-colors backdrop-blur-sm"
                       >
                         Unassign
                       </button>
@@ -533,16 +534,16 @@ export default function CoachDashboardPage() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-white/20">
               <button
                 onClick={() => updateTeamName(selectedTeam.id)}
-                className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors"
+                className="inline-flex items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm px-4 py-3 text-sm font-bold text-white hover:bg-white/30 transition-colors"
               >
                 Save Team Name
               </button>
               <button
                 onClick={closeTeamDetails}
-                className="inline-flex items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center justify-center rounded-2xl border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-3 text-sm font-bold text-white hover:bg-white/20 transition-colors"
               >
                 Close
               </button>
@@ -556,11 +557,11 @@ export default function CoachDashboardPage() {
 
 function StatCard({ icon, label, value, color }) {
   return (
-    <div className={`${color} rounded-2xl p-5 border border-white shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow`}>
-      <div className="p-3 bg-white rounded-xl shadow-sm">{icon}</div>
+    <div className={`${color} rounded-2xl p-5 border border-white/20 shadow-xl flex items-center gap-4 hover:scale-105 transition-transform backdrop-blur-sm`}>
+      <div className="p-3 bg-white/20 rounded-xl shadow-lg backdrop-blur-sm">{icon}</div>
       <div>
-        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
-        <p className="text-2xl font-black text-gray-900">{value}</p>
+        <p className="text-[10px] font-black text-white/80 uppercase tracking-widest">{label}</p>
+        <p className="text-2xl font-black text-white">{value}</p>
       </div>
     </div>
   );
@@ -568,9 +569,9 @@ function StatCard({ icon, label, value, color }) {
 
 function TabButton({ active, onClick, label, count }) {
   return (
-    <button onClick={onClick} className={`px-6 py-4 text-sm font-black relative transition-all ${active ? "text-indigo-600" : "text-gray-400 hover:text-gray-600"}`}>
-      {label} {count > 0 && <span className={`ml-2 px-2 py-0.5 rounded-full text-[10px] ${active ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'}`}>{count}</span>}
-      {active && <div className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-full" />}
+    <button onClick={onClick} className={`px-6 py-4 text-sm font-black relative transition-all ${active ? "text-white" : "text-white/70 hover:text-white"}`}>
+      {label} {count > 0 && <span className={`ml-2 px-2 py-0.5 rounded-full text-[10px] ${active ? 'bg-white/20 text-white backdrop-blur-sm' : 'bg-white/10 text-white/70 backdrop-blur-sm'}`}>{count}</span>}
+      {active && <div className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-t-full" />}
     </button>
   );
 }
@@ -578,8 +579,8 @@ function TabButton({ active, onClick, label, count }) {
 function EmptyState({ message }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <LayoutGrid className="h-8 w-8 text-gray-200 mb-2" />
-      <p className="text-gray-400 font-bold">{message}</p>
+      <LayoutGrid className="h-8 w-8 text-white/30 mb-2" />
+      <p className="text-white/70 font-bold">{message}</p>
     </div>
   );
 }
