@@ -38,6 +38,52 @@ const sidebarLinks = [
   { label: 'Teams', icon: 'fa-users', route: '/student/teams' },
 ];
 
+const getWeatherCondition = (code) => {
+  const weatherCodes = {
+    0: 'Clear sky',
+    1: 'Mainly clear',
+    2: 'Partly cloudy',
+    3: 'Overcast',
+    45: 'Fog',
+    48: 'Depositing rime fog',
+    51: 'Light drizzle',
+    53: 'Moderate drizzle',
+    55: 'Heavy drizzle',
+    56: 'Freezing drizzle',
+    57: 'Dense freezing drizzle',
+    61: 'Slight rain',
+    63: 'Moderate rain',
+    65: 'Heavy rain',
+    66: 'Freezing rain',
+    67: 'Heavy freezing rain',
+    71: 'Slight snow',
+    73: 'Moderate snow',
+    75: 'Heavy snow',
+    77: 'Snow grains',
+    80: 'Rain showers',
+    81: 'Moderate rain showers',
+    82: 'Violent rain showers',
+    85: 'Snow showers',
+    86: 'Heavy snow showers',
+    95: 'Thunderstorm',
+    96: 'Thunderstorm with hail',
+    99: 'Severe thunderstorm with hail',
+  };
+
+  return weatherCodes[code] || 'Unknown';
+};
+
+const getWeatherIcon = (code) => {
+  if (code === 0 || code === 1) return 'fa-sun';
+  if (code === 2) return 'fa-cloud-sun';
+  if (code === 3) return 'fa-cloud';
+  if (code === 45 || code === 48) return 'fa-smog';
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'fa-cloud-rain';
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'fa-snowflake';
+  if (code >= 95 && code <= 99) return 'fa-bolt';
+  return 'fa-cloud';
+};
+
 const StudentDashboardPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
@@ -63,6 +109,9 @@ const StudentDashboardPage = () => {
   const [facilityBookingsLoading, setFacilityBookingsLoading] = useState(true);
   const [facilityBookingsError, setFacilityBookingsError] = useState('');
   const [cancellingBookingId, setCancellingBookingId] = useState('');
+  const [weatherData, setWeatherData] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState('');
 
   const studentId = String(user?.studentId || localStorage.getItem('studentId') || '').trim();
 
@@ -220,6 +269,31 @@ const StudentDashboardPage = () => {
 
     fetchFacilityBookings();
   }, [studentId, displayName]);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        setWeatherLoading(true);
+        setWeatherError('');
+        const response = await fetch(
+          'https://api.open-meteo.com/v1/forecast?latitude=6.9068&longitude=79.9729&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&timezone=auto',
+        );
+
+        if (!response.ok) {
+          throw new Error('Unable to fetch weather details.');
+        }
+
+        const data = await response.json();
+        setWeatherData(data?.current || null);
+      } catch {
+        setWeatherError('Weather report is currently unavailable.');
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    fetchWeather();
+  }, []);
 
   const filteredEvents = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -422,6 +496,38 @@ const StudentDashboardPage = () => {
                 <h3>{welcomeNotification?.title || 'Welcome to PlayNow'}</h3>
                 <p>{welcomeNotification?.message || 'Track your bookings, teams, and event updates from one dashboard.'}</p>
               </article>
+            </div>
+
+            <div className="student-updates-section">
+              <div className="student-updates-section-header">
+                <h3>Live Weather</h3>
+                <span>Malabe</span>
+              </div>
+
+              {weatherLoading && <div className="student-empty-update">Loading weather report...</div>}
+
+              {!weatherLoading && weatherError && (
+                <div className="student-empty-update">{weatherError}</div>
+              )}
+
+              {!weatherLoading && !weatherError && weatherData && (
+                <article className="student-weather-card">
+                  <div className="student-weather-main">
+                    <span className="student-weather-icon" aria-hidden="true">
+                      <i className={`fa-solid ${getWeatherIcon(weatherData.weather_code)}`} />
+                    </span>
+                    <div>
+                      <h3>{Math.round(weatherData.temperature_2m)}&deg;C</h3>
+                      <p>{getWeatherCondition(weatherData.weather_code)}</p>
+                    </div>
+                  </div>
+
+                  <div className="student-weather-meta">
+                    <span>Humidity: {weatherData.relative_humidity_2m}%</span>
+                    <span>Wind: {Math.round(weatherData.wind_speed_10m)} km/h</span>
+                  </div>
+                </article>
+              )}
             </div>
 
             <div className="student-updates-section">

@@ -37,7 +37,7 @@ const AdminCreateEventPage = () => {
         const { data } = await apiClient.get('/teams');
         const teams = data?.teams || data || [];
         setRegisteredTeams(Array.isArray(teams) ? teams : []);
-      } catch (error) {
+      } catch {
         setRegisteredTeams([]);
         setTeamsError('No registered teams found. Team registration is managed in another module.');
       } finally {
@@ -92,6 +92,7 @@ const AdminCreateEventPage = () => {
         message: `${form.title} (${form.sportType}) was created for ${form.startDate || 'a scheduled date'}.`,
         icon: 'fa-calendar-check',
         role: 'Admin',
+        audienceRoles: ['Admin', 'Coach', 'Student', 'User'],
       });
       setStatus('Event created successfully. Redirecting to fixtures...');
       setTimeout(() => {
@@ -111,70 +112,98 @@ const AdminCreateEventPage = () => {
   return (
     <section className="ace-page">
       <div className="ace-header">
-        <h1 className="ace-title">Create Event</h1>
+        <div>
+          <p className="ace-eyebrow">Event Control Center</p>
+          <h1 className="ace-title">Create Event</h1>
+          <p className="ace-subtitle">Plan fixtures faster with structured event details and instant team assignment.</p>
+        </div>
+        <div className="ace-header-meta" aria-live="polite">
+          <span>{selectedTeams.length} team{selectedTeams.length === 1 ? '' : 's'} selected</span>
+        </div>
       </div>
       <form className="ace-panel" onSubmit={handleSubmit}>
-        <div className="ace-grid">
-          <div className="ace-field">
-            <label htmlFor="title">Title</label>
-            <input id="title" name="title" value={form.title} onChange={handleChange} />
-            {errors.title && <span className="ace-error">{errors.title}</span>}
+        <section className="ace-section" aria-labelledby="ace-event-details-title">
+          <div className="ace-section-head">
+            <h2 id="ace-event-details-title">Event Details</h2>
           </div>
 
-          <div className="ace-field">
-            <label htmlFor="sportType">Sport Type</label>
-            <select
-              id="sportType"
-              name="sportType"
-              value={form.sportType}
-              onChange={handleChange}
-            >
-              {sportOptions.map((sport) => (
-                <option key={sport} value={sport}>
-                  {sport}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="ace-grid">
+            <div className="ace-field">
+              <label htmlFor="title">Title</label>
+              <input
+                id="title"
+                name="title"
+                placeholder="Interfaculty Cricket Championship"
+                value={form.title}
+                onChange={handleChange}
+              />
+              {errors.title && <span className="ace-error">{errors.title}</span>}
+            </div>
 
-          <div className="ace-field">
-            <label htmlFor="tournamentType">Tournament Type</label>
-            <select
-              id="tournamentType"
-              name="tournamentType"
-              value={form.tournamentType}
-              onChange={handleChange}
-            >
-              {tournamentOptions.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="ace-field">
+              <label htmlFor="sportType">Sport Type</label>
+              <select
+                id="sportType"
+                name="sportType"
+                value={form.sportType}
+                onChange={handleChange}
+              >
+                {sportOptions.map((sport) => (
+                  <option key={sport} value={sport}>
+                    {sport}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div className="ace-field">
-            <label htmlFor="venue">Venue</label>
-            <input id="venue" name="venue" value={form.venue} onChange={handleChange} />
-            {errors.venue && <span className="ace-error">{errors.venue}</span>}
-          </div>
+            <div className="ace-field">
+              <label htmlFor="tournamentType">Tournament Type</label>
+              <select
+                id="tournamentType"
+                name="tournamentType"
+                value={form.tournamentType}
+                onChange={handleChange}
+              >
+                {tournamentOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div className="ace-field">
-            <label htmlFor="startDate">Start Date</label>
-            <input
-              id="startDate"
-              name="startDate"
-              type="datetime-local"
-              min={toLocalDateTimeInput(new Date())}
-              value={form.startDate}
-              onChange={handleChange}
-            />
-            {errors.startDate && <span className="ace-error">{errors.startDate}</span>}
-          </div>
-        </div>
+            <div className="ace-field">
+              <label htmlFor="venue">Venue</label>
+              <input
+                id="venue"
+                name="venue"
+                placeholder="Main Ground A"
+                value={form.venue}
+                onChange={handleChange}
+              />
+              {errors.venue && <span className="ace-error">{errors.venue}</span>}
+            </div>
 
-        <div className="ace-field ace-teams-wrap">
-          <label>Registered Teams</label>
+            <div className="ace-field">
+              <label htmlFor="startDate">Start Date</label>
+              <input
+                id="startDate"
+                name="startDate"
+                type="datetime-local"
+                min={toLocalDateTimeInput(new Date())}
+                value={form.startDate}
+                onChange={handleChange}
+              />
+              {errors.startDate && <span className="ace-error">{errors.startDate}</span>}
+            </div>
+          </div>
+        </section>
+
+        <section className="ace-section ace-field ace-teams-wrap" aria-labelledby="ace-teams-title">
+          <div className="ace-section-head">
+            <h2 id="ace-teams-title">Registered Teams</h2>
+            <span>Select at least 2 teams</span>
+          </div>
           
 
           {teamsLoading && <div className="ace-state">Loading registered teams...</div>}
@@ -206,7 +235,7 @@ const AdminCreateEventPage = () => {
           )}
 
           {errors.teams && <span className="ace-error">{errors.teams}</span>}
-        </div>
+        </section>
 
         <div className="ace-actions">
           <button 

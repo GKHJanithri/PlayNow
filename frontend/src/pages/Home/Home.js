@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
+import { getNotifications } from '../../utils/notifications';
 import teamImage from '../../assets/Team.jpg';
 import facilityImage from '../../assets/facility.jpg';
 import equipmentImage from '../../assets/equipment.jpg';
@@ -57,24 +58,6 @@ const roles = [
     },
 ];
 
-const notifications = [
-    {
-        icon: 'fa-triangle-exclamation',
-        type: 'Low Stock Alert',
-        message: 'Basketball inventory is low. Only 4 units remaining.',
-    },
-    {
-        icon: 'fa-bell',
-        type: 'Upcoming Match',
-        message: 'Interfaculty Football semifinal starts tomorrow at 3:00 PM.',
-    },
-    {
-        icon: 'fa-circle-check',
-        type: 'Approval Update',
-        message: 'Your court reservation request for Court B has been approved.',
-    },
-];
-
 const getWeatherCondition = (code) => {
     const weatherCodes = {
         0: 'Clear sky',
@@ -125,6 +108,7 @@ const Home = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [weatherLoading, setWeatherLoading] = useState(true);
     const [weatherError, setWeatherError] = useState('');
+    const [liveNotifications, setLiveNotifications] = useState([]);
 
     useEffect(() => {
         const fetchWeather = async () => {
@@ -149,6 +133,19 @@ const Home = () => {
         };
 
         fetchWeather();
+    }, []);
+
+    useEffect(() => {
+        const role = localStorage.getItem('role') || 'Guest';
+
+        const refreshNotifications = () => {
+            const items = getNotifications(role)
+                .filter((item) => item?.id !== 'welcome-note')
+                .slice(0, 6);
+            setLiveNotifications(items);
+        };
+
+        refreshNotifications();
     }, []);
 
     return (
@@ -303,13 +300,24 @@ const Home = () => {
                     <p>Stay informed with actionable alerts and timely updates.</p>
                 </div>
                 <div className="notification-list" role="list">
-                    {notifications.map((notification) => (
-                        <article key={notification.type} className="notification-item" role="listitem">
+                    {liveNotifications.length === 0 && (
+                        <article className="notification-item" role="listitem">
+                            <div className="card-icon" aria-hidden="true">
+                                <i className="fa-solid fa-bell" />
+                            </div>
+                            <div>
+                                <h3>No notifications yet</h3>
+                                <p>New updates will appear here automatically.</p>
+                            </div>
+                        </article>
+                    )}
+                    {liveNotifications.map((notification) => (
+                        <article key={notification.id} className="notification-item" role="listitem">
                             <div className="card-icon" aria-hidden="true">
                                 <i className={`fa-solid ${notification.icon}`} />
                             </div>
                             <div>
-                                <h3>{notification.type}</h3>
+                                <h3>{notification.title}</h3>
                                 <p>{notification.message}</p>
                             </div>
                         </article>

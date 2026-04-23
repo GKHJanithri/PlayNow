@@ -134,6 +134,7 @@ const FacilityConfirmBookingPage = () => {
         message: `${selectedDate} · ${selectedSlot.start} - ${selectedSlot.end} · ${players} player${players === 1 ? '' : 's'} · Active`,
         icon: 'fa-bell',
         role: 'Facility',
+        audienceRoles: ['Student', 'User', 'Admin'],
       });
 
       setSuccess('Booking confirmed successfully. Redirecting to facilities...');
