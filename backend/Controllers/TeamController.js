@@ -173,3 +173,39 @@ exports.assignAgentToTeam = async (req, res) => {
         res.status(500).json({ message: 'Error assigning agent', error: error.message });
     }
 };
+
+// @desc    Remove a member from a team
+// @route   PUT /api/teams/:id/remove-member
+exports.removeMemberFromTeam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { memberId } = req.body;
+
+        if (!memberId || !mongoose.Types.ObjectId.isValid(memberId)) {
+            return res.status(400).json({ message: 'Invalid member ID' });
+        }
+
+        const team = await Team.findById(id);
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+
+        if (!team.members.some((member) => member.equals(memberId))) {
+            return res.status(400).json({ message: 'User is not a member of this team' });
+        }
+
+        team.members.pull(memberId);
+        await team.save();
+
+        await FreeAgent.findOneAndUpdate({ studentId: memberId }, { status: 'Available' });
+
+        const updatedTeam = await Team.findById(id)
+            .populate('captainId', 'fullName email')
+            .populate('eventId', 'title')
+            .populate('members', 'fullName email studentId');
+
+        res.status(200).json({ message: 'Member removed from team', team: updatedTeam });
+    } catch (error) {
+        res.status(500).json({ message: 'Error removing member', error: error.message });
+    }
+};

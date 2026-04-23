@@ -50,6 +50,22 @@ exports.getAllFreeAgents = async (req, res) => {
     }
 };
 
+// @desc    Delete a free agent from the pool
+exports.deleteFreeAgent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedAgent = await FreeAgent.findByIdAndDelete(id);
+
+        if (!deletedAgent) {
+            return res.status(404).json({ message: 'Free agent not found' });
+        }
+
+        res.status(200).json({ message: 'Free agent deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting free agent', error: error.message });
+    }
+};
+
 // FIX: Added this missing function to stop the server crash!
 // @desc    Update status (Approve/Reject)
 exports.updateFreeAgentStatus = async (req, res) => {

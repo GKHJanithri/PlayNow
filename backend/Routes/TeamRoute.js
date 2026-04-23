@@ -7,7 +7,8 @@ const {
     updateTeamStatus, 
     updateTeam, 
     deleteTeam,
-    assignAgentToTeam // 🛠️ NEW: Imported the assign function
+    assignAgentToTeam,
+    removeMemberFromTeam
 } = require('../Controllers/TeamController');
 
 // Route to create a new team
@@ -27,5 +28,6 @@ router.delete('/:id', deleteTeam);
 
 // 🛠️ NEW: Route to assign a Free Agent to a Team
 router.post('/:id/assign', assignAgentToTeam);
+router.put('/:id/remove-member', removeMemberFromTeam);
 
 module.exports = router;

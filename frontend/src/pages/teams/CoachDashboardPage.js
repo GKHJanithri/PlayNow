@@ -12,9 +12,9 @@ export default function CoachDashboardPage() {
   const [activeTab, setActiveTab] = useState("approvals");
   const [searchQuery, setSearchQuery] = useState("");
   
-  // States for inline team editing
-  const [editingTeamId, setEditingTeamId] = useState(null);
-  const [editingTeamName, setEditingTeamName] = useState("");
+  // State for team details modal and editable name
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [selectedTeamName, setSelectedTeamName] = useState("");
 
   // State for Assign Agent Modal
   const [assignModal, setAssignModal] = useState({ isOpen: false, agent: null });
@@ -43,6 +43,12 @@ export default function CoachDashboardPage() {
             eventId: t.eventId?._id,
             sport: t.eventId?.title || "No Event", 
             captain: t.captainId?.fullName || "No Captain",
+            members: Array.isArray(t.members) ? t.members.map((m) => ({
+              id: String(m._id),
+              fullName: m.fullName,
+              email: m.email,
+              studentId: m.studentId || ""
+            })) : [],
             membersCount: (Array.isArray(t.members) ? t.members.length : 0) + (t.captainId ? 1 : 0)
           })));
         }
@@ -59,6 +65,7 @@ export default function CoachDashboardPage() {
           
           setAgents(agentsData.map((a) => ({
             id: a._id, 
+            studentObjectId: a.studentId?._id ? String(a.studentId._id) : "",
             studentId: a.studentId?.studentId,
             name: a.studentId?.fullName || "Identity Missing",
             email: a.studentId?.email || "",
@@ -111,8 +118,18 @@ export default function CoachDashboardPage() {
     } catch (error) { toast.error("Failed to delete team."); }
   };
 
-  const saveTeamEdit = async (id) => {
-    if (!editingTeamName.trim()) return toast.error("Team name cannot be empty");
+  const openTeamDetails = (team) => {
+    setSelectedTeam(team);
+    setSelectedTeamName(team.name);
+  };
+
+  const closeTeamDetails = () => {
+    setSelectedTeam(null);
+    setSelectedTeamName("");
+  };
+
+  const updateTeamName = async (id) => {
+    if (!selectedTeamName.trim()) return toast.error("Team name cannot be empty");
     try {
       const res = await fetch(`http://localhost:5000/api/teams/${id}`, {
         method: "PUT",
@@ -120,13 +137,63 @@ export default function CoachDashboardPage() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${getToken()}`
         },
-        body: JSON.stringify({ teamName: editingTeamName })
+        body: JSON.stringify({ teamName: selectedTeamName })
       });
       if (!res.ok) throw new Error("Failed to update team");
-      setTeams((prev) => prev.map((t) => t.id === id ? { ...t, name: editingTeamName } : t));
-      setEditingTeamId(null);
+      setTeams((prev) => prev.map((t) => t.id === id ? { ...t, name: selectedTeamName } : t));
+      setSelectedTeam((prev) => prev ? { ...prev, name: selectedTeamName } : prev);
       toast.success("Team updated successfully.");
     } catch (error) { toast.error("Failed to update team."); }
+  };
+
+  const removeTeamMember = async (teamId, memberId) => {
+    if (!window.confirm("Remove this player from the team?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/teams/${teamId}/remove-member`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getToken()}`
+        },
+        body: JSON.stringify({ memberId })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to remove member");
+      }
+
+      setTeams((prev) => prev.map((t) => {
+        if (t.id !== teamId) return t;
+        const updatedMembers = t.members.filter((m) => m.id !== memberId);
+        return {
+          ...t,
+          members: updatedMembers,
+          membersCount: updatedMembers.length + (t.captain ? 1 : 0)
+        };
+      }));
+
+      setSelectedTeam((prev) => {
+        if (!prev || prev.id !== teamId) return prev;
+        const updatedMembers = prev.members.filter((m) => m.id !== memberId);
+        return {
+          ...prev,
+          members: updatedMembers,
+          membersCount: updatedMembers.length + (prev.captain ? 1 : 0)
+        };
+      });
+
+      setAgents((prev) => prev.map((agent) => {
+        if (agent.studentObjectId === memberId) {
+          return { ...agent, status: "Available" };
+        }
+        return agent;
+      }));
+
+      toast.success("Member removed from team.");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   // --- AGENT ACTIONS ---
@@ -283,21 +350,7 @@ export default function CoachDashboardPage() {
                       filteredTeams.map(team => (
                         <div key={team.id} className="border border-gray-200 bg-white rounded-2xl p-6 shadow-sm flex flex-col hover:shadow-md transition-shadow">
                           <div className="flex justify-between items-start mb-4">
-                            {editingTeamId === team.id ? (
-                              <div className="flex-1 mr-2 flex items-center gap-2">
-                                <input
-                                  type="text"
-                                  className="w-full border border-indigo-300 rounded-md text-sm p-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                  value={editingTeamName}
-                                  onChange={(e) => setEditingTeamName(e.target.value)}
-                                  autoFocus
-                                />
-                                <button onClick={() => saveTeamEdit(team.id)} className="text-emerald-600 hover:bg-emerald-50 p-1.5 rounded-md transition-colors"><Save className="h-4 w-4" /></button>
-                                <button onClick={() => setEditingTeamId(null)} className="text-gray-400 hover:bg-gray-100 p-1.5 rounded-md transition-colors"><X className="h-4 w-4" /></button>
-                              </div>
-                            ) : (
-                              <h3 className="font-black text-lg text-gray-900 truncate pr-2" title={team.name}>{team.name}</h3>
-                            )}
+                            <h3 className="font-black text-lg text-gray-900 truncate pr-2" title={team.name}>{team.name}</h3>
                             <span className={`text-[10px] px-2 py-1 rounded font-bold uppercase shrink-0 ${team.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : team.status === 'Rejected' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
                               {team.status}
                             </span>
@@ -312,7 +365,7 @@ export default function CoachDashboardPage() {
                           {/* ACTION BUTTONS */}
                           <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100">
                             <button 
-                              onClick={() => { setEditingTeamId(team.id); setEditingTeamName(team.name); }} 
+                              onClick={() => openTeamDetails(team)} 
                               className="flex-1 bg-gray-50 text-gray-700 py-2 text-xs font-bold rounded-lg hover:bg-gray-100 flex justify-center items-center gap-1 transition-colors"
                             >
                               <Edit2 className="h-3 w-3"/> Edit
@@ -374,6 +427,93 @@ export default function CoachDashboardPage() {
                   </button>
                 ))
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedTeam && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <div>
+                <h3 className="font-extrabold text-xl text-gray-900">Team Details</h3>
+                <p className="text-sm text-gray-500">Review members and unassign mistakes.</p>
+              </div>
+              <button onClick={closeTeamDetails} className="text-gray-400 hover:bg-gray-100 p-2 rounded-md transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 mb-6">
+              <div>
+                <label className="text-xs font-bold uppercase text-gray-500">Team Name</label>
+                <input
+                  type="text"
+                  value={selectedTeamName}
+                  onChange={(e) => setSelectedTeamName(e.target.value)}
+                  className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="text-xs font-bold uppercase text-gray-500">Event</div>
+                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">{selectedTeam.sport}</div>
+                <div className="text-xs font-bold uppercase text-gray-500">Status</div>
+                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">{selectedTeam.status}</div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <div className="text-sm font-bold text-gray-900 mb-2">Team captain</div>
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">{selectedTeam.captain}</div>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-900">Assigned Members</h4>
+                  <p className="text-xs text-gray-500">Remove any member assigned by mistake.</p>
+                </div>
+                <span className="text-xs font-semibold text-indigo-600">{selectedTeam.members.length} members</span>
+              </div>
+              <div className="space-y-3 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+                {selectedTeam.members.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
+                    No members are currently assigned to this team.
+                  </div>
+                ) : (
+                  selectedTeam.members.map((member) => (
+                    <div key={member.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-gray-200 p-4 bg-white">
+                      <div>
+                        <p className="font-semibold text-gray-900">{member.fullName}</p>
+                        <p className="text-xs text-gray-500">{member.email || 'No email provided'}</p>
+                      </div>
+                      <button
+                        onClick={() => removeTeamMember(selectedTeam.id, member.id)}
+                        className="text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl px-4 py-2 text-xs font-bold transition-colors"
+                      >
+                        Unassign
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-gray-200">
+              <button
+                onClick={() => updateTeamName(selectedTeam.id)}
+                className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors"
+              >
+                Save Team Name
+              </button>
+              <button
+                onClick={closeTeamDetails}
+                className="inline-flex items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
