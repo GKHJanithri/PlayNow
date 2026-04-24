@@ -1,15 +1,35 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../utils/auth';
 import brandLogo from '../../assets/Logo.jpeg';
 import './Login.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/events';
   
   const [form, setForm] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+
+  const redirectForRole = (role) => {
+    const normalizedRole = String(role || '').trim().toLowerCase();
+
+    if (normalizedRole === 'admin') {
+      return '/admin/dashboard';
+    }
+
+    if (normalizedRole === 'coach') {
+      return '/coach/dashboard';
+    }
+
+    if (['student', 'user', 'captain'].includes(normalizedRole)) {
+      return '/student/dashboard';
+    }
+
+    return from;
+  };
 
 
   const handleChange = (event) => {
@@ -28,19 +48,7 @@ const LoginPage = () => {
 
     try {
       const session = await loginUser(form);
-      if (session.role === 'Admin') {
-        navigate('/admin/dashboard', { replace: true });
-        return;
-      }
-      if (normalizedRole === 'student') {
-        navigate('/student/dashboard', { replace: true });
-        return;
-      }
-      if (normalizedRole === 'coach') {
-        navigate('/coach/dashboard', { replace: true });
-        return;
-      }
-      navigate(from, { replace: true });
+      navigate(redirectForRole(session.role), { replace: true });
     } catch (authError) {
       setError(authError.message || 'Login failed.');
     }

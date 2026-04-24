@@ -8,7 +8,13 @@ const Event = require('../Model/EventModel');
 // @route   POST /api/teams
 exports.createTeam = async (req, res) => {
     try {
-        const { teamName, eventId, captainId, teammates } = req.body;
+        const { teamName, eventId, captainId, teammates, members } = req.body;
+        let roster = [];
+        if (Array.isArray(teammates) && teammates.length > 0) {
+            roster = teammates;
+        } else if (Array.isArray(members)) {
+            roster = members;
+        }
         
         const existingTeam = await Team.findOne({ teamName });
         if (existingTeam) {
@@ -34,9 +40,9 @@ exports.createTeam = async (req, res) => {
 
         let memberIds = [];
         
-        if (teammates && teammates.length > 0) {
-            const objectIds = teammates.filter((value) => mongoose.Types.ObjectId.isValid(value));
-            const studentIds = teammates.filter((value) => !mongoose.Types.ObjectId.isValid(value));
+        if (roster.length > 0) {
+            const objectIds = roster.filter((value) => mongoose.Types.ObjectId.isValid(value));
+            const studentIds = roster.filter((value) => !mongoose.Types.ObjectId.isValid(value));
 
             const foundUsers = await User.find({
                 $or: [
@@ -46,7 +52,7 @@ exports.createTeam = async (req, res) => {
             });
 
             memberIds = foundUsers.map(user => user._id);
-            if (memberIds.length !== teammates.length) {
+            if (memberIds.length !== roster.length) {
                 return res.status(400).json({ message: 'Some teammates were not found. Please verify their IDs.' });
             }
         }
@@ -58,9 +64,35 @@ exports.createTeam = async (req, res) => {
             members: memberIds
         });
 
-        res.status(201).json(newTeam);
+        const populatedTeam = await Team.findById(newTeam._id)
+            .populate('captainId', 'fullName email studentId')
+            .populate('eventId', 'title sportType')
+            .populate('members', 'fullName email studentId');
+
+        res.status(201).json(populatedTeam);
     } catch (error) {
         res.status(500).json({ message: 'Error creating team', error: error.message });
+    }
+};
+
+// @desc    Get a team by ID
+// @route   GET /api/teams/:id
+exports.getTeamById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const team = await Team.findById(id)
+            .populate('captainId', 'fullName email studentId')
+            .populate('eventId', 'title sportType')
+            .populate('members', 'fullName email studentId');
+
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+
+        res.status(200).json(team);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching team', error: error.message });
     }
 };
 

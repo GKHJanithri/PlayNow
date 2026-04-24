@@ -125,7 +125,7 @@ const AppLayout = () => {
           <Route path="/events/:id/practice" element={<ProtectedRoute allowedRoles={['Coach']}><CoachPracticePage /></ProtectedRoute>} />
 
           {/* Student & Team Management Routes (Permissions Updated to include Captain) */}
-          <Route path="/teams/create" element={<ProtectedRoute allowedRoles={['Student', 'Captain']}><TeamCreatePage /></ProtectedRoute>} />
+          <Route path="/teams/create" element={<ProtectedRoute allowedRoles={['Admin', 'Student', 'Captain']}><TeamCreatePage /></ProtectedRoute>} />
           <Route path="/teams/free-agent" element={<ProtectedRoute allowedRoles={['Student', 'Captain']}><FreeAgentPage /></ProtectedRoute>} />
           
           <Route path="/facilities" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><FacilitiesPage /></ProtectedRoute>} />
@@ -136,7 +136,7 @@ const AppLayout = () => {
           <Route path="/student/items" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentItemsPage /></ProtectedRoute>} />
           <Route path="/student/items/reserve" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentItemReservationPage /></ProtectedRoute>} />
           <Route path="/student/facilities" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentFacilitiesPage /></ProtectedRoute>} />
-          <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Student', 'User', 'Captain']}><StudentTeamsPage /></ProtectedRoute>} />
+          <Route path="/student/teams" element={<ProtectedRoute allowedRoles={['Admin', 'Student', 'User', 'Captain']}><StudentTeamsPage /></ProtectedRoute>} />
 
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/events" replace />} />

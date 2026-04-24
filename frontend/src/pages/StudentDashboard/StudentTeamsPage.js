@@ -201,7 +201,7 @@ export default function StudentTeamsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent py-12 px-4 relative">
+    <div className="student-teams-page min-h-screen bg-transparent py-12 px-4 relative">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="glass-card p-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">

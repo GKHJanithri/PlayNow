@@ -28,7 +28,8 @@
 
 body {
   margin: 0;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
   background: var(--bg-soft);
   color: var(--text-dark);
   min-height: 100vh;
@@ -96,6 +97,26 @@ textarea {
   padding: 28px 34px;
 }
 
+.main-item-page .admin-card,
+.main-item-page .table-card {
+  color: #1b2b52;
+}
+
+.main-item-page .admin-input,
+.main-item-page .admin-textarea,
+.main-item-page .filter-select {
+  color: #1b2b52;
+  background: #ffffff;
+}
+
+.main-item-page table th {
+  color: #5f6f8f;
+}
+
+.main-item-page table td {
+  color: #1b2b52;
+}
+
 .main-item-page .page-header {
   margin-bottom: 18px;
   display: flex;
@@ -106,7 +127,8 @@ textarea {
 .main-item-page .page-header h1 {
   margin: 4px 0 0;
   font-size: 34px;
-  color: #0d1f4f;
+  color: #dbe8ff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
 }
 
 .equipment-layout {
@@ -837,6 +859,63 @@ textarea {
   outline: none;
   border-color: rgba(56, 189, 248, 0.85);
   background: rgba(255,255,255,0.13);
+}
+
+.team-create-page input.input-field,
+.team-create-page select.input-field,
+.team-create-page textarea.input-field {
+  background: #f6f9ff;
+  color: #1e2f4a;
+  border-color: #a9bfdf;
+}
+
+.team-create-page input.input-field::placeholder,
+.team-create-page textarea.input-field::placeholder {
+  color: #7a8ead;
+}
+
+.team-create-page select.input-field option {
+  background: #ffffff;
+  color: #1e2f4a;
+}
+
+.team-create-page input.input-field:disabled {
+  color: #506387;
+  opacity: 1;
+}
+
+.team-create-page,
+.student-teams-page {
+  font-family: 'Plus Jakarta Sans', 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.team-create-page h1,
+.team-create-page h2,
+.team-create-page h3,
+.student-teams-page h1,
+.student-teams-page h2,
+.student-teams-page h3,
+.student-teams-page .section-heading {
+  font-family: 'Manrope', 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.student-teams-page input.input-field,
+.student-teams-page select.input-field,
+.student-teams-page textarea.input-field {
+  background: #f6f9ff;
+  color: #1e2f4a;
+  border-color: #a9bfdf;
+}
+
+.student-teams-page input.input-field::placeholder,
+.student-teams-page textarea.input-field::placeholder {
+  color: #7a8ead;
+}
+
+.student-teams-page select.input-field option {
+  background: #ffffff;
+  color: #1e2f4a;
 }
 
 .primary-btn {
@@ -1591,12 +1670,13 @@ textarea {
 .main-item-page .page-header h1 {
   margin: 4px 0 0;
   font-size: 34px;
-  color: #0d1f4f;
+  color: #dbe8ff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
 }
 
 .main-item-page .breadcrumb {
   margin: 0;
-  color: #7b86a4;
+  color: #9fb8e8;
   font-size: 14px;
 }
 

@@ -14,6 +14,7 @@
 
 .admin-bookings-page {
   padding: 1.4rem;
+  font-family: 'Manrope', 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background:
     radial-gradient(circle at 15% 0%, #d8e7ff 0%, transparent 35%),
     radial-gradient(circle at 85% 15%, #d6f8ec 0%, transparent 38%),
@@ -29,9 +30,16 @@
   margin-bottom: 1rem;
 }
 
+.admin-bookings-page .page-title {
+  font-family: 'Manrope', 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #1e3a66;
+}
+
 .admin-bookings-subtitle {
   margin: 0.35rem 0 0;
-  color: var(--booking-text-muted);
+  color: #415b7e;
   font-size: 1.02rem;
 }
 
@@ -57,7 +65,8 @@
   border: 1px solid var(--booking-border-strong);
   border-radius: 18px;
   background: var(--booking-surface);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow: 0 16px 34px rgba(36, 69, 117, 0.16);
 }
 
@@ -131,6 +140,7 @@
 
 .admin-bookings-table {
   width: 100%;
+  min-width: 1280px;
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -262,10 +272,6 @@
 }
 
 @media (max-width: 1180px) {
-  .admin-bookings-table-wrap {
-    overflow-x: auto;
-  }
-
   .admin-bookings-table {
     min-width: 1080px;
   }

@@ -71,7 +71,7 @@ const AdminMatchScoringPage = () => {
         if (data?.teamA?._id || data?.teamA?.id) {
           try {
             const teamAResponse = await apiClient.get(`/teams/${data.teamA._id || data.teamA.id}`);
-            const teamAPlayers = teamAResponse.data?.players || teamAResponse.data?.team?.players || [];
+            const teamAPlayers = teamAResponse.data?.members || teamAResponse.data?.team?.members || teamAResponse.data?.players || teamAResponse.data?.team?.players || [];
             setBattingTeamPlayers(teamAPlayers);
           } catch (e) {
             console.log('Could not fetch Team A players');
@@ -81,7 +81,7 @@ const AdminMatchScoringPage = () => {
         if (data?.teamB?._id || data?.teamB?.id) {
           try {
             const teamBResponse = await apiClient.get(`/teams/${data.teamB._id || data.teamB.id}`);
-            const teamBPlayers = teamBResponse.data?.players || teamBResponse.data?.team?.players || [];
+            const teamBPlayers = teamBResponse.data?.members || teamBResponse.data?.team?.members || teamBResponse.data?.players || teamBResponse.data?.team?.players || [];
             setBowlingTeamPlayers(teamBPlayers);
           } catch (e) {
             console.log('Could not fetch Team B players');
@@ -261,8 +261,8 @@ const AdminMatchScoringPage = () => {
                 <option value="">Select Player</option>
                 {battingTeamPlayers.length > 0 ? (
                   battingTeamPlayers.map((player) => (
-                    <option key={player._id || player.id} value={player.name || player.playerName || player._id}>
-                      {player.name || player.playerName}
+                    <option key={player._id || player.id} value={player.fullName || player.name || player.playerName || player.studentId || player._id}>
+                      {player.fullName || player.name || player.playerName || player.studentId}
                     </option>
                   ))
                 ) : (
@@ -283,8 +283,8 @@ const AdminMatchScoringPage = () => {
                 <option value="">Select Player</option>
                 {battingTeamPlayers.length > 0 ? (
                   battingTeamPlayers.map((player) => (
-                    <option key={player._id || player.id} value={player.name || player.playerName || player._id}>
-                      {player.name || player.playerName}
+                    <option key={player._id || player.id} value={player.fullName || player.name || player.playerName || player.studentId || player._id}>
+                      {player.fullName || player.name || player.playerName || player.studentId}
                     </option>
                   ))
                 ) : (
@@ -305,8 +305,8 @@ const AdminMatchScoringPage = () => {
                 <option value="">Select Player</option>
                 {bowlingTeamPlayers.length > 0 ? (
                   bowlingTeamPlayers.map((player) => (
-                    <option key={player._id || player.id} value={player.name || player.playerName || player._id}>
-                      {player.name || player.playerName}
+                    <option key={player._id || player.id} value={player.fullName || player.name || player.playerName || player.studentId || player._id}>
+                      {player.fullName || player.name || player.playerName || player.studentId}
                     </option>
                   ))
                 ) : (

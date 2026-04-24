@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminTeamsPage = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="page">
       <div className="page-header">
@@ -15,8 +17,20 @@ const AdminTeamsPage = () => {
           tournaments and training sessions.
         </p>
         <div className="dashboard-actions">
-          <button type="button" className="btn btn-primary">Create Team</button>
-          <button type="button" className="btn btn-secondary">View Rosters</button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => navigate('/teams/create')}
+          >
+            Create Team
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigate('/student/teams')}
+          >
+            View Rosters
+          </button>
         </div>
       </div>
     </section>

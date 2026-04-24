@@ -98,7 +98,7 @@ export default function TeamCreatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent pb-12 relative">
+    <div className="team-create-page min-h-screen bg-transparent pb-12 relative">
       <div className="mx-auto max-w-2xl p-4 pt-8">
         <button onClick={() => navigate(-1)} className="mb-4 inline-flex items-center text-sm font-medium text-white/70 hover:text-white transition-colors drop-shadow">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
