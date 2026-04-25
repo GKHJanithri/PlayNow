@@ -472,6 +472,7 @@
 .notification-item h3 {
 	margin: 0;
 	font-size: 1.03rem;
+	font-weight: 700;
 	color: #10213d;
 }
 
@@ -480,6 +481,7 @@
 .notification-item p {
 	margin: 0.44rem 0 0;
 	line-height: 1.56;
+	font-weight: 600;
 	color: var(--ink-600);
 }
 
